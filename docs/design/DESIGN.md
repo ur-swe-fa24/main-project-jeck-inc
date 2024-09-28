@@ -2,3 +2,5 @@
 
 This is where the core designs are started.
 You will also store your PlantUML source files in this directory.
+
+[ARCHITECTURE.md](Architecture/ARCHITECTURE.md)
