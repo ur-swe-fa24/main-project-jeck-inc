@@ -1,0 +1,42 @@
+@startuml ABasicSeqDiagram
+
+
+actor User
+participant UI
+
+activate User 
+User -> UI: Submit new map for simulation. 
+deactivate User 
+
+activate UI
+UI -> UI: inputs map data to backend (return error if an issue arises).
+return confirmation_or_error
+deactivate UI
+
+activate User 
+User -> UI: Request robot data 
+deactivate User 
+
+activate UI
+UI -> UI: request data from backend
+return data
+deactivate UI
+
+activate User 
+User -> UI: submit new tasks
+deactivate User 
+
+activate UI
+UI -> UI: send appropiate commands to simulation (start sim of new task), database (update current task), and system manager.
+return confirmation_of_new_tasks
+deactivate UI
+
+activate User 
+User -> UI: add new robot 
+deactivate User 
+
+activate UI
+UI -> UI: put new robot data into database, add robot to sim.
+return new_robot_info
+deactivate UI
+
