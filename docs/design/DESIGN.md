@@ -3,9 +3,12 @@
 This is where the core designs are started.
 You will also store your PlantUML source files in this directory.
 
+[ARCHITECTURE.md](Architecture/ARCHITECTURE.md)
+
+[CLASSES.md](Classes/CLASSES.md)
+
 ## Entity Sequence Diagram 
 ![Entity Sequence Diagram (UI to Various Systems)](./Entities_Sequence_Diagram/image.png "")
-[ARCHITECTURE.md](Architecture/ARCHITECTURE.md)
 
 The Entity Sequence Diagram describes the flow of data in a normal simulation. 
 
@@ -18,10 +21,6 @@ The next step is to assign task to the robot(s). This will occur through the Tas
 Simulator is also responsible for detecting issues and sending notification of completion to the user through GUI. 
 
 Some roles have access to the robot status and other roles have access to the overall metric of the tasks. This information is pulled from the database through communication via. System Manager. The information is ultimately sent to GUI for the users. 
-
-
-
-
 
 
 
