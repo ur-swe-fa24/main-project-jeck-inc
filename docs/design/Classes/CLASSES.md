@@ -2,8 +2,6 @@
 
 ![Classes](./classes.png)
 
-
-
 We have created five major Classes. 
 
 Robot consists of attributes like id, battery, status, type and so on. It also has an attribute Room which is only filled if a task is assigned to it. Thus, it has Association with Room. 
