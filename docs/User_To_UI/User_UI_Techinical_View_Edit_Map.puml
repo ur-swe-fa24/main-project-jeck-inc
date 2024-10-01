@@ -1,0 +1,76 @@
+@startuml ABasicSeqDiagram
+
+
+actor User
+participant UI
+participant inputHandler 
+participant backend
+
+activate User 
+User -> UI: Log in to the system
+deactivate User 
+
+activate UI
+UI -> inputHandler: Send login credentials
+deactivate UI
+
+' waits for the backend to return. Ensures error handling is done gracefully.
+activate inputHandler
+inputHandler -> backend: Send log in token
+deactivate inputHandler
+
+activate backend
+return allowedInputs
+backend --> UI: return technicalUI
+deactivate backend
+
+'User is now logged in with a Techinical UI availible to them
+activate UI
+UI --> User: display technicalUI
+deactivate UI
+
+activate User
+User -> UI: Clicks on "Edit Sim" Button/area
+deactivate User
+
+activate UI
+UI -> inputHandler: Send request for Sim .
+deactivate UI
+
+activate inputHandler
+inputHandler -> backend: Process the request into a call to the simulation.
+deactivate inputHandler
+
+' waits for the backend to return. Ensures error handling is done gracefully.
+activate backend
+return information
+backend --> UI: Returns information about the simulation.
+deactivate backend
+
+activate UI
+UI --> User: Display screen with an area that has information about the simulation. 
+deactivate UI
+
+'User is now displayed a simulation screen with an area that displays info about the sim along with options to edit the sim.
+
+activate User
+User -> UI: Clicks on the "edit map" button. Input new map. 
+deactivate User
+
+activate UI
+UI -> inputHandler: Passes the info that the edit map button has been pressed. Passes new map.
+deactivate UI
+
+activate inputHandler
+inputHandler -> backend: Process the log request in a simulation call. Delivers the new map to the backend.
+deactivate inputHandler
+
+' waits for the backend to return. Ensures error handling is done gracefully.
+activate backend
+return information
+backend --> UI: Returns confirmation if accepted, error if not.
+deactivate backend
+
+activate UI
+UI --> User: Displays either a confirmation messgae or an error message.
+deactivate UI

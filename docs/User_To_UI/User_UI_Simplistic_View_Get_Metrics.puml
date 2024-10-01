@@ -1,0 +1,54 @@
+@startuml ABasicSeqDiagram
+
+
+actor User
+participant UI
+participant inputHandler 
+participant backend
+
+activate User 
+User -> UI: Log in to the system
+deactivate User 
+
+activate UI
+UI -> inputHandler: Send login credentials
+deactivate UI
+
+' waits for the backend to return. Ensures error handling is done gracefully.
+activate inputHandler
+inputHandler -> backend: Send log in token
+deactivate inputHandler
+
+activate backend
+return allowedInputs
+backend --> UI: return simpleUI/TechnicalUI
+deactivate backend
+
+'User is now logged in with a simple UI availible to them
+activate UI
+UI --> User: display simpleUI/TechnicalUI
+deactivate UI
+
+activate User
+User -> UI: Clicks on "Metrics" Button/area
+deactivate User
+
+activate UI
+UI -> inputHandler: Send request for metrics.
+deactivate UI
+
+activate inputHandler
+inputHandler -> backend: Process the request in database calls.
+deactivate inputHandler
+
+' waits for the backend to return. Ensures error handling is done gracefully.
+activate backend
+return information
+backend --> UI: Returns information.
+deactivate backend
+
+activate UI
+UI --> User: Display metrics screen with relevant information.
+deactivate UI
+
+'User is now displayed a metrics screen with an area that displays all relevant metrics. 
