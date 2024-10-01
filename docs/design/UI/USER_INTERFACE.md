@@ -1,5 +1,8 @@
 # User Interface
 
+Here is what the intitial user interface should resemble:
+![User Interface Wireframe](./Wireframe.drawio.png)
+
 **At a high level, we want to have a few different views depending on who is accessing the platform. We would rather the more technically inclined operators have access to a lot of the technical data, while keeping those in the C suite limited to a more basic, user friendly view.**
 
 ### C-suite/Senior Management and Building Manager 
