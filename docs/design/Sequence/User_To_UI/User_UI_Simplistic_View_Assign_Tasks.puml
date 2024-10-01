@@ -1,0 +1,118 @@
+@startuml ABasicSeqDiagram
+
+
+actor User
+participant UI
+participant inputHandler 
+participant backend
+
+activate User 
+User -> UI: Log in to the system
+deactivate User 
+
+activate UI
+UI -> inputHandler: Send login credentials
+deactivate UI
+
+' waits for the backend to return. Ensures error handling is done gracefully.
+activate inputHandler
+inputHandler -> backend: Send log in token
+deactivate inputHandler
+
+activate backend
+alt ifValidCredentials
+    return allowedInputs
+    backend --> UI: return simpleUI/TechnicalUI
+deactivate backend
+
+'User is now logged in with a simple UI availible to them
+activate UI
+UI --> User: display simpleUI/TechnicalUI
+deactivate UI
+
+activate User
+User -> UI: Clicks on "Assign Tasks" Button/area
+deactivate User
+
+activate UI
+UI -> inputHandler: Send request for task pannel.
+deactivate UI
+
+activate inputHandler
+inputHandler -> backend: Ask for relevant information regarding tasks and robot status.
+deactivate inputHandler
+
+' waits for the backend to return. Ensures error handling is done gracefully.
+activate backend
+return information
+backend --> UI: Return information.
+deactivate backend
+
+activate UI
+UI --> User: Display tasks with relevant information.
+deactivate UI
+
+'User is now displayed a task screen with an area to input tasks, along with current statuses of robot and overview of the simulation.
+
+activate User
+User -> UI: Inputs task and selects relevant robots. Hits "confirm/submit"
+deactivate User
+
+activate UI
+UI -> inputHandler: Passes data.
+deactivate UI
+
+activate inputHandler
+inputHandler -> backend: Processes input data. Calls for the relevant robots and task protocol.
+deactivate inputHandler
+
+' waits for the backend to return. Ensures error handling is done gracefully.
+activate backend
+return conf_or_error
+backend --> UI: Returns confirmation message or error if problem.
+deactivate backend
+
+'User is now logged in with a simple UI availible to them
+activate UI
+UI --> User: Display task summary or error.
+deactivate UI
+
+
+
+
+@enduml
+
+
+
+' activate UI
+' UI -> UI: inputs map data to backend (return error if an issue arises).
+' return confirmation_or_error
+' deactivate UI
+
+' activate User 
+' User -> UI: Request robot data 
+' deactivate User 
+
+' activate UI
+' UI -> UI: request data from backend
+' return data
+' deactivate UI
+
+' activate User 
+' User -> UI: submit new tasks
+' deactivate User 
+
+' activate UI
+' UI -> UI: send appropiate commands to simulation (start sim of new task), database (update current task), and system manager.
+' return confirmation_of_new_tasks
+' deactivate UI
+
+' activate User 
+' User -> UI: add new robot 
+' deactivate User 
+
+' activate UI
+' UI -> UI: put new robot data into database, add robot to sim.
+' return new_robot_info
+' deactivate UI
+

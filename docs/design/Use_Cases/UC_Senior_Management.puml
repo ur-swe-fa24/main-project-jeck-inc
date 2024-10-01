@@ -1,0 +1,18 @@
+@startuml ABasicUseCase
+
+' actors
+actor Senior_Management
+
+' use cases
+usecase "View detailed metrics on robot utilization" as view
+usecase "Monitor error rates" as monitor
+usecase "View a high-level summary" as summary
+usecase "Compare performance metrics" as compare
+
+' connections
+Senior_Management -- view : "Assess operational efficiency"
+Senior_Management -- monitor : "Identify issues"
+Senior_Management -- summary : "Understand the overall status"
+Senior_Management -- compare : "Optimize future purchases"
+
+@enduml

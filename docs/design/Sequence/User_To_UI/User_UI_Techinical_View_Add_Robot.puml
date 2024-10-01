@@ -1,0 +1,77 @@
+@startuml aBasicSeqeunceDiagram
+
+actor User
+participant UI
+participant inputHandler 
+participant backend
+
+activate User 
+User -> UI: Log in to the system
+deactivate User 
+
+activate UI
+UI -> inputHandler: Send login credentials
+deactivate UI
+
+' waits for the backend to return. Ensures error handling is done gracefully.
+activate inputHandler
+inputHandler -> backend: Send log in token
+deactivate inputHandler
+
+activate backend
+return allowedInputs
+backend --> UI: return technicalUI
+deactivate backend
+
+'User is now logged in with a Techinical UI availible to them
+activate UI
+UI --> User: display technicalUI
+deactivate UI
+
+activate User
+User -> UI: Clicks on "Add robot" Button/area
+deactivate User
+
+activate UI
+UI -> inputHandler: Send request for a new robot.
+deactivate UI
+
+activate inputHandler
+inputHandler -> backend: Process the request into a call to create a new robot object.
+deactivate inputHandler
+
+' waits for the backend to return. Ensures error handling is done gracefully.
+activate backend
+return slot
+backend --> UI: Returns new robot slot
+deactivate backend
+
+activate UI
+UI --> User: Display screen with an area to add a robot. Has areas to input type, ID, etc.
+deactivate UI
+
+activate User
+User -> UI: Enters details, hits a "submit/confirm" button. 
+deactivate User
+
+activate UI
+UI -> inputHandler: Passes on data. 
+deactivate UI
+
+activate inputHandler
+inputHandler -> backend: Process the data, ensuring it is piped to the correct area in the backend.
+deactivate inputHandler
+
+' waits for the backend to return. Ensures error handling is done gracefully.
+activate backend
+return message
+backend --> UI: Returns confirmation of new robot or error if robot data is not valid.
+deactivate backend
+
+activate UI
+UI --> User: Display error/confirmation message. 
+deactivate UI
+
+
+ 
+@enduml
