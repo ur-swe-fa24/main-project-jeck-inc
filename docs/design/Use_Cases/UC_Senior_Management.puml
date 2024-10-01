@@ -3,7 +3,7 @@
 ' actors
 actor Senior_Management
 
-' user cases
+' use cases
 usecase "View detailed metrics on robot utilization" as view
 usecase "Monitor error rates" as monitor
 usecase "View a high-level summary" as summary

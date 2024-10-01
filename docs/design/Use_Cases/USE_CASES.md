@@ -4,7 +4,7 @@
 ## Building Manager Use Case Diagram
 ![Building Manager Use Case Diagram](./UC_Building_Manager.png)
 
-Hello
+This diagram shows the Building Manager and their their main use cases. They are organizing robot queues and ensuring robots are all functioning properly.
 
 ## Field Engineer Use Case Diagram 
 ![Field Engineer Use Case Diagram](./UC_Field_Engineer.png)
@@ -21,4 +21,4 @@ This diagram depicts role and activities of Operator. There are two major action
 ## Senior Management Use Case Diagram
 ![Senior Management Use Case Diagram](./UC_Senior_Management.png)
 
-This diagram shows the Senior Management user and different use cases based off their user stories. All these use cases will be the user intereacting with the user interface to achieve what they want. 
+This diagram shows the Senior Management user and different use cases based off their user stories. All these use cases will be the user interacting with the user interface to achieve what they want. 

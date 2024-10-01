@@ -3,6 +3,7 @@
 ' 'actors
 actor Field_Engineer
 
+' use cases
 usecase "View error logs and status logs" as monitor
 usecase "Check current status of robots" as check
 usecase "Check the wear of consumables" as consumables
@@ -15,4 +16,5 @@ Field_Engineer -- check: "Determine what is currently being cleaned."
 Field_Engineer -- consumables: "Find out when to replace consumables."
 Field_Engineer -- battery: "Make sure robots have enough charge left "
 Field_Engineer -- command: "Assign robots efficiently to make sure all cleaning gets done."
-' @enduml
+
+@enduml
