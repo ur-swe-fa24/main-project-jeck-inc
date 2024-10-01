@@ -1,0 +1,63 @@
+@startuml
+
+'Robot Class
+class Robot {
+    +int id
+    +int battery_percentage
+    +boolean status = True
+    +String error = ""
+    +Room task = None
+    +String type
+    +assign_task(Task)
+}
+
+'Room Class
+class Room {
+    -int id
+    -boolean status_washed = False
+    -boolean status_vaccumed  = False
+    -boolean status_shampooed = False
+    -Robot currently_assigned = False
+    -str floor_type 
+    +assigned_cleaner(Robot) = None
+}
+
+'Simulator Class
+class Simulator {
+    -int clock_tick = 0
+    -list<Robot> operational_robots 
+    -int task_remaining
+    +add_robot()
+    +assign_task(list<Task>)
+    +raise_issue() : Robot
+    +notify_completion() : Task
+}
+
+'Task Class
+class Task {
+    -Robot robot
+    -Room room
+    -String type
+    -boolean task_status = false
+    +task_complete() : void
+}
+
+'Logging Class
+class Logging {
+    +String message_type
+    -Robot robot = None
+    +add_log()
+    +retrieve_robot_status()
+    +retrieve_overall_metrics()
+}
+
+'Relationships
+Robot "1" --> "0..1" Room : assigns >
+Room "1" --> "0..n" Robot : assigned >
+Simulator "1" --> "0..n" Robot : manages >
+Simulator "1" --> "0..n" Task : handles >
+Task "1" --> "1" Room : operates >
+Task "1" --> "1" Robot : involves >
+Logging "0..1" --> "1" Robot : logs >
+
+@enduml

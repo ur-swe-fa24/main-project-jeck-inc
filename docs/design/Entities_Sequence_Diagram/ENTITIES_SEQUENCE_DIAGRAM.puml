@@ -1,0 +1,144 @@
+'' the expected interaction among the entities involved with UI, System Manager, Simulation, and Database
+@startuml ABasicSeqDiagram
+skinparam dpi 200
+skinparam DefaultFontName Inconsolata
+skinparam actorBackgroundColor #C0E0FF
+skinparam actorFontColor #003366
+skinparam sequenceDividerBackgroundColor Aqua
+skinparam sequenceDividerFontColor Black
+
+
+
+
+
+'Actors
+
+'Highlighting a continuous activation of Simulation
+'as it is continuously running. 
+box  "Continuously Running \n Simulation Engine" 
+participant Simulation 
+end box
+
+'Other Participants
+participant GUI 
+participant System_Manager
+
+'Database
+database Robot_Database
+
+'Simulation starts running since the beginning of the program
+activate Simulation #Magenta
+
+
+'Procedure to add Map into the Simulation
+== Addition of Map ==
+
+
+GUI -> Simulation : Map Data
+    Simulation -> Simulation : Attempts to update map data for simulation
+    'Making sure the map file is a valid one
+    alt successful_map_addition
+        Simulation -> GUI : Returns Successful Addition Notification
+    else
+        Simulation -> GUI : Returns Error Notification
+    end
+
+
+'Procedure to add a robot instance 
+== Addition of Robot ==
+
+    GUI -> System_Manager : Add Robot, robot_type
+
+    'adding instance of robot in the database
+    activate System_Manager
+            System_Manager -> System_Manager : Create instance of the robot
+            System_Manager -> Robot_Database : Logs addition of robot           
+        deactivate System_Manager
+    System_Manager -> Simulation : Adds Instance of Robot in the simulation
+
+
+
+'Procedure to assign task to (a) robot(s)
+== Assign Task To Robot ==
+
+GUI -> Simulation : Robot_Id(s), Room_Id(s), Clean/Vaccum/Scrub
+    'check if the work and robot are compatible and if the robot is free
+    alt is_robot_work_compatible and robot_free
+        Simulation -> GUI : Successfully assigned
+        Simulation -> System_Manager : Data of robot and task assigned
+        activate System_Manager
+            System_Manager -> System_Manager : Update instance of the robot
+            System_Manager -> Robot_Database : Update Log            
+        deactivate System_Manager
+    else 
+        Simulation -> GUI : Error Notification with apt message
+    end 
+
+
+'Procedure to create notification when a robot has issue
+== Issue Detection by Robot == 
+
+'Simulation identifies (creates) issue on the robot and notifies
+Simulation -> GUI : Robot_Id and Issue Notification
+
+'System manager logs the issue in the database
+Simulation -> System_Manager : Robot_Id, Location and Issue Message
+activate System_Manager
+    System_Manager -> System_Manager : Updates the instance of the robot
+    System_Manager -> Robot_Database : Log the instance of error
+deactivate System_Manager
+
+
+'Procedure to create notification for task completion
+== Task Completion by Robot == 
+
+Simulation -> GUI : Robot_Id and Task_Id [Completion Notification]
+
+'System Manager logs the completion in the database
+Simulation -> System_Manager : Robot_Id, Task_Id and Completion message
+
+activate System_Manager
+    System_Manager -> System_Manager : Updates the instance of the robot
+    System_Manager -> Robot_Database : Log the instance of completion
+deactivate System_Manager
+
+
+'Procedure to retrieve robot status
+== Requested Robot Status == 
+
+GUI ->  System_Manager : Robot_Id
+
+activate System_Manager
+
+    'check for valid robot_id
+    alt valid_robot_id 
+        System_Manager -> Robot_Database : Retrieve all instances of robot_id for complete information
+        System_Manager -> GUI : Provides all information about the robot \n [Charge, Tasks Completed, Productivity, Issues [if any], \n Current Task Status, Shampoo-Status (if) ]
+
+    else 
+        System_Manager -> GUI: Invalid Robot Id Error
+    end 
+deactivate System_Manager
+
+'Procedure to request overall metrics
+== Requested Overall Metrics == 
+GUI -> System_Manager : Requested Metrics of General Performances 
+'Calculation of data happens inside System Manager
+activate System_Manager 
+    System_Manager -> Robot_Database: Retrieve all instances of logs
+    System_Manager -> System_Manager: Calculate Required metrics
+    System_Manager -> GUI: Provides all information about the \n overall performance of the robots
+deactivate System_Manager
+
+'Legend
+legend bottom
+  <b>Legend:</b>
+  <color:#Magenta><back:#Magenta><b>Simulation</b></back></color> : Simulation Activation  
+  The simulation engine is continuously running from the start and
+  updates robot's location and its error issue per unit time. 
+end legend
+
+
+
+
+@enduml
