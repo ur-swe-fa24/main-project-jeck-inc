@@ -4,7 +4,7 @@ This is where the core designs are started.
 You will also store your PlantUML source files in this directory.
 
 ## Entity Sequence Diagram: User to UI ##
-
+- Each diagram describes an interaction between the User and the UI when accomplishing the following tasks. The Diagram are broken up into those which can be done with both the technical view and simple view, and those that must be done with the technical view. 
 # Assinging a task #
  ![Entity Sequence Diagram](./SV_Assign_Tasks.png)
 
