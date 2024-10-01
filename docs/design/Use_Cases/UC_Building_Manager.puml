@@ -1,0 +1,14 @@
+@startuml ABasicUseCase
+
+'Actors
+actor Building_Manager
+
+'Use Cases
+usecase "Organize robots' queues for more efficient cleaning" as assign
+usecase "Ensure the robots are all functioning properly at maximum efficiency" as view
+
+'Relationships
+Building_Manager -- assign : "Assign tasks to groups of robots"
+Building_Manager -- view : "View the status of robots"
+
+@enduml
