@@ -7,30 +7,9 @@ participant inputHandler
 participant backend
 
 activate User 
-User -> UI: Log in to the system
-deactivate User 
-
-activate UI
-UI -> inputHandler: Send login credentials
-deactivate UI
-
-' waits for the backend to return. Ensures error handling is done gracefully.
-activate inputHandler
-inputHandler -> backend: Send log in token
-deactivate inputHandler
-
-activate backend
-alt ifValidCredentials
-    return allowedInputs
-    backend --> UI: return simpleUI/TechnicalUI
-deactivate backend
-
-'User is now logged in with a simple UI availible to them
-activate UI
-UI --> User: display simpleUI/TechnicalUI
-deactivate UI
-
-activate User
+User -> UI: Log in to the system 
+ref over UI, inputHandler, backend : User_UI_login, returns typed UI to user
+' UI --> User: display typed UI
 User -> UI: Clicks on "Assign Tasks" Button/area
 deactivate User
 
@@ -81,38 +60,4 @@ deactivate UI
 
 
 @enduml
-
-
-
-' activate UI
-' UI -> UI: inputs map data to backend (return error if an issue arises).
-' return confirmation_or_error
-' deactivate UI
-
-' activate User 
-' User -> UI: Request robot data 
-' deactivate User 
-
-' activate UI
-' UI -> UI: request data from backend
-' return data
-' deactivate UI
-
-' activate User 
-' User -> UI: submit new tasks
-' deactivate User 
-
-' activate UI
-' UI -> UI: send appropiate commands to simulation (start sim of new task), database (update current task), and system manager.
-' return confirmation_of_new_tasks
-' deactivate UI
-
-' activate User 
-' User -> UI: add new robot 
-' deactivate User 
-
-' activate UI
-' UI -> UI: put new robot data into database, add robot to sim.
-' return new_robot_info
-' deactivate UI
 
