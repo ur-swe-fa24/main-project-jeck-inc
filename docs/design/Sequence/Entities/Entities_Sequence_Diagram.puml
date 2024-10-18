@@ -4,7 +4,7 @@ skinparam dpi 200
 skinparam DefaultFontName Inconsolata
 skinparam actorBackgroundColor #C0E0FF
 skinparam actorFontColor #003366
-skinparam sequenceDividerBackgroundColor Aqua
+skinparam sequenceDividerBackgroundColor Black
 skinparam sequenceDividerFontColor Black
 
 
@@ -27,11 +27,11 @@ participant System_Manager
 database Robot_Database
 
 'Simulation starts running since the beginning of the program
-activate Simulation #Magenta
+activate Simulation 
 
 
 'Procedure to add Map into the Simulation
-== Addition of Map ==
+' == Addition of Map ==
 
 
 GUI -> Simulation : Map Data
@@ -45,7 +45,7 @@ GUI -> Simulation : Map Data
 
 
 'Procedure to add a robot instance 
-== Addition of Robot ==
+' == Addition of Robot ==
 
     GUI -> System_Manager : Add Robot, robot_type
 
@@ -59,7 +59,7 @@ GUI -> Simulation : Map Data
 
 
 'Procedure to assign task to (a) robot(s)
-== Assign Task To Robot ==
+' == Assign Task To Robot ==
 
 GUI -> Simulation : Robot_Id(s), Room_Id(s), Clean/Vaccum/Scrub
     'check if the work and robot are compatible and if the robot is free
@@ -76,7 +76,7 @@ GUI -> Simulation : Robot_Id(s), Room_Id(s), Clean/Vaccum/Scrub
 
 
 'Procedure to create notification when a robot has issue
-== Issue Detection by Robot == 
+' == Issue Detection by Robot == 
 
 'Simulation identifies (creates) issue on the robot and notifies
 Simulation -> GUI : Robot_Id and Issue Notification
@@ -90,7 +90,7 @@ deactivate System_Manager
 
 
 'Procedure to create notification for task completion
-== Task Completion by Robot == 
+' == Task Completion by Robot == 
 
 Simulation -> GUI : Robot_Id and Task_Id [Completion Notification]
 
@@ -104,7 +104,7 @@ deactivate System_Manager
 
 
 'Procedure to retrieve robot status
-== Requested Robot Status == 
+' == Requested Robot Status == 
 
 GUI ->  System_Manager : Robot_Id
 
@@ -121,7 +121,7 @@ activate System_Manager
 deactivate System_Manager
 
 'Procedure to request overall metrics
-== Requested Overall Metrics == 
+' == Requested Overall Metrics == 
 GUI -> System_Manager : Requested Metrics of General Performances 
 'Calculation of data happens inside System Manager
 activate System_Manager 
@@ -131,12 +131,12 @@ activate System_Manager
 deactivate System_Manager
 
 'Legend
-legend bottom
-  <b>Legend:</b>
-  <color:#Magenta><back:#Magenta><b>Simulation</b></back></color> : Simulation Activation  
-  The simulation engine is continuously running from the start and
-  updates robot's location and its error issue per unit time. 
-end legend
+' legend bottom
+'   <b>Legend:</b>
+'   <color:#Magenta><back:#Magenta><b>Simulation</b></back></color> : Simulation Activation  
+'   The simulation engine is continuously running from the start and
+'   updates robot's location and its error issue per unit time. 
+' end legend
 
 
 

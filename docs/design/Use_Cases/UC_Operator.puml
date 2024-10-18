@@ -4,39 +4,30 @@
 'UML Design Logistics
 skinparam dpi 200
 skinparam DefaultFontName Inconsolata
-skinparam actorBackgroundColor #C0E0FF
-skinparam actorFontColor #003366
-skinparam usecaseBackgroundColor #FFEBCC
-skinparam usecaseFontColor #663300
-skinparam databaseBackgroundColor #FFCCFF
-skinparam databaseFontColor #660066
-skinparam borderColor #333333
-skinparam noteBackgroundColor #FFFFE0
-skinparam noteBorderColor #FFD700
 
 'Actors
 actor Operator
 
 'Usecases
-usecase Retrieve_Information
-usecase Assign_Task
+usecase "Retrieve Information" as retrieveInformation
+usecase "Assign Task" as assignTask
 
 'Databases
-database robot_database 
+database "robot database" as robot_database 
 
 'Relationships
-Operator --[#0099CC] "Retrieve_Information" : "asks for information \n about particular robot"
-Operator --[#red] "Assign_Task" : "assign a room to a particular robot"
-Retrieve_Information --[#0099CC] robot_database : "requests infromation of \n robot with an id"
-Assign_Task --[#red] robot_database : "update robot information \n with new added task"
+Operator -- retrieveInformation : "asks for information \n about particular robot"
+Operator -- assignTask : "assign a room to a particular robot"
+retrieveInformation -- robot_database : "requests infromation of \n robot with an id"
+assignTask -- robot_database : "update robot information \n with new added task"
 
 'Legend 
 'Syntax from: https://stackoverflow.com/questions/30999290/how-to-generate-a-legend-with-colors-in-plantuml
-legend right
-    |Color| Type |
-    |<#red>| Assign Task to Robot|
-    |<#0099CC>| Retrieve Information about Robot|
-endlegend
+' legend right
+'     |Color| Type |
+'     |<#red>| Assign Task to Robot|
+'     |<#0099CC>| Retrieve Information about Robot|
+' endlegend
 
 @enduml
 
