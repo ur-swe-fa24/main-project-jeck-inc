@@ -5,31 +5,10 @@ actor User
 participant UI
 participant inputHandler 
 participant backend
-
 activate User 
-User -> UI: Log in to the system
-deactivate User 
-
-activate UI
-UI -> inputHandler: Send login credentials
-deactivate UI
-
-' waits for the backend to return. Ensures error handling is done gracefully.
-activate inputHandler
-inputHandler -> backend: Send log in token
-deactivate inputHandler
-
-activate backend
-return allowedInputs
-backend --> UI: return technicalUI
-deactivate backend
-
-'User is now logged in with a Techinical UI availible to them
-activate UI
-UI --> User: display technicalUI
-deactivate UI
-
-activate User
+User -> UI: Log in to the system 
+ref over UI, inputHandler, backend : User_UI_login, returns typed UI to user
+' UI --> User: display typed UI
 User -> UI: Clicks on "Edit Sim" Button/area
 deactivate User
 

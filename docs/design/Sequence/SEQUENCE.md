@@ -2,6 +2,7 @@
 
 ## User to UI:
 Each diagram describes an interaction between the User and the UI when accomplishing the following tasks. The Diagrams are broken up into those which can be done with both the technical view and simple view, and those that must be done with the technical view. 
+- We also design a 'helper' UML diagram to describe how the repetitive task of logging in to the system is handled. 
  ### Assigning a task
  ![Entity Sequence Diagram](./User_To_UI/SV_Assign_Tasks.png)
 
@@ -16,6 +17,11 @@ Each diagram describes an interaction between the User and the UI when accomplis
 
  ### View/Edit the floor map
  ![Entity Sequence Diagram](./User_To_UI/TV_View_Edit_Map.png)
+
+ ### Loggin in 
+ ! [Entity Sequence Diagram](./User_To_UI/User_UI_login.png)
+
+
 
 
 ## Entity:
