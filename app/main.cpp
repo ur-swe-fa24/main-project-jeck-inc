@@ -37,8 +37,8 @@ int main(){
     Simulation sim;
     Database db;
 
-    // std::thread t(sim.simulate(), std::ref(sim));
-    // t.detach()
+    std::thread t(&Simulation::simulate, std::ref(sim));
+    t.detach();
 
     std::cout << "Choose one of the following actions using their integer id:" << std::endl;
     std::cout << "1. Add a Robot" << std::endl;
