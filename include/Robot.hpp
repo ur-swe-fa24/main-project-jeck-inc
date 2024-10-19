@@ -6,28 +6,25 @@
 
 namespace robot {
 
-// Enum class for size
-enum class Size {
-    Large,
-    Medium,
-    Small
-};
-
-// Enum class for function
-enum class Function {
-    Scrub,
-    Vacuum,
-    Shampoo
-};
 
 class Robot {
-private:
-    static int nextId; // Static variable to hold the next robot ID
-    int id;            // Robot ID
-    Function task;    // Robot task
-    Size size;        // Robot size
 
 public:
+    
+    // Enum class for size
+    enum class Size {
+        Large,
+        Medium,
+        Small
+    };
+
+    // Enum class for function
+    enum class Function {
+        Scrub,
+        Vacuum,
+        Shampoo
+    };
+
     // Constructor
     Robot(Function task, Size size);
 
@@ -35,6 +32,12 @@ public:
     int getId() const;
     Function getTask() const;
     Size getSize() const;
+
+private:
+    static int nextId; // Static variable to hold the next robot ID
+    int id;            // Robot ID
+    Function task;    // Robot task
+    Size size;        // Robot size
 };
 
 } // namespace robot
