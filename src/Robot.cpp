@@ -1,7 +1,12 @@
 #include "Robot.hpp"
+#include <iostream>
+#include <string>
 
 
 namespace robot {
+
+
+
 
 // Initialize the static variable
 int Robot::nextId = 0;
@@ -16,15 +21,7 @@ int Robot::getId() const {
     return id;
 }
 
-// Getter for the task
-Function Robot::getTask() const {
-    return task;
-}
 
-// Getter for the size
-Size Robot::getSize() const {
-    return size;
-}
 
 
 }
