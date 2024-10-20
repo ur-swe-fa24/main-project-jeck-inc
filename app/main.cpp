@@ -81,7 +81,7 @@ int main(){
             std::cin >> input;
 
             
-            // db.add_robot(myRobot);
+            db.add_robot(myRobot);
 
 
         };
