@@ -28,8 +28,8 @@ namespace simulation
                     std::cout << "\tRobot " << robots[i] << " is in room: <room_id>" << std::endl;
                     std::cout << "\tRobot " << robots[i] << " is performing task: <task_name>\n" << std::endl;
                 }
+                std::this_thread::sleep_for(std::chrono::milliseconds(1000)); // Sleep for 1 second
             }
-            std::this_thread::sleep_for(std::chrono::milliseconds(1000)); // Sleep for 1 second
     }
 
 } // namespace simulation

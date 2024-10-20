@@ -4,6 +4,7 @@
 #include <list>
 #include <mutex>
 #include "Robot.hpp"
+#include <vector>
 
 using namespace robot;
 
