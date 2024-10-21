@@ -1,5 +1,10 @@
 {
     "files.associations": {
-        "vector": "cpp"
+        "thread": "cpp",
+        "__threading_support": "cpp",
+        "chrono": "cpp",
+        "vector": "cpp",
+        "ostream": "cpp"
+
     }
 }
