@@ -10,7 +10,10 @@ target_include_directories(main
 # You will need to link your adapters to the test program!
 target_link_libraries(main 
     PRIVATE
-        hello_world
+        Simulation
+        GUI
+        Database
+        Robot
 )
 
 target_compile_features(main PRIVATE cxx_std_17)

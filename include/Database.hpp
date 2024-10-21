@@ -25,7 +25,7 @@ private:
     bool isOn;
 
 public:
-    Database();
+    Database() = default;
     // Method to add a robot to the database
     void add_robot(const robot::Robot& robotInstance);
 
@@ -33,7 +33,7 @@ public:
     void console_message(const std::string& message);
 
     //Method to get a robots ID
-    int getRobotIDs(const robot::Robot& robotInstance);
+    void getRobotIDs(const robot::Robot& robotInstance);
 };
 
 } // namespace database

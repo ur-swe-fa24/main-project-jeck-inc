@@ -5,17 +5,14 @@
 #include "Database.hpp"
 #include "Robot.hpp"
 
-database::Database::Database(){
-    isOn = true;
-}
     
 void database::Database::add_robot(const robot::Robot& robotInstance){
         robotIds.push_back(robotInstance.getId());
-        robotTypes[robotInstance.getId()] = robotInstance.getTask();
-        robotSize[robotInstance.getId()] = robotInstance.getSize();
+        //robotTypes[robotInstance.getId()] = robotInstance.getTask();
+        //robotSize[robotInstance.getId()] = robotInstance.getSize();
     }
 
-int database::Database::getRobotIDs(const robot::Robot& robot){
+void database::Database::getRobotIDs(const robot::Robot& robot){
     for(auto robots : robotIds){
         std::cout << "Robot ID: " << robots << std::endl;
         }
