@@ -39,8 +39,8 @@ int main(){
     Simulation sim;
     Database db;
 
-    std::thread t(&Simulation::simulate, std::ref(sim));
-    t.detach();
+    //std::thread t(&Simulation::simulate, std::ref(sim));
+    //t.detach();
 
     std::cout << "Choose one of the following actions using their integer id:" << std::endl;
     std::cout << "1. Add a Robot" << std::endl;
@@ -72,7 +72,9 @@ int main(){
             Robot myRobot(type_, size_); 
 
 
-            sim.add_robot(myRobot);
+            //sim.add_robot(myRobot);
+            db.getRobotIDs(myRobot);
+            db.add_robot(myRobot);
 
             std::cout << "Choose one of the following actions using their integer id:" << std::endl;
             std::cout << "1. Add a Robot" << std::endl;
@@ -80,8 +82,7 @@ int main(){
 
             std::cin >> input;
 
-            
-            // db.add_robot(myRobot);
+        
 
 
         };
