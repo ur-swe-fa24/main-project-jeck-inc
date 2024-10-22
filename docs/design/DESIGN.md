@@ -6,6 +6,7 @@ Below are the links to the different documentation markdown files that describe 
 - [USER_INTERFACE.md](./UI/USER_INTERFACE.md)
 - [SEQUENCE.md](./Sequence/SEQUENCE.md)
 - [CLASSES.md](./Classes/CLASSES.md)
+- [Activity.md](./Activity/ACTIVITY.md)
 
 
 
