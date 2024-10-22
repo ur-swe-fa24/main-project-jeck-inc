@@ -1,0 +1,25 @@
+@startuml RobotSimulationDatabaseActivityDiagram
+start
+:Ask user if they want to add a robot;
+:input]
+if (input==1) then (true)
+    repeat
+        :Get user input for robot size (small, medium, large);
+        :size]
+
+        :Get user input for robot function (shampoo, vacuum, scrub);
+        :type]
+
+        :Create new Robot with size and function;
+        :Add robot to Simulation;
+        :Get robot IDs from Database;
+        :Add robot to Database;
+        
+        :Ask user if they want to add a robot;
+        :input]
+    repeat while (input != 2)
+    stop
+else (false)
+    stop
+endif
+@enduml
