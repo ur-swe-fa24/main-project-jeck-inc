@@ -37,7 +37,7 @@ int main(){
     Robot r(Robot::Function::Scrub, Robot::Size::Large);
 
     Simulation sim;
-    Database db;
+    Database db; //Create the database object.
 
     std::thread t(&Simulation::simulate, std::ref(sim));
     t.detach();
@@ -73,8 +73,8 @@ int main(){
 
 
             sim.add_robot(myRobot);
-            db.getRobotIDs(myRobot);
-            db.add_robot(myRobot);
+            db.add_robot(myRobot); //Add the robot to the database.
+            db.getRobotIDs(myRobot); //Print all the IDs we have. 
 
             std::cout << "Choose one of the following actions using their integer id:" << std::endl;
             std::cout << "1. Add a Robot" << std::endl;
