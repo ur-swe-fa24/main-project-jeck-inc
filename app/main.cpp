@@ -34,22 +34,30 @@ Robot::Size getSizeFromInput(int choice) {
 
 int main(){
 
-    Robot r(Robot::Function::Scrub, Robot::Size::Large);
-
+    //Instantiating simulation and database 
     Simulation sim;
     Database db;
 
+
+    //Creating thread for the simulation
     std::thread t(&Simulation::simulate, std::ref(sim));
     t.detach();
 
+
+    //Asking user for their inital input
     std::cout << "Choose one of the following actions using their integer id:" << std::endl;
     std::cout << "1. Add a Robot" << std::endl;
     std::cout << "2. Quit the system" << std::endl;
 
+
+    //Recording the input
     int input;
     std::cin >> input;
 
+    //Creating a GUI loop where we constantly get input from user
     while (input != 2){
+
+        //Getting and adding information about robot in the system
         if (input == 1){
             std::cout << "Enter the size of the robot from the following options using the integer id" << std::endl;
             std::cout << "1. Small" << std::endl;
@@ -76,6 +84,8 @@ int main(){
             db.getRobotIDs(myRobot);
             db.add_robot(myRobot);
 
+
+            //Asking user for new choices
             std::cout << "Choose one of the following actions using their integer id:" << std::endl;
             std::cout << "1. Add a Robot" << std::endl;
             std::cout << "2. Quit the system" << std::endl;
