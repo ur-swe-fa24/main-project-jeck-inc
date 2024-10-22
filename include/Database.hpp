@@ -19,10 +19,10 @@ private:
     // Logss will imitate the database
     // Change its datatype as you see fit
     std::vector<std::string> logs; 
-    std::vector<int> robotIds;
-    std::map<int,Robot::Function> robotTypes;
-    std::map<int,Robot::Size> robotSize;
-    bool isOn;
+    std::vector<int> robotIds; //vector to hold the robot's ids 
+    std::map<int,Robot::Function> robotTypes; //map to hold the robot's type.
+    std::map<int,Robot::Size> robotSize; //map to hold the size of each robot.
+    bool isOn; //bool to check if the database is on.
 
 public:
     Database() = default;
