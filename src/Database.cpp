@@ -5,6 +5,7 @@
 #include "Database.hpp"
 #include "Robot.hpp"
 
+
     //Here, we have the area for adding more robots. The commented parts will be used in the future to display functionality like storing a robots task and size.
 void database::Database::add_robot(const robot::Robot& robotInstance){
         robotIds.push_back(robotInstance.getId());

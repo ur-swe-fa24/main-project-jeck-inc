@@ -1,5 +1,6 @@
 cmake_minimum_required(VERSION 3.16 FATAL_ERROR)
 set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_INSTALL_PREFIX "$ENV{HOME}/libs/mongo-cxx-driver")
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 message("Building Hello World prototype!")
 project(hello_world LANGUAGES CXX)
@@ -12,6 +13,15 @@ include(dependencies/dependencies.cmake)
 #     src/cout_adapter.cpp
 #     src/spdlog_adapter.cpp
 # )
+
+find_package(mongocxx REQUIRED)
+if (mongocxx_FOUND)
+  message(STATUS "mongocxx found!")
+endif()
+find_package(bsoncxx REQUIRED)
+if (bsoncxx_FOUND)
+  message(STATUS "bsoncxx found!")
+endif()
 
 add_library(Database
     src/Database.cpp
