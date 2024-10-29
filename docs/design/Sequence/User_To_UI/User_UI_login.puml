@@ -1,0 +1,46 @@
+@startuml ABasicSeqDiagram
+
+actor User
+entity UI
+entity inputHandler 
+entity backend
+
+activate User 
+User -> UI: Types login credentials
+deactivate User 
+
+activate UI
+UI -> inputHandler: Send login credentials
+deactivate UI
+
+' waits for the backend to return. Ensures error handling is done gracefully.
+activate inputHandler
+inputHandler -> backend: Send log in token
+deactivate inputHandler
+
+activate backend
+alt ifValidCredentials
+    alt ifCSuite
+    backend --> inputHandler: Business allowed inputs
+    backend --> UI: Return business view
+    else ifBuildingManager
+    backend --> inputHandler: Manager allowed inputs
+    backend --> UI: Return manager view
+    else ifFieldEngineer
+    backend --> inputHandler: Technician allowed inputs
+    backend --> UI: Return technician view
+    else ifOperator
+    backend --> inputHandler: Operator allowed inputs
+    backend --> UI: Return operator view    
+UI --> User: display typed UI
+deactivate backend
+end
+
+'User is now logged in with a simple UI availible to them
+activate UI
+else ifInvalidCred
+UI --> User: return error
+end
+deactivate UI
+
+@enduml
