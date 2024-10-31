@@ -3,10 +3,12 @@
 
 #include <bsoncxx/builder/basic/document.hpp>
 #include <bsoncxx/json.hpp>
+#include <bsoncxx/oid.hpp>
 #include <mongocxx/client.hpp>
 #include <mongocxx/instance.hpp>
 #include <mongocxx/stdx.hpp>
 #include <mongocxx/uri.hpp>
+#include "mongocxx/instance.hpp"
 
 #include <vector>
 #include <string>
@@ -18,6 +20,11 @@ using namespace robot;
 
 // Creating namespace
 namespace database{
+
+constexpr char kMongoDbUri[] = "mongodb://0.0.0.0:27017";
+constexpr char kDatabaseName[] = "robotDatabase";
+constexpr char kCollectionName[] = "robots";
+
 
 class Database {
 
@@ -32,7 +39,10 @@ private:
     bool isOn; //bool to check if the database is on.
 
 public:
-    Database() = default;
+    Database()
+    : uri(mongocxx::uri(kMongoDbUri)),
+        client(mongocxx::client(uri)),
+        db(client[kDatabaseName]) {}
     // Method to add a robot to the database
     void add_robot(const robot::Robot& robotInstance);
 
@@ -42,7 +52,6 @@ public:
     //Method to get a robots ID
     void getRobotIDs(const robot::Robot& robotInstance);
 };
-
 } // namespace database
 
 #endif // DATABASE_HPP

@@ -6,9 +6,17 @@
 #include "Robot.hpp"
 
 
+
     //Here, we have the area for adding more robots. The commented parts will be used in the future to display functionality like storing a robots task and size.
 void database::Database::add_robot(const robot::Robot& robotInstance){
         robotIds.push_back(robotInstance.getId());
+        mongocxx::collection collection = db[kCollectionName];
+        auto builder = bsoncxx::builder::stream::document{};
+        bsoncxx::document::value doc_to_add =
+        builder << "robotID" << robotInstance.getId() << bsoncxx::builder::stream::finalize;
+
+        collection.insert_one(doc_to_add.view());
+
         //robotTypes[robotInstance.getId()] = robotInstance.getTask();
         //robotSize[robotInstance.getId()] = robotInstance.getSize();
     }
