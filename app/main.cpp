@@ -1,9 +1,11 @@
 #include <thread>
 #include <iostream>
+#include <string>
 
 #include "Robot.hpp"
 #include "Database.hpp"
 #include "Simulation.hpp"
+
 
 
 using namespace database;
@@ -38,7 +40,10 @@ int main(){
     Simulation sim;
     Database db; //Create the database object.
 
-
+    // Input json file for building configuration
+    std::string file_name = "../../app/building.json";
+    sim.load_building(file_name);
+    
     //Creating thread for the simulation
     std::thread t { &Simulation::simulate, std::ref(sim) };
 
