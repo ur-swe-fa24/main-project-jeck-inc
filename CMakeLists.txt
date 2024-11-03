@@ -79,6 +79,7 @@ target_include_directories(Simulation
 # Link nlohmann/json to the Simulation library
 target_link_libraries(Simulation
         nlohmann_json::nlohmann_json
+        spdlog::spdlog
 )
 
 add_subdirectory(app)

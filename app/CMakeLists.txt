@@ -2,6 +2,13 @@ add_executable(main
     main.cpp
 )
 
+#additions
+#================================================================
+find_package(wxWidgets REQUIRED COMPONENTS core base)
+include(${wxWidgets_USE_FILE})
+#==============================================================
+
+
 target_include_directories(main
     PRIVATE
     $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/include>
@@ -20,6 +27,8 @@ target_link_libraries(main
 target_link_libraries(Database
     PRIVATE
         mongo::mongocxx_shared
+        ${wxWidgets_LIBRARIES}  # addition
+
 )
 
 target_compile_features(main PRIVATE cxx_std_17)

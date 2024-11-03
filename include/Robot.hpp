@@ -18,6 +18,12 @@ public:
         Small
     };
 
+    enum class Status {
+        Ideal, 
+        Active, 
+        Faulty
+    };
+
     // Enum class for function
     enum class Function {
         Scrub,
@@ -32,12 +38,16 @@ public:
     int getId() const;
     Function getTask() const;
     Size getSize() const;
+    std::string getStatus() const;
+    void setStatus(std::string statusStr) ;
 
 private:
     static int nextId; // Static variable to hold the next robot ID
     int id;            // Robot ID
     Function task;    // Robot task
     Size size;        // Robot size
+    Status status;    // Robot status
+
 };
 
 } // namespace robot
