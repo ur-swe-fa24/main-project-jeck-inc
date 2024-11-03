@@ -1,9 +1,11 @@
 #include <thread>
 #include <iostream>
+#include <string>
 
 #include "Robot.hpp"
 #include "Database.hpp"
 #include "Simulation.hpp"
+
 
 
 using namespace database;
@@ -40,11 +42,12 @@ int main(){
     mongocxx::instance currInst{};
     Database db; //Create the database object.
 
-
+    // Input json file for building configuration
+    std::string file_name = "../../app/building.json";
+    sim.load_building(file_name);
+    
     //Creating thread for the simulation
-    std::thread t(&Simulation::simulate, std::ref(sim));
-    t.detach();
-
+    std::thread t { &Simulation::simulate, std::ref(sim) };
 
     //Asking user for their inital input
     std::cout << "Choose one of the following actions using their integer id:" << std::endl;
@@ -91,17 +94,12 @@ int main(){
             std::cout << "2. Quit the system" << std::endl;
 
             std::cin >> input;
-
-        
-
-
-        };
+        }
 
     }
 
-
-
-
+    sim.stop(); // signal simulation to stop
+    t.join(); // wait for sim to stop
 
 };
 
