@@ -5,6 +5,7 @@
         "chrono": "cpp",
         "vector": "cpp",
         "ostream": "cpp",
+        "sstream": "cpp",
         "__bit_reference": "cpp",
         "__hash_table": "cpp",
         "__locale": "cpp",

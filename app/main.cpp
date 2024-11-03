@@ -49,7 +49,8 @@ private:
     // Simulation sim(Database db);
     Simulation sim;
 
-
+    mongocxx::instance currInst{};
+    Database db; //Create the database object.
 
     std::thread simulationThread; 
 
@@ -119,6 +120,9 @@ void MyFrame::OnAddRobot(wxCommandEvent& event) {
     Robot::Size size = getSizeFromInput(sizeChoice);
     Robot myRobot(func, size);
     // Robot* myRobot = new Robot(func, size);
+
+
+    db.add_robot(myRobot); //Add the robot to the database.
 
     sim.add_robot(myRobot);
     db.add_robot(myRobot);

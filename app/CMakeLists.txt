@@ -21,7 +21,14 @@ target_link_libraries(main
         GUI
         Database
         Robot
+        mongo::mongocxx_shared
+)
+
+target_link_libraries(Database
+    PRIVATE
+        mongo::mongocxx_shared
         ${wxWidgets_LIBRARIES}  # addition
+
 )
 
 target_compile_features(main PRIVATE cxx_std_17)
