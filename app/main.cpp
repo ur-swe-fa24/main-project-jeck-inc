@@ -121,11 +121,8 @@ void MyFrame::OnAddRobot(wxCommandEvent& event) {
     Robot myRobot(func, size);
     // Robot* myRobot = new Robot(func, size);
 
-
-    db.add_robot(myRobot); //Add the robot to the database.
-
     sim.add_robot(myRobot);
-    db.add_robot(myRobot);
+    db.add_robot(myRobot); //Add robot to the database
 
     wxMessageBox("Robot added successfully with id: " + std::to_string(myRobot.getId()), "Success", wxOK | wxICON_INFORMATION);
     // } catch (const std::invalid_argument& e) {
