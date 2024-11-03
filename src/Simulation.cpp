@@ -36,19 +36,71 @@ namespace simulation
         // Use the mutex to prevent race conditions
         std::lock_guard<std::mutex> lock(simulation_mutex); 
         robots.push_back(robotInstance.getId());
+        robot_list.push_back(robotInstance);
+    }
+
+
+    // Get all robot IDs
+    std::string simulation::Simulation::getRobotIds() const {
+        // std::lock_guard<std::mutex> lock(simulation_mutex); // Ensure thread safety
+
+        std::string robotStr; // Create a string stream to build the string
+        for (size_t i = 0; i < robots.size(); ++i) {
+            robotStr += std::to_string( robot_list[i].getId()) + "\n"; // Append the integer and a new line
+            
+        };
+        return robotStr; // Return the resulting string
+
+
+
+    }
+
+
+    std::string simulation::Simulation::fix_robot(int id)  {
+        if (id < 0 || id >= robot_list.size()) {
+            return "Robot_Id Not Found";
+        }
+        robot::Robot robot = robot_list[id];
+        if (robot.getStatus() != "Faulty"){
+            return "Robot is not faulty";
+        }
+        robot.setStatus("Ideal");
+        return "Robot is fixed";
+
+    }
+
+    std::string simulation::Simulation::robot_status(int id){
+        if (id < 0 || id >= robot_list.size()) {
+            return "Robot_Id Not Found";
+        }
+        return robot_list[id].getStatus();
     }
 
     // method to simulate the entire operation
     void Simulation::simulate() 
     {   
+        auto file_logger = spdlog::basic_logger_mt("file_logger", "logs.txt");
         while (running)
         {
             // Perform simulation step here
             for (int i = 0; i < robots.size(); i++) 
             {
-                std::cout << "Simulating robot: " << robots[i] << std::endl;
-                std::cout << "\tRobot " << robots[i] << " is in room: <room_id>" << std::endl;
-                std::cout << "\tRobot " << robots[i] << " is performing task: <task_name>\n" << std::endl;
+                // if (robot_list[i].getStatus() == "Faulty"){
+                //     continue;
+                // }
+                file_logger->info("Simulating robot:");
+                file_logger->info("\tRobot {} is in room: <room_id>", robots[i]);
+                file_logger->info("\tRobot {} is performing task: <task_name>", robots[i]);
+
+                int randomNum = rand() % 101;
+                if (randomNum < 10) {
+                    file_logger->info("\tRobot {} has become faulty", robots[i]);
+                    robot_list[i].setStatus("Faulty");
+                }
+                file_logger->info("\n");
+                // std::cout << "Simulating robot: " << robots[i] << std::endl;
+                // std::cout << "\tRobot " << robots[i] << " is in room: <room_id>" << std::endl;
+                // std::cout << "\tRobot " << robots[i] << " is performing task: <task_name>\n" << std::endl;
             }
             std::this_thread::sleep_for(std::chrono::milliseconds(1000)); // Sleep for 1 second
         }
