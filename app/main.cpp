@@ -36,6 +36,8 @@ int main(){
 
     //Instantiating simulation and database 
     Simulation sim;
+
+    mongocxx::instance currInst{};
     Database db; //Create the database object.
 
 
@@ -79,10 +81,8 @@ int main(){
             Robot::Size size_ = getSizeFromInput(size);
             Robot myRobot(type_, size_); 
 
-
-            sim.add_robot(myRobot);
             db.add_robot(myRobot); //Add the robot to the database.
-            db.getRobotIDs(myRobot); //Print all the IDs we have. 
+            //db.getRobotIDs(myRobot); //Print all the IDs we have. 
 
 
             //Asking user for new choices
