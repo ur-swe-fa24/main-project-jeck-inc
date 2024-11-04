@@ -4,7 +4,6 @@
 #include <list>
 #include <mutex>
 #include "Robot.hpp"
-#include "Database.hpp"
 #include <vector>
 #include <iostream>
 #include <atomic>
@@ -19,7 +18,6 @@
 
 using namespace std;
 using namespace robot;
-using namespace database;
 
 namespace simulation {
 
