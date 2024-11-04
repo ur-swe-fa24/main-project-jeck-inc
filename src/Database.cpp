@@ -36,14 +36,22 @@ std::string database::Database::getRobotID(const robot::Robot& robot){
     std::string nf = "not_found";
     std::string strCurrID = std::to_string(id);
     std::string robotJson = startText + "robotID" + interMediateText + strCurrID + endText;
+    
+    mongocxx::uri uri("mongodb://localhost:27017");
+    mongocxx::client client(uri);
+
+    mongocxx::database db = client["database"];
+    mongocxx::collection collection = db["robots"]; 
+
     auto result = collection.find_one(bsoncxx::v_noabi::from_json(robotJson));
     if(result){
-        return bsoncxx::to_json(result);
+        return "found";
         }
-    }
+    
     else{
         return nf;
     }
+}
 //This outputs a message to the console. 
 void database::Database::console_message(const std::string& message){
         std::cout << "Message: " << message << std::endl;

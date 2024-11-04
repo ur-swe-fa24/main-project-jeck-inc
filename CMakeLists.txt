@@ -15,7 +15,6 @@ include(dependencies/dependencies.cmake)
 #     src/spdlog_adapter.cpp
 # )
 
-
 find_package(mongocxx REQUIRED)
 if (mongocxx_FOUND)
   message(STATUS "mongocxx found!")

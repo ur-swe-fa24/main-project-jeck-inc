@@ -64,7 +64,7 @@ public:
     void console_message(const std::string& message);
 
     //Method to get a robots ID
-    void getRobotIDs(const robot::Robot& robotInstance);
+    std::string getRobotID(const robot::Robot& robotInstance);
 };
 } // namespace database
 
