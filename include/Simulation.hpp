@@ -25,13 +25,13 @@ struct Room {
     std::string room_name;
     std::string size;
     std::string floor_surface;
+    std::string access;
     std::vector<std::string> connecting_rooms;
 };
 
 // Struct for the building as a whole, which will contain the rooms
 struct Building {
     std::string name;
-    std::string address;
     std::unordered_map<std::string, Room> rooms;
 };
 
@@ -58,6 +58,9 @@ class Simulation
 
         // Method to load the map of a building from a json file
         void load_building(const std::string& json_file);
+
+        // Getter for building
+        Building get_building() { return building; }
 };
 
 } // namespace simulation

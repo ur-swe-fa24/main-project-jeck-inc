@@ -60,6 +60,14 @@
         "unordered_map": "cpp",
         "variant": "cpp",
         "algorithm": "cpp",
-        "fstream": "cpp"
+        "fstream": "cpp",
+        "condition_variable": "cpp",
+        "future": "cpp",
+        "iomanip": "cpp",
+        "regex": "cpp",
+        "source_location": "cpp",
+        "span": "cpp",
+        "unordered_set": "cpp",
+        "valarray": "cpp"
     }
 }
