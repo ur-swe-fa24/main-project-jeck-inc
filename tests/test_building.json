@@ -1,0 +1,30 @@
+{
+
+    "building_name" : "School",
+    "rooms" : [
+        {
+            "room_id" : "0",
+            "room_name" : "classroom",
+            "size" : "small",
+            "floor_surface" : "carpet",
+            "access" : "0",
+            "connecting_rooms" : ["1", "2"]
+        },
+        {
+            "room_id" : "1",
+            "room_name" : "cafeteria",
+            "size" : "medium",
+            "floor_surface" : "carpet",
+            "access" : "0",
+            "connecting_rooms" : ["0"]
+        },
+        {
+            "room_id" : "2",
+            "room_name" : "lab",
+            "size" : "small",
+            "floor_surface" : "carpet",
+            "access" : "0",
+            "connecting_rooms" : ["0"]
+        }
+    ]
+}

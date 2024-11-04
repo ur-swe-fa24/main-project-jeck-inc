@@ -83,3 +83,4 @@ target_link_libraries(Simulation
 )
 
 add_subdirectory(app)
+add_subdirectory(tests)

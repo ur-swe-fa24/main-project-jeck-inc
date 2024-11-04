@@ -7,7 +7,6 @@ namespace simulation
         std::ifstream file(json_file_path);
     
         // open the file
-        std::cout << "Attempting to open file: " << json_file_path << std::endl; // Debug statement
         if (!file.is_open()) {
             throw std::runtime_error("Unable to open building layout file: " + json_file_path);
         }
@@ -25,6 +24,7 @@ namespace simulation
             room.room_name = room_json["room_name"];
             room.size = room_json["size"];
             room.floor_surface = room_json["floor_surface"];
+            room.access = room_json["access"];
             room.connecting_rooms = room_json["connecting_rooms"].get<std::vector<std::string>>();
             building.rooms[room.room_id] = room;
         }
