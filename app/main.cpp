@@ -44,8 +44,6 @@ private:
     wxTextCtrl* fixRobotInput;
     wxTextCtrl* robotStatusInput;
 
-    
-    Database db;
     // Simulation sim(Database db);
     Simulation sim;
 
@@ -66,11 +64,14 @@ wxBEGIN_EVENT_TABLE(MyFrame, wxFrame)
     EVT_BUTTON(1005, MyFrame::GetStatus)
 wxEND_EVENT_TABLE()
 
-wxIMPLEMENT_APP(MyApp);
-
 bool MyApp::OnInit() {
-    MyFrame* frame = new MyFrame("Frame Test");
-    frame->Show(true);
+    MyFrame* ui = new MyFrame("C++ GUI");
+    ui->SetClientSize(800,600);
+    ui->Center();
+    ui->Show();
+
+    // MyFrame* frame = new MyFrame("Frame Test");
+    // frame->Show(true);
     return true;
 }
 
@@ -171,10 +172,6 @@ Robot::Size getSizeFromInput(int choice) {
         case 3: return Robot::Size::Large;
         default: throw std::invalid_argument("Invalid choice for size");
     }
-}
+} // Initialize the wxWidgets application
 
-int main(int argc, char **argv) {
-
-    wxEntry(argc, argv);  // Initialize the wxWidgets application
-    return 0;
-}
+wxIMPLEMENT_APP(MyApp); 

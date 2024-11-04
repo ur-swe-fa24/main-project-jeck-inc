@@ -1,6 +1,7 @@
 cmake_minimum_required(VERSION 3.16 FATAL_ERROR)
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_INSTALL_PREFIX "$ENV{HOME}/libs/mongo-cxx-driver")
+set(CMAKE_INSTALL_PREFIX "$ENV{HOME}/libs/wxWidgets")
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 message("Building Hello World prototype!")
 project(hello_world LANGUAGES CXX)
