@@ -45,11 +45,10 @@ private:
     wxTextCtrl* robotStatusInput;
 
     
-    Database db;
     // Simulation sim(Database db);
     Simulation sim;
 
-
+    Database db; //Create the database object.
 
     std::thread simulationThread; 
 
@@ -120,6 +119,9 @@ void MyFrame::OnAddRobot(wxCommandEvent& event) {
     Robot myRobot(func, size);
     // Robot* myRobot = new Robot(func, size);
 
+
+    db.add_robot(myRobot); //Add the robot to the database.
+
     sim.add_robot(myRobot);
     db.add_robot(myRobot);
 
@@ -172,8 +174,8 @@ Robot::Size getSizeFromInput(int choice) {
     }
 }
 
-int main(int argc, char **argv) {
+// int main(int argc, char **argv) {
 
-    wxEntry(argc, argv);  // Initialize the wxWidgets application
-    return 0;
-}
+//     wxEntry(argc, argv);  // Initialize the wxWidgets application
+//     return 0;
+// }
