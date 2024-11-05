@@ -55,20 +55,24 @@ namespace simulation
 
     }
 
-
+    //function that uses setStatus of robot to fix the robot
     std::string simulation::Simulation::fix_robot(int id)  {
+        //Out of range robot-id 
         if (id < 0 || id >= robot_list.size()) {
             return "Robot_Id Not Found";
         }
+        //When robot is not faulty
         robot::Robot robot = robot_list[id];
         if (robot.getStatus() != "Faulty"){
             return "Robot is not faulty";
         }
+        //Actually Fixing the robot if needed
         robot.setStatus("Ideal");
         return "Robot is fixed";
 
     }
 
+    //function that uses getStatus of robot to view the status of robot
     std::string simulation::Simulation::robot_status(int id){
         if (id < 0 || id >= robot_list.size()) {
             return "Robot_Id Not Found";

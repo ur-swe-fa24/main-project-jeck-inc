@@ -7,14 +7,18 @@
 
 using namespace simulation;
 
+
+//Test Case for Simulation Class
 TEST_CASE("Simulation class tests") {
     Simulation sim;
 
+    //Section to check the load building 
     SECTION("Load building from JSON") {
         std::string json_file = "../../tests/test_building.json"; 
         REQUIRE_NOTHROW(sim.load_building(json_file));
     }
 
+    //Section to check correct representation of actual values
     SECTION("Load building and test data correctly stored") {
         std::string json_file = "../../tests/test_building.json"; 
         sim.load_building(json_file);
@@ -28,12 +32,13 @@ TEST_CASE("Simulation class tests") {
         REQUIRE(sim.get_building().rooms["0"].connecting_rooms[1] == "2");
     }
 
-    
+    //Adding robot to Simulation
     SECTION("Add robot to simulation") {
         Robot robot(Robot::Function::Vacuum, Robot::Size::Medium);
         REQUIRE_NOTHROW(sim.add_robot(robot));
     }
 
+    //Operations in the smulate method that runs in background
     SECTION("Simulate operation") {
         std::thread sim_thread([&sim]() { sim.simulate(); });
         
