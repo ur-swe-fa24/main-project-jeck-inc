@@ -132,6 +132,7 @@ void MyFrame::OnAddRobot(wxCommandEvent& event) {
     db.add_robot(myRobot);
 
     //Message of Successful Creation
+    db.getRobotIDs(myRobot);
     wxMessageBox("Robot added successfully with id: " + std::to_string(myRobot.getId()), "Success", wxOK | wxICON_INFORMATION);
 
     //Clearing the input field

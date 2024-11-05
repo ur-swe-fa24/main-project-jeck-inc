@@ -31,10 +31,31 @@ void database::Database::add_robot(const robot::Robot& robotInstance){
 
 
 //This returns all the IDs we have saved. In the future, we can search the database to return any specific robot's ID, type, and size. But, for the sake of this demo we are just going to print all the IDs we have present. 
-void database::Database::getRobotIDs(const robot::Robot& robot){
-    for(auto robots : robotIds){
-        std::cout << "Robot ID: " << robots << std::endl;
+std::string database::Database::getRobotIDs(const robot::Robot& robot){
+    int id = robot.getId();
+    std::string nf = "not_found";
+    std::string strCurrID = std::to_string(id);
+    std::string robotJson = startText + "robotID" + interMediateText + strCurrID + endText;
+    
+    mongocxx::uri uri("mongodb://localhost:27017");
+    mongocxx::client client(uri);
+
+    mongocxx::database db = client["database"];
+    mongocxx::collection collection = db["robots"]; 
+
+    bsoncxx::builder::stream::document filter_builder{};
+    filter_builder << "robotID" << "0";
+
+    // auto result = collection.find_one(bsoncxx::v_noabi::from_json(robotJson));
+
+    auto result = collection.find_one(filter_builder.view());
+    if(result){
+        return "found";
         }
+    
+    else{
+        return nf;
+    }
     }
 //This outputs a message to the console. 
 void database::Database::console_message(const std::string& message){
