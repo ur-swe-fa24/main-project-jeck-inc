@@ -36,8 +36,8 @@ public:
 
     // Getters
     int getId() const;
-    Function getTask() const;
-    Size getSize() const;
+    Function getTask() const {return task;};
+    Size getSize() const {return size;};
     std::string getStatus() const;
     void setStatus(std::string statusStr) ;
 
