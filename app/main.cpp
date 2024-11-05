@@ -141,6 +141,8 @@ void MyFrame::OnAddRobot(wxCommandEvent& event) {
 
 //Event when Quit Button is pressed
 void MyFrame::OnQuit(wxCommandEvent& event) {
+
+    sim.stop(); //Ending the thread
     Close(true);
 }
 
