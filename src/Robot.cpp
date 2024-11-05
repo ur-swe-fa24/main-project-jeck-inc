@@ -21,6 +21,7 @@ int Robot::getId() const {
     return id;
 }
 
+//Getter for Status which converts enum to string for ease of use
 std::string Robot::getStatus() const {
     switch (status) {
         case Status::Ideal: return "Ideal";
@@ -30,6 +31,7 @@ std::string Robot::getStatus() const {
     };
 }
 
+//Setter for Status which converts string to enum 
 void Robot::setStatus(std::string statusStr)  {
     if (statusStr == "Ideal") {
         status = Status::Ideal;
