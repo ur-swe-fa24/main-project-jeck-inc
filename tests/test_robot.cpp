@@ -6,11 +6,16 @@
 
 using namespace robot;
 
+
+//Test Cases for Robot Class
 TEST_CASE("Robot class tests") {
 
     SECTION("Check ID") {
+        //Starting robot id from 0
         Robot robot(Robot::Function::Scrub, Robot::Size::Large);
         REQUIRE(robot.getId() == 0);
+
+        //Making sure no two robots have same id
         Robot robot2(Robot::Function::Scrub, Robot::Size::Large);
         REQUIRE(robot2.getId() != robot.getId());
     }

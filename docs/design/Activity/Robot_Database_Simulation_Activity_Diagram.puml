@@ -1,25 +1,46 @@
-@startuml RobotSimulationDatabaseActivityDiagram
+@startuml
+
 start
-:Ask user if they want to add a robot;
-:input]
-if (input==1) then (true)
-    repeat
-        :Get user input for robot size (small, medium, large);
-        :size]
 
-        :Get user input for robot function (shampoo, vacuum, scrub);
-        :type]
+fork 
+    :User presses Add Robot Button;
+    :Get Size and Type from GUI;
+    :Create Robot (size, type);
+    :Add Robot to System;
+    :Show Robot Added Confirmation to User;
+fork again 
+    :User presses Fix Button;
+    :Get Robot ID from GUI;
+    if ("Is Robot ID invalid?") then (yes)
+        :show meesage: \n Robot ID is invalid;
+    else if ("Is Robot ID faulty?") then (yes)
+        :show meesage: \n Robot ID is not faulty;
+    else
+        :show meesage: \n Robot ID is fixed;
+    endif
 
-        :Create new Robot with size and function;
-        :Add robot to Simulation;
-        :Get robot IDs from Database;
-        :Add robot to Database;
-        
-        :Ask user if they want to add a robot;
-        :input]
-    repeat while (input != 2)
-    stop
-else (false)
-    stop
-endif
+fork again 
+
+    :User presses Show All Robots Button;
+    :Show All Robot IDs;
+
+
+fork again 
+  :User presses Show Robot Status Button;
+  :Get Robot ID from GUI;
+  if ("Is Robot ID valid?") then (yes)
+    :Robot Status: Operational/Not Operational;
+  else
+    :Robot ID is Invalid;
+  endif
+
+fork again 
+
+  :User presses Quit Button;
+  :End Simulation Thread;
+  :Close GUI;
+
+fork end
+
+stop
 @enduml
