@@ -2,26 +2,50 @@
 
 ## Robot Database Simulation Activity Diagram
 This activity diagram describes the process of interacting with a robot, simulation, and database system. It showcases how users can add robots with specific sizes and functions to the system and then store and process these robots within the simulation and database.
-![Robot Database Simulation Activity Diagram](./Robot_Simulation_Database_Activity_Diagram.png)
+![Robot Database Simulation Activity Diagram](./Robot_Database_Simulation_Activity_Diagram.png)
 
-### Key Steps in the Diagram:
-1. **Prompt User for Action**: The system starts by asking the user if they want to add a robot. The user is expected to provide an input.
-   
-2. **Decision Point - Add a Robot or Quit**: 
-   - If the user input is 1, the system proceeds to the steps for adding a robot.
-   - If the user input is 2, the system terminates (indicating that the user has chosen to quit).
 
-3. **Robot Size Selection**: When the user opts to add a robot, the system displays size options (small, medium, or large) and waits for the user’s input to select one.
 
-4. **Robot Function Selection**: After the size is selected, the system asks the user to choose a function for the robot (shampoo, vacuum, or scrub).
+## Key Steps in the Diagram:
++ Start of the Process:
 
-5. **Robot Creation**: With the chosen size and function, a new robot is created.
 
-6. **Simulation and Database Interaction**:
-   - The created robot is added to the ongoing simulation.
-   - The system retrieves the robot’s ID from the database and then adds the robot to the database for tracking.
++ User Presses Add Button:
 
-7. **Re-prompt User for Action**: After the robot is added, the system asks the user again whether they want to add another robot or quit. This leads to either repeating the process or terminating the program based on the input.
+   - The user initiates an action by pressing the Add Button.
+   - The system proceeds to get the size and type for the robot from the GUI.
+   - The robot is created based on the size and type selected by the user.
+   - The newly created robot is added to the system.
+   - A confirmation message is displayed, indicating that the robot has been successfully added to the system.
 
-### Loop Structure:
-- The loop continues as long as the user opts to add more robots. Once the user selects the option to quit, the process terminates.
++ User Presses Fix Button:
+
+   - The user presses the Fix Button.
+   - The system gathers data (Robot ID) from GUI  to identify which robot they want to fix.
+   - The system checks the robot's status based on the ID:
+   - If the ID is invalid, a message is displayed saying that the robot ID is invalid.
+   - If the ID is faulty, a message is shown indicating that the robot is faulty.
+   - Otherwise, the robot's ID is marked as fixed, and a corresponding message is displayed.
+
+
++ User Presses Show All Robots Button:
+
+   - The user presses the Show All Robots Button.
+   - The system retrieves and displays all the robot IDs currently stored in the system.
+
++ User Presses Show Robot Status Button:
+
+   - The user presses the Show Robot Status Button.
+   - The system prompts the user to enter a robot ID to check its status.
+   - The system checks whether the robot ID is valid:
+   - If the ID is valid, it shows the robot’s status (whether it is Operational or Not Operational).
+   - If the ID is invalid, the system will indicate that the robot ID is invalid.
+
+
++ User Presses Quit Button:
+
+   - Finally, the user presses the Quit Button.
+   - The system proceeds to end the simulation thread and close the GUI.
+
+## Flow of the Diagram:
+The diagram illustrates the flow of actions with parallel processes using fork and end fork constructs. Each action (pressing a button) creates its own flow, which can run along with other actions. 
