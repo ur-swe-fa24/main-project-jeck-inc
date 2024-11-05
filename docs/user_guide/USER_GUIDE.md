@@ -1,22 +1,55 @@
-# This is your user guide's top level!
+# User Guide for Robot Database Simulation
 
-In our current sprint, we have carried out one main user story and two sub user stories. The main user story is to add the robot to the system. 
+## Running the System
+To start up the system, follow these steps:
+1. Make sure you are in the main-project-jeck-inc directory
+2. Build the directory
+3. Run main
 
-Steps to run the system: 
-- Create executable using the cmake files in our system. 
-- Run the executable file. 
-- You will receive log in the terminal providing you options to choose if you want to add a robot or exit the system. 
-    - Option to exit the system shuts the program altogether. 
-    - Option to add a robot will prompt you to enter the robot's size and type. 
-    - Enter your information through the terminal. Please use the integer of the corresponding choice as the input values. 
+**Note:** The user will need to dowloand MongoDB Compass Shell and GUI for the database calls to work correctly.
 
-A demonstration is shown below:
+## Tests
+Example tests can be found in the [tests directory](../../tests)
 
+## Guide to Interact with GUI
+The following guide explains how to interact with the Robot Database Simulation system using the GUI. The system enables users to add, manage, and check the status of robots within the simulation environment. Follow these steps to interact efficiently with the simulation and manage the robots effectively.
 
-![Input Display](./input1.png "")
+### 1. Adding a Robot
+To add a new robot to the system, follow these steps:
+1. Press the **Add Robot Button** on the GUI.
+2. The system will prompt you to enter the **size** and **type** of the robot.
+3. After entering the required details, the system will create a new robot with the specified characteristics.
+4. The robot will be added to the system database.
+5. A confirmation message will appear, indicating that the robot has been successfully added.
 
+### 2. Fixing a Robot
+If a robot is faulty and needs repair, you can initiate the fix process:
+1. Press the **Fix Button** on the GUI.
+2. Enter the **Robot ID** of the robot you wish to fix.
+3. The system will verify the Robot ID and determine the robot's status:
+   - **Invalid ID**: If the Robot ID is invalid, the system will display an error message.
+   - **Not Faulty**: If the robot is not faulty, a message will be shown indicating that the robot does not require fixing.
+   - **Faulty**: If the robot is faulty, it will be marked as fixed, and a confirmation message will be displayed.
 
-Note: Once you have added your first robot, you will see log of simulation engine at the back updating you about the robot status. The log will be displayed through the terminal as well. As both the input and output now occur at same terminal, it will get cumbersome. We intend to remedy this issue in our next sprint with the use of wxwidget. 
+### 3. Displaying All Robots
+To view the IDs of all robots currently in the system:
+1. Press the **Show All Robots Button** on the GUI.
+2. The system will display a list of all robot IDs stored within the database.
 
+### 4. Checking Robot Status
+To check the operational status of a specific robot:
+1. Press the **Show Robot Status Button** on the GUI.
+2. Enter the **Robot ID** of the robot you want to check.
+3. The system will validate the Robot ID:
+   - **Valid ID**: If the ID is valid, the system will display the robot’s current status (e.g., Operational or Not Operational).
+   - **Invalid ID**: If the ID is invalid, the system will display an error message indicating that the Robot ID is not recognized.
 
-Thus, we were able to implement one major story: adding a robot to the system. We were also able to provide the robot its own id which was a sub-issue. We were also able to create a system such that the simulation has information about the robots it contained. At the moment, it only utilizes the robot id but as the program grows, the implementaiton will be more advanced. 
+### 5. Quitting the Simulation
+When you are finished using the system:
+1. Press the **Quit Button** on the GUI.
+2. The system will end the simulation thread and close the GUI, effectively shutting down the application.
+
+### Additional Information
+- Each action (such as adding, fixing, or displaying robots) runs as a separate process, allowing multiple actions to occur simultaneously within the simulation.
+- Error messages will appear if invalid inputs are provided, helping users correct their actions.
+
