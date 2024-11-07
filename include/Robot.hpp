@@ -19,7 +19,7 @@ public:
     };
 
     enum class Status {
-        Ideal, 
+        Idle, 
         Active, 
         Faulty
     };
