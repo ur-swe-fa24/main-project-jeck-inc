@@ -74,7 +74,7 @@ class Simulation
         //Method to fix the robot when they are faulty
         std::string fix_robot(int id) ;
         
-        //Method to provide robot status (Faulty, Ideal or Active)
+        //Method to provide robot status (Faulty, Idle or Active)
         std::string robot_status(int id);
 };
 

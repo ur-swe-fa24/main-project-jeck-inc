@@ -67,7 +67,7 @@ namespace simulation
             return "Robot is not faulty";
         }
         //Actually Fixing the robot if needed
-        robot.setStatus("Ideal");
+        robot.setStatus("Idle");
         return "Robot is fixed";
 
     }
