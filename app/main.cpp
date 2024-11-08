@@ -18,6 +18,9 @@ using namespace simulation;
 //Function Definition that will be utilized later
 Robot::Function getFunctionFromInput(int choice);
 Robot::Size getSizeFromInput(int choice);
+void updateDatabase(Simulation& sim, Database& db);
+bool dataUpdate = true;
+
 
 // Main application class
 class MyApp : public wxApp {
@@ -90,6 +93,10 @@ MyFrame::MyFrame(const wxString& title) : wxFrame(nullptr, wxID_ANY, title) {
     simulationThread = std::thread(&Simulation::simulate, std::ref(sim));
     simulationThread.detach(); // Detach the thread
 
+    //Start updating the database
+    std::thread updateThread(updateDatabase, std::ref(sim), std::ref(db));
+    updateThread.detach();
+
     //Creating Elements (Buttons and Form Field) for GUI
     wxPanel* panel = new wxPanel(this, wxID_ANY);
 
@@ -143,6 +150,7 @@ void MyFrame::OnAddRobot(wxCommandEvent& event) {
 void MyFrame::OnQuit(wxCommandEvent& event) {
 
     sim.stop(); //Ending the thread
+    dataUpdate = false;
     Close(true);
 }
 
@@ -195,6 +203,16 @@ Robot::Size getSizeFromInput(int choice) {
     }
 }
 
+
+void updateDatabase(Simulation& sim, Database& db){
+    std::cout << "Things happening" << std::endl;
+    while (dataUpdate){
+
+        std::this_thread::sleep_for(std::chrono::milliseconds(30000)); // Sleep for 30 seconds
+
+    }
+
+}
 
 // Legacy Code
 // int main(int argc, char **argv) {

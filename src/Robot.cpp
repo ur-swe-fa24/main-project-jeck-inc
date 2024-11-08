@@ -27,7 +27,7 @@ std::string Robot::getStatus() const {
         case Status::Idle: return "Idle";
         case Status::Active: return "Active";
         case Status::Faulty: return "Faulty";
-        default: return "Unknonw";
+        default: return "Unknown";
     };
 }
 
