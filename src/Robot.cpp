@@ -14,6 +14,8 @@ int Robot::nextId = 0;
 // Constructor implementation
 Robot::Robot(Function task, Size size) 
     : task(task), size(size), id(nextId++), status(Robot::Status::Idle) {
+        roomAssigned = -1;
+        battery = 100;
 }
 
 // Getter for the robot ID
@@ -41,6 +43,14 @@ void Robot::setStatus(std::string statusStr)  {
         status = Status::Faulty;
     };
  
+}
+
+void Robot::setBattery(int new_battery){
+    battery = new_battery;
+}
+
+void Robot::setRoomAssigned(int newRoom){
+    roomAssigned = newRoom;
 }
 
 
