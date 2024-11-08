@@ -68,6 +68,7 @@ namespace simulation
         }
         //Actually Fixing the robot if needed
         robot.setStatus("Idle");
+        robot.setRoomAssigned(-1);
         return "Robot is fixed";
 
     }

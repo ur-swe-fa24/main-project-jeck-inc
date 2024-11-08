@@ -40,6 +40,11 @@ public:
     Size getSize() const {return size;};
     std::string getStatus() const;
     void setStatus(std::string statusStr) ;
+    int getBattery() const {return battery;};
+    void setBattery(int updatedBattery);
+    int getRoomAssigned() const {return roomAssigned;};
+    void setRoomAssigned(int newRoom);
+
 
 private:
     static int nextId; // Static variable to hold the next robot ID
@@ -47,6 +52,8 @@ private:
     Function task;    // Robot task
     Size size;        // Robot size
     Status status;    // Robot status
+    int battery;       //Robot Battery
+    int roomAssigned;       //Room-Id Assigned
 
 };
 
