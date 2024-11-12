@@ -10,6 +10,7 @@
 #include "Simulation.hpp"
 #include "spdlog/spdlog.h"
 #include "spdlog/sinks/basic_file_sink.h"
+#include "subFrame.hpp"
 
 using namespace database;
 using namespace robot;

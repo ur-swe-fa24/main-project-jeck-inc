@@ -53,6 +53,11 @@ target_include_directories(Robot
         $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/include>
 )
 
+
+add_library(frame
+    src/subFrame.cpp
+)
+
 add_library(Simulation
     src/Simulation.cpp 
 )
