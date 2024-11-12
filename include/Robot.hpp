@@ -32,6 +32,7 @@ public:
     };
 
     // Constructor
+    Robot() : id(-1), task(Function::Scrub), size(Size::Medium), status(Status::Idle), battery(100), fluidLevel(100), roomAssigned("-1") {}
     Robot(Function task, Size size);
 
     // Getters
@@ -42,8 +43,10 @@ public:
     void setStatus(std::string statusStr) ;
     int getBattery() const {return battery;};
     void setBattery(int updatedBattery);
-    int getRoomAssigned() const {return roomAssigned;};
-    void setRoomAssigned(int newRoom);
+    int getFluidLevel() const {return fluidLevel;};
+    void setFluidLevel(int updatedFluidLevel);
+    std::string getRoomAssigned() const {return roomAssigned;};
+    void setRoomAssigned(std::string newRoom);
 
 
 private:
@@ -53,8 +56,8 @@ private:
     Size size;        // Robot size
     Status status;    // Robot status
     int battery;       //Robot Battery
-    int roomAssigned;       //Room-Id Assigned
-
+    int fluidLevel;
+    std::string roomAssigned;       //Room-Id Assigned
 };
 
 } // namespace robot

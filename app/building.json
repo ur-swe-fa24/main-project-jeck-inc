@@ -21,7 +21,7 @@
         {
             "room_id" : "2",
             "room_name" : "lab",
-            "size" : "small",
+            "size" : "large",
             "floor_surface" : "carpet",
             "access" : "0",
             "connecting_rooms" : ["0"]

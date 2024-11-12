@@ -207,7 +207,7 @@ Robot::Size getSizeFromInput(int choice) {
 void updateDatabase(Simulation& sim, Database& db){
     std::cout << "Things happening" << std::endl;
     while (dataUpdate){
-
+        
         std::this_thread::sleep_for(std::chrono::milliseconds(30000)); // Sleep for 30 seconds
 
     }
