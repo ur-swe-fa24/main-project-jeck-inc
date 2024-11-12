@@ -25,15 +25,22 @@ if (bsoncxx_FOUND)
   message(STATUS "bsoncxx found!")
 endif()
 
+find_package(wxWidgets REQUIRED COMPONENTS net core base)
+if (wxWidgets_FOUND)
+    message(STATUS "wxWidgets found!")
+endif()
+if(wxWidgets_USE_FILE) # not defined in CONFIG mode
+    include(${wxWidgets_USE_FILE})
+endif()
 
-add_library(Database
-    src/Database.cpp
-)
+# add_library(Database
+#     src/Database.cpp
+# )
 
-target_include_directories(Database
-    PUBLIC
-        $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/include>
-)
+# target_include_directories(Database
+#     PUBLIC
+#         $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/include>
+# )
 
 add_library(GUI
     src/GUI.cpp 
@@ -54,8 +61,17 @@ target_include_directories(Robot
 )
 
 
-add_library(frame
+add_library(subframe
     src/subFrame.cpp
+)
+
+target_include_directories(subframe
+    PUBLIC
+        $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/include>
+)
+
+target_link_libraries(subframe
+    ${wxWidgets_LIBRARIES} 
 )
 
 add_library(Simulation
@@ -87,5 +103,5 @@ target_link_libraries(Simulation
         spdlog::spdlog
 )
 
-add_subdirectory(app)
-add_subdirectory(tests)
+# add_subdirectory(app)
+# add_subdirectory(tests)

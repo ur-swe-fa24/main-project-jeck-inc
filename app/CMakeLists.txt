@@ -32,9 +32,9 @@ target_link_libraries(Database
 
 )
 
-target_link_libraries(frame 
-    ${wxWidgets_LIBRARIES} 
-)
+# target_link_libraries(frame 
+#     ${wxWidgets_LIBRARIES} 
+# )
 
 #Compile features for main
 target_compile_features(main PRIVATE cxx_std_17)
