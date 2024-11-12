@@ -50,7 +50,6 @@
         "queue": "cpp",
         "ratio": "cpp",
         "set": "cpp",
-        "sstream": "cpp",
         "stack": "cpp",
         "stdexcept": "cpp",
         "streambuf": "cpp",
@@ -101,6 +100,7 @@
         "xstddef": "cpp",
         "xtr1common": "cpp",
         "xtree": "cpp",
-        "xutility": "cpp"
+        "xutility": "cpp",
+        "__config": "cpp"
     }
 }

@@ -17,21 +17,23 @@ void database::Database::add_robot(const robot::Robot& robotInstance){
     robotIds.push_back(robotInstance.getId());
     int currId = robotInstance.getId();
     std::string strCurrID = std::to_string(currId);
-    std::string testing = startText + "robotID"+ interMediateText + strCurrID + endText;
-    //std::cout << testing << std::endl; 
+
+    bsoncxx::builder::stream::document filter_builder{};
+    filter_builder << "robotID" << strCurrID << "testID" << "22";
 
     mongocxx::uri uri("mongodb://localhost:27017");
     mongocxx::client client(uri);
 
     mongocxx::database db = client["database"];
     mongocxx::collection collection = db["robots"]; 
-    collection.insert_one(std::move(bsoncxx::v_noabi::from_json(testing)));
+    //collection.insert_one(std::move(bsoncxx::v_noabi::from_json(toAdd)));
+    collection.insert_one(filter_builder.view());
     
     }
 
 
 //This returns all the IDs we have saved. In the future, we can search the database to return any specific robot's ID, type, and size. But, for the sake of this demo we are just going to print all the IDs we have present. 
-std::string database::Database::getRobotIDs(const robot::Robot& robot){
+std::string database::Database::getRobotID(const robot::Robot& robot){
     int id = robot.getId();
     std::string nf = "not_found";
     std::string strCurrID = std::to_string(id);
@@ -44,18 +46,25 @@ std::string database::Database::getRobotIDs(const robot::Robot& robot){
     mongocxx::collection collection = db["robots"]; 
 
     bsoncxx::builder::stream::document filter_builder{};
-    filter_builder << "robotID" << "0";
-
-    // auto result = collection.find_one(bsoncxx::v_noabi::from_json(robotJson));
-
+    filter_builder << "robotID" << strCurrID;
+    
     auto result = collection.find_one(filter_builder.view());
     if(result){
-        return "found";
+        bsoncxx::document::view doc = result->view();
+
+        std::string print = bsoncxx::to_json(doc);
+
+        nlohmann::json ex1 = nlohmann::json::parse(print);
+        
+        std::cout << print << std::endl;
+        ex1["robotID"];
+
+        return ex1["robotID"];
         }
-    
+
     else{
         return nf;
-    }
+        }
     }
 //This outputs a message to the console. 
 void database::Database::console_message(const std::string& message){
