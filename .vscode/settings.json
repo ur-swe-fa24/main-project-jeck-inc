@@ -102,5 +102,6 @@
         "xtree": "cpp",
         "xutility": "cpp",
         "hash_map": "cpp"
+        "__config": "cpp"
     }
 }

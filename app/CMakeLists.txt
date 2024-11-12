@@ -28,6 +28,7 @@ target_link_libraries(main
 target_link_libraries(Database
     PRIVATE
         mongo::mongocxx_shared
+        nlohmann_json::nlohmann_json
         ${wxWidgets_LIBRARIES}  # addition
 
 )
