@@ -21,7 +21,7 @@ void database::Database::add_robot(const robot::Robot& robotInstance){
     Robot::Function currTask = robotInstance.getTask();
     std::string strSize = "";
     std::string strCurrTask = "";
-    int room = robotInstance.getRoomAssigned();
+    std::string room = robotInstance.getRoomAssigned();
 
     switch(size){
         case Robot::Size::Small: 
