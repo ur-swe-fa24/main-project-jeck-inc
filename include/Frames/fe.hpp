@@ -14,8 +14,15 @@ public:
     FieldE(const wxString& title, simulation::Simulation& sim, database::Database& db);
     
 private:
-    // Event handler for adding a robot
-    void AddingRobot(wxCommandEvent& event);
+    // Event handler for buttons
+    void ShowRobots(wxCommandEvent& event);
+    void FixRobot(wxCommandEvent& event);
+    void GetRobotStatus(wxCommandEvent& event);
+    void GoBack(wxCommandEvent& event);
+
+    // GUI components for robot ID input fields
+    wxTextCtrl* robotIdFixInput;
+    wxTextCtrl* robotIdStatusInput;
 
     // Reference to the Simulation object
     simulation::Simulation& sim;
