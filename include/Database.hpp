@@ -66,8 +66,20 @@ public:
     // Method to display a message on the console
     void console_message(const std::string& message);
 
-    //Method to get a robots ID
+    //Method to get a robot's ID
     std::string getRobotID(const robot::Robot& robotInstance);
+
+    //Method to get a robot's status
+    std::string getRobotStatus(const robot::Robot& robotInstance);
+
+    //Method to get a robot's size
+    std::string getRobotSize(const robot::Robot& robotInstance);
+
+    //Method to get a robot's current room
+    std::string getRobotRoom(const robot::Robot& robotInstance);
+
+    //Method to get a robot's current task
+    std::string getRobotTask(const robot::Robot& robotInstance);
 };
 } // namespace database
 

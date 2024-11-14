@@ -21,7 +21,7 @@ void database::Database::add_robot(const robot::Robot& robotInstance){
     Robot::Function currTask = robotInstance.getTask();
     std::string strSize = "";
     std::string strCurrTask = "";
-    int room = robotInstance.getRoomAssigned();
+    std::string room = "1";
 
     switch(size){
         case Robot::Size::Small: 
@@ -71,7 +71,7 @@ std::string database::Database::getRobotID(const robot::Robot& robot){
     int id = robot.getId();
     std::string nf = "not_found";
     std::string strCurrID = std::to_string(id);
-    std::string robotJson = startText + "robotID" + interMediateText + strCurrID + endText;
+    // std::string robotJson = startText + "robotID" + interMediateText + strCurrID + endText;
     
     mongocxx::uri uri("mongodb://localhost:27017");
     mongocxx::client client(uri);
@@ -89,9 +89,6 @@ std::string database::Database::getRobotID(const robot::Robot& robot){
         std::string print = bsoncxx::to_json(doc);
 
         nlohmann::json ex1 = nlohmann::json::parse(print);
-        
-        // std::cout << print << std::endl;
-        ex1["robotID"];
 
         return ex1["robotID"];
         }
@@ -100,6 +97,134 @@ std::string database::Database::getRobotID(const robot::Robot& robot){
         return nf;
         }
     }
+
+//This returns the status of the robot referenced in the parameter. 
+std::string database::Database::getRobotStatus(const robot::Robot& robot){
+    int id = robot.getId();
+    std::string nf = "robot_not_found_in_database";
+    std::string strCurrID = std::to_string(id);
+    // std::string robotJson = startText + "robotID" + interMediateText + strCurrID + endText;
+    
+    mongocxx::uri uri("mongodb://localhost:27017");
+    mongocxx::client client(uri);
+
+    mongocxx::database db = client["database"];
+    mongocxx::collection collection = db["robots"]; 
+
+    bsoncxx::builder::stream::document filter_builder{};
+    filter_builder << "robotID" << strCurrID;
+
+    auto result = collection.find_one(filter_builder.view());
+    if(result){
+        bsoncxx::document::view doc = result->view();
+
+        std::string print = bsoncxx::to_json(doc);
+
+        nlohmann::json ex1 = nlohmann::json::parse(print);
+
+        return ex1["status"];
+        }
+
+    else{
+        return nf;
+        }
+    }
+
+//This returns the size of the robot referenced in the parameter. 
+std::string database::Database::getRobotSize(const robot::Robot& robot){
+    int id = robot.getId();
+    std::string nf = "robot_not_found_in_database";
+    std::string strCurrID = std::to_string(id);
+    // std::string robotJson = startText + "robotID" + interMediateText + strCurrID + endText;
+    
+    mongocxx::uri uri("mongodb://localhost:27017");
+    mongocxx::client client(uri);
+
+    mongocxx::database db = client["database"];
+    mongocxx::collection collection = db["robots"]; 
+
+    bsoncxx::builder::stream::document filter_builder{};
+    filter_builder << "robotID" << strCurrID;
+
+    auto result = collection.find_one(filter_builder.view());
+    if(result){
+        bsoncxx::document::view doc = result->view();
+
+        std::string print = bsoncxx::to_json(doc);
+
+        nlohmann::json ex1 = nlohmann::json::parse(print);
+
+        return ex1["size"];
+        }
+
+    else{
+        return nf;
+        }
+    }
+
+//This returns the room of the robot referenced in the parameter. 
+std::string database::Database::getRobotRoom(const robot::Robot& robot){
+    int id = robot.getId();
+    std::string nf = "robot_not_found_in_database";
+    std::string strCurrID = std::to_string(id);
+    // std::string robotJson = startText + "robotID" + interMediateText + strCurrID + endText;
+    
+    mongocxx::uri uri("mongodb://localhost:27017");
+    mongocxx::client client(uri);
+
+    mongocxx::database db = client["database"];
+    mongocxx::collection collection = db["robots"]; 
+
+    bsoncxx::builder::stream::document filter_builder{};
+    filter_builder << "robotID" << strCurrID;
+    
+    auto result = collection.find_one(filter_builder.view());
+    if(result){
+        bsoncxx::document::view doc = result->view();
+
+        std::string print = bsoncxx::to_json(doc);
+        nlohmann::json ex1 = nlohmann::json::parse(print);
+
+        return ex1["currentRoom"];
+        }
+
+    else{
+        return nf;
+        }
+    }
+
+//This returns the task of the robot referenced in the parameter. 
+std::string database::Database::getRobotTask(const robot::Robot& robot){
+    int id = robot.getId();
+    std::string nf = "robot_not_found_in_database";
+    std::string strCurrID = std::to_string(id);
+    // std::string robotJson = startText + "robotID" + interMediateText + strCurrID + endText;
+    
+    mongocxx::uri uri("mongodb://localhost:27017");
+    mongocxx::client client(uri);
+
+    mongocxx::database db = client["database"];
+    mongocxx::collection collection = db["robots"]; 
+
+    bsoncxx::builder::stream::document filter_builder{};
+    filter_builder << "robotID" << strCurrID;
+
+    auto result = collection.find_one(filter_builder.view());
+    if(result){
+        bsoncxx::document::view doc = result->view();
+
+        std::string print = bsoncxx::to_json(doc);
+
+        nlohmann::json ex1 = nlohmann::json::parse(print);
+
+        return ex1["currentTask"];
+        }
+
+    else{
+        return nf;
+        }
+    }    
+
 //This outputs a message to the console. 
 void database::Database::console_message(const std::string& message){
         std::cout << "Message: " << message << std::endl;
