@@ -18,10 +18,13 @@ target_include_directories(main
 target_link_libraries(main 
     PRIVATE
         Simulation
-        GUI
         Database
         Robot
         mongo::mongocxx_shared
+        bm
+        bs
+        fe
+        sm
 )
 
 #Linking External Libraries

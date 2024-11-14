@@ -48,4 +48,19 @@ TEST_CASE("Simulation class tests") {
         REQUIRE_NOTHROW(sim.stop()); // Stop the simulation
         REQUIRE_NOTHROW(sim_thread.join()); // Wait for the thread to finish
     }
+
+    // Section to check assigning tasks to robots
+    SECTION("Assign tasks to robots") {
+        Robot robot(Robot::Function::Vacuum, Robot::Size::Medium);
+        sim.add_robot(robot);
+        std::string json_file = "../../tests/test_building.json"; 
+        sim.load_building(json_file);
+        std::string roomID = "0"; 
+
+        // Assign task to robot
+        REQUIRE_NOTHROW(sim.assign_task(robot.getId(), roomID));
+        REQUIRE(sim.robot_status(robot.getId()) == "Active");
+    }
+
+   
 }

@@ -1,59 +1,56 @@
 #include "Robot.hpp"
-#include <iostream>
-#include <string>
-
 
 namespace robot {
 
+    // Initialize the static variable
+    int Robot::nextId = 0;
 
+    // Constructor implementation
+    Robot::Robot(Function task, Size size) 
+        : task(task), size(size), id(nextId++), status(Robot::Status::Idle) {
+            roomAssigned = "-1";
+            battery = 100;
+            fluidLevel = 100;
+    }
 
+    // Getter for the robot ID
+    int Robot::getId() const {
+        return id;
+    }
 
-// Initialize the static variable
-int Robot::nextId = 0;
+    //Getter for Status which converts enum to string for ease of use
+    std::string Robot::getStatus() const {
+        switch (status) {
+            case Status::Idle: return "Idle";
+            case Status::Active: return "Active";
+            case Status::Faulty: return "Faulty";
+            default: return "Unknown";
+        };
+    }
 
-// Constructor implementation
-Robot::Robot(Function task, Size size) 
-    : task(task), size(size), id(nextId++), status(Robot::Status::Idle) {
-        roomAssigned = -1;
-        battery = 100;
-}
+    //Setter for Status which converts string to enum 
+    void Robot::setStatus(std::string statusStr)  {
+        if (statusStr == "Idle") {
+            status = Status::Idle;
+        } else if (statusStr == "Active") {
+            status = Status::Active;
+        } else if (statusStr == "Faulty") {
+            status = Status::Faulty;
+        };
+    
+    }
 
-// Getter for the robot ID
-int Robot::getId() const {
-    return id;
-}
+    void Robot::setBattery(int new_battery){
+        battery = new_battery;
+    }
 
-//Getter for Status which converts enum to string for ease of use
-std::string Robot::getStatus() const {
-    switch (status) {
-        case Status::Idle: return "Idle";
-        case Status::Active: return "Active";
-        case Status::Faulty: return "Faulty";
-        default: return "Unknown";
-    };
-}
+    void Robot::setRoomAssigned(std::string newRoom){
+        roomAssigned = newRoom;
+    }  
 
-//Setter for Status which converts string to enum 
-void Robot::setStatus(std::string statusStr)  {
-    if (statusStr == "Idle") {
-        status = Status::Idle;
-    } else if (statusStr == "Active") {
-        status = Status::Active;
-    } else if (statusStr == "Faulty") {
-        status = Status::Faulty;
-    };
- 
-}
-
-void Robot::setBattery(int new_battery){
-    battery = new_battery;
-}
-
-void Robot::setRoomAssigned(int newRoom){
-    roomAssigned = newRoom;
-}
-
-
-
+    void Robot::setFluidLevel(int updatedFluidLevel)
+    {
+        fluidLevel = updatedFluidLevel;
+    }
 
 }
