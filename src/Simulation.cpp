@@ -85,21 +85,21 @@ namespace simulation
     }
 
     // Method to assign a room to one robot
-    void Simulation::assign_task(int robotID, std::string roomID)
+    std::string Simulation::assign_task(int robotID, std::string roomID)
     {
         // CURRENTLY CANNOT ASSIGN A TASK TO A ROBOT THAT ALREADY HAS ONE
         if (robot_dict[robotID].getStatus() == "Active")
         {
-            throw std::invalid_argument("Robot already in room: " + robot_dict[robotID].getRoomAssigned() );
+            return "Robot already in room: " + robot_dict[robotID].getRoomAssigned();
         }
         // Check if the roomID exists in the building
         if (building.rooms.find(roomID) == building.rooms.end()) {
-            throw std::invalid_argument("Room ID not found: " + roomID);
+            return "Room ID not found: " + roomID;
         }
 
         // Check if the robotID exists in the robot dictionary
         if (robot_dict.find(robotID) == robot_dict.end()) {
-            throw std::invalid_argument("Robot ID not found: " + std::to_string(robotID));
+            return "Robot ID not found: " + std::to_string(robotID);
         }
         
         Robot::Function robotType = robot_dict[robotID].getTask();
@@ -110,13 +110,13 @@ namespace simulation
             case Robot::Function::Scrub:
                 // Scrub robot can only clean wood and tile
                 if (floor != "wood" && floor != "tile") {
-                    throw std::invalid_argument("Scrubber cannot clean " + floor + " surfaces.");
+                    return "Scrubber cannot clean " + floor + " surfaces.";
                 }
                 break;
             case Robot::Function::Shampoo:
                 // Shampoo robot can only clean carpet
                 if (floor != "carpet") {
-                    throw std::invalid_argument("Shampoo robot can only clean carpet surfaces.");
+                    return "Shampoo robot can only clean carpet surfaces.";
                 }
                 break;
             case Robot::Function::Vacuum:
