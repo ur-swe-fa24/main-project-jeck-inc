@@ -231,5 +231,26 @@ void database::Database::console_message(const std::string& message){
         std::cout << "Message: " << message << std::endl;
     }
 
+bool database::Database::updateRobot(const robot::Robot& robotInstance){
+    int id = robotInstance.getId();
+    std::string status = robotInstance.getStatus();
+    Robot::Size size = robotInstance.getSize();
+    std::string room = robotInstance.getRoomAssigned();
+    Robot::Function task = robotInstance.getTask();
 
+    mongocxx::uri uri("mongodb://localhost:27017");
+    mongocxx::client client(uri);
 
+    mongocxx::database db = client["database"];
+    mongocxx::collection collection = db["robots"]; 
+
+    bsoncxx::builder::stream::document filter_builder{};
+    filter_builder << "robotID" << id;
+
+    auto update_one_result =
+    collection.update_one(make_document(kvp("robotId", id)),
+                          make_document(kvp("$set", make_document(kvp("foo", "bar")))));
+
+    return true;
+    
+}
