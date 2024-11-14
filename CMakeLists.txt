@@ -166,6 +166,5 @@ target_link_libraries(Simulation
         nlohmann_json::nlohmann_json
         spdlog::spdlog
 )
-
 add_subdirectory(app)
 add_subdirectory(tests)
