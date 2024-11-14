@@ -136,7 +136,6 @@ void Home::OnBS(wxCommandEvent& event){
     BuildingS* bsFrame = new BuildingS("Add Robot", std::ref(sim), std::ref(db));
     bsFrame->Show(true);
 }
-
 void Home::OnFE(wxCommandEvent& event){
     FieldE* feFrame = new FieldE("Add Robot", std::ref(sim), std::ref(db));
     feFrame->Show(true);
