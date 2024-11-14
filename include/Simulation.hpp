@@ -71,7 +71,7 @@ class Simulation
         void load_building(const std::string& json_file);
 
         // Method to assign a room to one robot
-        void assign_task(int robotID, std::string roomID);
+        std::string assign_task(int robotID, std::string roomID);
 
         // Getter for building
         Building get_building() { return building; }
