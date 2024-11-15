@@ -85,6 +85,9 @@ class Simulation
         // Method to fill a robot with fluid
         std::string fill_robot_fluid(int id);
 
+        // Method to get info about a robot
+        std::string get_robot_info(int id);
+
         // Method to pass robot dict/map
         std::unordered_map<int, Robot> get_robot_dict() const { return robot_dict; };
 };
