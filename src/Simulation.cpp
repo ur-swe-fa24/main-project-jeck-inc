@@ -56,10 +56,11 @@ namespace simulation
         // Use the mutex to prevent race conditions
         std::lock_guard<std::mutex> lock(simulation_mutex); 
 
-        // Out of range robot-id 
+        // Check if robot id exists in dict
         if (robot_dict.find(id) == robot_dict.end()) { // Check if ID exists in the map
-            return "Robot_Id Not Found";
+            return "Robot with ID " + std::to_string(id) + " not Found";
         }
+        
         // When robot is not faulty
         robot::Robot& robot = robot_dict[id]; // Get the robot reference
         if (robot.getStatus() != "Faulty") {
@@ -77,7 +78,7 @@ namespace simulation
         std::lock_guard<std::mutex> lock(simulation_mutex); 
 
         if (robot_dict.find(id) == robot_dict.end()) { // Check if ID exists in the map
-            return "Robot_Id Not Found";
+            return "Robot with ID " + std::to_string(id) + " not Found";
         }
         robot_dict[id].setFluidLevel(100);
         return "Robot filled";
@@ -86,7 +87,7 @@ namespace simulation
     //function that uses getStatus of robot to view the status of robot
     std::string simulation::Simulation::robot_status(int id) {
         if (robot_dict.find(id) == robot_dict.end()) { // Check if ID exists in the map
-            return "Robot_Id Not Found";
+            return "Robot with ID " + std::to_string(id) + " not Found";
         }
         return robot_dict[id].getStatus(); // Access the robot directly from the map
     }
@@ -138,8 +139,26 @@ namespace simulation
         robot_dict[robotID].setStatus("Active"); // Set status of robot to Active
         robot_dict[robotID].setRoomAssigned(roomID); // Assign the robot -> the room (robot can only have 1 room)
         building.rooms[roomID].robots_cleaning.insert(robotID); // Assign the room -> the robot (room can have many robots)
-        return "Success";
+        return "Room assigned";
     }
+
+    // Method to get info about a robot
+    std::string Simulation::get_robot_info(int id)
+    {
+        // Check if robot id exists in dict
+        if (robot_dict.find(id) == robot_dict.end()) { // Check if ID exists in the map
+            return "Robot with ID " + std::to_string(id) + " not Found";
+        }
+
+        robot::Robot& robot = robot_dict[id]; // get the robot
+
+        return "Robot " + std::to_string(id) +
+        "\n\tCurrent Status: " + robot.getStatus() + 
+        "\n\tCurrent Room: " + robot.getRoomAssigned() + 
+        "\n\tCurrent Battery: " + std::to_string(robot.getBattery()) + 
+        "\n\tCurrent Fluid Level: " + std::to_string(robot.getFluidLevel());
+    }
+
 
     // method to simulate the entire operation
     void Simulation::simulate() 

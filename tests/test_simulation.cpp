@@ -56,7 +56,7 @@ TEST_CASE("Simulation class tests") {
         std::string json_file = "../../tests/test_building.json"; 
         sim.load_building(json_file);
         std::string roomID = "0"; 
-
+      
         // Assign task to robot
         REQUIRE_NOTHROW(sim.assign_task(robot.getId(), roomID));
         REQUIRE(sim.robot_status(robot.getId()) == "Active");
