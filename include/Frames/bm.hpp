@@ -16,6 +16,15 @@ public:
 private:
     // Event handler for adding a robot
     void AddingRobot(wxCommandEvent& event);
+    void AssignTask(wxCommandEvent& event);
+
+    //for add robot
+    wxTextCtrl* sizeInput;
+    wxTextCtrl* functionInput;
+
+    //for assign task
+    wxTextCtrl* robotId;
+    wxTextCtrl* roomId;
 
     // Reference to the Simulation object
     simulation::Simulation& sim;

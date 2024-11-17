@@ -15,7 +15,13 @@ public:
     
 private:
     // Event handler for adding a robot
-    void AddingRobot(wxCommandEvent& event);
+    void RobotStatus(wxCommandEvent& event);
+    void RobotRefill(wxCommandEvent& event);
+
+    //for robotstatus
+    wxTextCtrl* robotStatusId;
+    wxTextCtrl* robotRefillId;
+
 
     // Reference to the Simulation object
     simulation::Simulation& sim;

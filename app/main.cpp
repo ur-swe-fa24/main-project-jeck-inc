@@ -111,7 +111,7 @@ Home::Home(const wxString& title) : wxFrame(nullptr, wxID_ANY, title) {
     
     wxButton* seniorM = new wxButton(panel, 1001, "Senior Manager", wxPoint(10, 50));
     wxButton* buildingM = new wxButton(panel, 1002, "Building Manager", wxPoint(10, 80));
-    wxButton* buildingS = new wxButton(panel, 1003, "Operator", wxPoint(10, 110));
+    wxButton* buildingS = new wxButton(panel, 1003, "Building Staff", wxPoint(10, 110));
     wxButton* fieldM = new wxButton(panel, 1004, "Field Engineer", wxPoint(10, 140));
     wxButton* quit = new wxButton(panel, 1005, "Quit", wxPoint(10, 170));
 
@@ -123,21 +123,20 @@ Home::Home(const wxString& title) : wxFrame(nullptr, wxID_ANY, title) {
 
 void Home::OnSM(wxCommandEvent& event){
     SeniorM* smFrame = new SeniorM("Senior Manager", std::ref(sim), std::ref(db));
-    sim.stop();
     smFrame->Show(true);
 }
 
 void Home::OnBM(wxCommandEvent& event){
-    BuildingM* bmFrame = new BuildingM("Add Robot", std::ref(sim), std::ref(db));
+    BuildingM* bmFrame = new BuildingM("Building Manager", std::ref(sim), std::ref(db));
     bmFrame->Show(true);
 }
 
 void Home::OnBS(wxCommandEvent& event){
-    BuildingS* bsFrame = new BuildingS("Add Robot", std::ref(sim), std::ref(db));
+    BuildingS* bsFrame = new BuildingS("Building Staff", std::ref(sim), std::ref(db));
     bsFrame->Show(true);
 }
 void Home::OnFE(wxCommandEvent& event){
-    FieldE* feFrame = new FieldE("Add Robot", std::ref(sim), std::ref(db));
+    FieldE* feFrame = new FieldE("Field Engineer", std::ref(sim), std::ref(db));
     feFrame->Show(true);
 }
 
