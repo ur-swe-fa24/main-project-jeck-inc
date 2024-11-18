@@ -98,19 +98,20 @@ namespace simulation
         // Use the mutex to prevent race conditions
         std::lock_guard<std::mutex> lock(simulation_mutex); 
 
+        // Check if the robotID exists in the robot dictionary
+        if (robot_dict.find(robotID) == robot_dict.end()) {
+            return "Robot ID not found: " + std::to_string(robotID);
+        }
+
         // CURRENTLY CANNOT ASSIGN A TASK TO A ROBOT THAT ALREADY HAS ONE
         if (robot_dict[robotID].getStatus() == "Active")
         {
             return "Robot already in room: " + robot_dict[robotID].getRoomAssigned();
         }
+
         // Check if the roomID exists in the building
         if (building.rooms.find(roomID) == building.rooms.end()) {
             return "Room ID not found: " + roomID;
-        }
-
-        // Check if the robotID exists in the robot dictionary
-        if (robot_dict.find(robotID) == robot_dict.end()) {
-            return "Robot ID not found: " + std::to_string(robotID);
         }
         
         Robot::Function robotType = robot_dict[robotID].getTask();
@@ -163,12 +164,15 @@ namespace simulation
     // method to simulate the entire operation
     void Simulation::simulate() 
     {   
+        int timeCount = 0;
         auto file_logger = spdlog::basic_logger_mt("file_logger", "logs.txt");
+        file_logger->info("\t----- BEGIN SIMULATION -----\n");
         while (running)
         {
             {
                 // Use the mutex to prevent race conditions
                 std::lock_guard<std::mutex> lock(simulation_mutex); 
+                file_logger->info("\t--- TIMESTAMP {} START---", timeCount);
                 
                 // Iterate through every robot
                 for (auto& pair : robot_dict)
@@ -195,16 +199,17 @@ namespace simulation
                             robotTypeStr = "Unknown";
                     }
 
-                    file_logger->info("\tRobot {} is in room {} and performing task {}", robotID, roomID, robotTypeStr);
                     
                     // Check if robot is currently Active
                     if (robot.getStatus() == "Active")
                     {
+                        file_logger->info("\tRobot {} is in room {} and performing task {}", robotID, roomID, robotTypeStr);
+                        
                         // Randomly "break" the robot and make it Faulty
                         int randomNum = rand() % 101;
                         if (randomNum < 5) 
                         {
-                            file_logger->info("\tRobot {} has become faulty\n", robotID);
+                            file_logger->info("\tRobot {} has become faulty", robotID);
                             robot.setStatus("Faulty");
                         }
                         else
@@ -221,7 +226,7 @@ namespace simulation
                                 building.rooms[roomID].robots_cleaning.erase(robotID); // Remove robot from the room
                                 robot_dict[robotID].setRoomAssigned("-1"); // Unassign the room from the robot
                                 robot_dict[robotID].setStatus("Idle"); // Set status of robot to Idle
-                                file_logger->info("\tRobot {} has finished cleaning room {} and is now idle}\n", robotID, roomID);
+                                file_logger->info("\tRobot {} has finished cleaning room {} and is now idle", robotID, roomID);
                             }    
                             else
                             {
@@ -271,18 +276,26 @@ namespace simulation
                                 // Robot has their fluid go down
                                 int new_fluid_level = robot_dict[robotID].getFluidLevel() - 1;
                                 robot_dict[robotID].setFluidLevel(new_fluid_level); 
-                                
-                                // Robot is out of battery, it uses its reserve battery to go to charging station
-                                if (new_battery <= 0)
+
+                                // Robot is out of fluid
+                                if (new_fluid_level <= 0)
                                 {
-                                    file_logger->info("\tRobot {} is out of battery and is leaving room {} to charge and become idle\n", robotID, roomID);
+                                    file_logger->info("\tRobot {} is out of fluid and is leaving room {} to become idle. ", robotID, roomID);
+                                    building.rooms[roomID].robots_cleaning.erase(robotID); // Remove robot from the room
+                                    robot_dict[robotID].setRoomAssigned("-1"); // Unassign the room from the robot
+                                    robot_dict[robotID].setStatus("Idle"); // Set status of robot to Idle
+                                }
+                                // Robot is out of battery, it uses its reserve battery to go to charging station
+                                else if (new_battery <= 0)
+                                {
+                                    file_logger->info("\tRobot {} is out of battery and is leaving room {} to charge and become idle", robotID, roomID);
                                     building.rooms[roomID].robots_cleaning.erase(robotID); // Remove robot from the room
                                     robot_dict[robotID].setRoomAssigned("-1"); // Unassign the room from the robot
                                     robot_dict[robotID].setStatus("Idle"); // Set status of robot to Idle
                                 }
                                 else
                                 {
-                                    file_logger->info("\tRobot {} is now at {} battery level\n", robotID, new_battery);
+                                    file_logger->info("\tRobot {} is now at {} battery level and at {} fluid level", robotID, new_battery, new_fluid_level);
                                 }
                             }
                         }
@@ -313,9 +326,11 @@ namespace simulation
                     }
                 }
             }
+            file_logger->info("\t--- TIMESTAMP {} END---\n", timeCount);
+            timeCount++;
             std::this_thread::sleep_for(std::chrono::milliseconds(1000)); // Sleep for 1 second
         }
-        
+        file_logger->info("\t--- SIMULATION END --- ");
         cout << "Simulation shutting down" << endl;
     }
 
