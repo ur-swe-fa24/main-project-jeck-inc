@@ -8,22 +8,28 @@
 using namespace database;
 
 TEST_CASE("Database class tests"){
+    mongocxx::instance currInst{};
     Database db;
     robot::Robot myRobot;
     std::cout << myRobot.getId() << std::endl;
-    db.add_robot(myRobot);
 
-    SECTION("add robot to database"){
-        REQUIRE(2+2 == 4);
-        // REQUIRE_NOTHROW(db.add_robot(myRobot));
+    SECTION("tests (ask dr.martin)"){
+        REQUIRE_NOTHROW(db.add_robot(myRobot));
+
+        REQUIRE(db.getRobotID(myRobot) == "-1");
+        REQUIRE(db.getRobotRoom(myRobot) == "-1");
+        REQUIRE(db.getRobotSize(myRobot) == "Medium");
+        REQUIRE(db.getRobotStatus(myRobot) == "Idle");
+        REQUIRE(db.getRobotTask(myRobot) == "Scrubber");
+
+        myRobot.setStatus("Active");
+        myRobot.setRoomAssigned("7");
+
+        db.update(myRobot);
+
+        REQUIRE(db.getRobotRoom(myRobot) == "7");
+        REQUIRE(db.getRobotStatus(myRobot) == "Active");
     }
 
-    // SECTION("Get all items"){
-    //     REQUIRE(db.getRobotID(myRobot) == "-1");
-    //     REQUIRE(db.getRobotRoom(myRobot) == "-1");
-    //     REQUIRE(db.getRobotSize(myRobot) == "Medium");
-    //     REQUIRE(db.getRobotStatus(myRobot) == "Idle");
-    //     REQUIRE(db.getRobotTask(myRobot) == "Scrubber");
-    // }
 
 }

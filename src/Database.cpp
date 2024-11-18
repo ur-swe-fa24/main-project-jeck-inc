@@ -231,12 +231,43 @@ void database::Database::console_message(const std::string& message){
         std::cout << "Message: " << message << std::endl;
     }
 
-bool database::Database::updateRobot(const robot::Robot& robotInstance){
+bool database::Database::update(const robot::Robot& robotInstance){
     int id = robotInstance.getId();
+    std::string stID = std::to_string(id);
     std::string status = robotInstance.getStatus();
     Robot::Size size = robotInstance.getSize();
-    std::string room = robotInstance.getRoomAssigned();
+    std::string stRoom = robotInstance.getRoomAssigned();
+    std::string strSize = "def";
+    std::string strCurrTask = "def";
     Robot::Function task = robotInstance.getTask();
+
+        switch(size){
+        case Robot::Size::Small: 
+            strSize = "Small";
+            break;
+        case Robot::Size::Medium: 
+            strSize = "Medium";
+            break;
+        case Robot::Size::Large: 
+            strSize = "Large";
+            break;
+        default: strSize = "n/a";
+            break;
+    }
+
+    switch(task){
+        case Robot::Function::Scrub: 
+            strCurrTask = "Scrubber";
+            break;
+        case Robot::Function::Shampoo:
+            strCurrTask = "Shampooer";
+            break;
+        case Robot::Function::Vacuum: 
+            strCurrTask = "Vacuumer";
+            break;
+        default: strCurrTask = "Not Assigned";
+            break;
+    }
 
     mongocxx::uri uri("mongodb://localhost:27017");
     mongocxx::client client(uri);
@@ -245,12 +276,22 @@ bool database::Database::updateRobot(const robot::Robot& robotInstance){
     mongocxx::collection collection = db["robots"]; 
 
     bsoncxx::builder::stream::document filter_builder{};
-    filter_builder << "robotID" << id;
+    filter_builder << "robotID" << stID;
 
-    auto update_one_result =
-    collection.update_one(make_document(kvp("robotId", id)),
-                          make_document(kvp("$set", make_document(kvp("foo", "bar")))));
+    bsoncxx::builder::stream::document update_builder;
+    update_builder << "$set" << bsoncxx::builder::stream::open_document
+        << "currentRoom" << stRoom
+        << "size" << strSize
+        << "status" << status
+        << "currentTask" << strCurrTask 
+        << bsoncxx::builder::stream::close_document;
 
-    return true;
-    
-}
+    auto result = collection.update_one(filter_builder.view(), update_builder.view());
+
+    if(result){
+        return true;
+    }
+    else{
+        return false;
+    }
+}   
