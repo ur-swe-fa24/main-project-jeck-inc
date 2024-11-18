@@ -81,7 +81,7 @@ public:
     //Method to get a robot's current task
     std::string getRobotTask(const robot::Robot& robotInstance);
 
-    bool updateRobot(const robot::Robot& robotInstance);
+    bool update(const robot::Robot& robotInstance);
 };
 } // namespace database
 
