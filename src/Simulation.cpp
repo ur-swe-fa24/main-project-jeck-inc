@@ -221,7 +221,7 @@ namespace simulation
                                 building.rooms[roomID].robots_cleaning.erase(robotID); // Remove robot from the room
                                 robot_dict[robotID].setRoomAssigned("-1"); // Unassign the room from the robot
                                 robot_dict[robotID].setStatus("Idle"); // Set status of robot to Idle
-                                file_logger->info("\tRobot {} has finished cleaning room {} and is now idle}\n", robotID, roomID);
+                                file_logger->info("\tRobot {} has finished cleaning room {} and is now idle\n", robotID, roomID);
                             }    
                             else
                             {
