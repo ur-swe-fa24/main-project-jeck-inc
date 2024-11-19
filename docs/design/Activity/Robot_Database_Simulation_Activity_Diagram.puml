@@ -1,7 +1,6 @@
 @startuml
 
 start
-
 fork 
     :User presses Add Robot Button;
     :Get Size and Type from GUI;
