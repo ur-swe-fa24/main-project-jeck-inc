@@ -40,6 +40,14 @@ namespace robot {
     
     }
 
+    int Robot::getUpTime() const {
+        return upTime;
+    }
+
+    int Robot::getTotalLiveTime() const {
+        return totalLiveTime;
+    }
+
     void Robot::setBattery(int new_battery){
         battery = new_battery;
     }
@@ -51,6 +59,14 @@ namespace robot {
     void Robot::setFluidLevel(int updatedFluidLevel)
     {
         fluidLevel = updatedFluidLevel;
+    }
+
+    void Robot::setTotalLiveTime(int new_time){
+        totalLiveTime = new_time;
+    }
+
+    void Robot::setUpTime(int new_up_time){
+        upTime = new_up_time;
     }
 
 }
