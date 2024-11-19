@@ -1,0 +1,77 @@
+ @startuml
+start
+if (Building Manager) then (yes)
+  :Shown options Add_robot and Assign_robot;
+  if(Selects Add Robot) then(yes)
+    :User presses Add Robot Button;
+    :Get Size and Type from GUI;
+    :Create Robot (size, type);
+    :Add Robot to System;
+    :Show Robot Added Confirmation to User;
+  elseif (Selects Assign Robot) then (yes)
+    :User presses Assign Robot;
+    :Get Room and Robot from GUI;
+    :Change Robot Room in System;
+    :Show Robot Added Confirmation to User;
+  else (window closes)
+    :Go back to role select;
+  endif
+
+elseif (Field Engineer) then (yes)
+  :Show options Show Robots, Fix Robot, and Robot Status;
+  if(select Show Robots) then (yes)
+    :User presses Show All Robots Button;
+    :Show All Robot IDs;
+  elseif(select Fix Robot) then (yes)
+    :Get Robot ID from GUI;
+    if ("Is Robot ID invalid?") then (yes)
+        :show meesage: \n Robot ID is invalid;
+    else if ("Is Robot ID faulty?") then (yes)
+        :show meesage: \n Robot ID is not faulty;
+    else
+        :show meesage: \n Robot ID is fixed;
+    endif
+  elseif(select Robot Status) then (yes) 
+    :User presses Show Robot Status Button;
+  :Get Robot ID from GUI;
+  if ("Is Robot ID valid?") then (yes)
+    :Robot Status: Operational/Not Operational;
+  else
+    :Robot ID is Invalid;
+  endif
+  else (closes window)
+    :Go back to role select;
+  endif
+
+(no) elseif (Building Staff) then (yes)
+  :Show Robot Status and Refill Robot options;
+  if (selct Robot Status) then (yes)
+    :User presses Show Robot Status Button;
+    :Get Robot ID from GUI;
+    if ("Is Robot ID valid?") then (yes)
+      :Robot Status: Operational/Not Operational;
+    else
+      :Robot ID is Invalid;
+    endif
+  elseif(select Refill Robot) then (yes)
+    :User presses Show Refill Robot Button;
+    :Get Robot ID from GUI;
+    if ("Is Robot ID valid?") then (yes)
+      :Send Command to System Manager to Refill Robot.;
+      :Simulation Refills the Robot;
+      :Return Confirmation Message;
+    else (error)
+      :Robot ID is Invalid;
+    endif
+  else (clsoe window)
+    :go back to role select;
+  endif 
+(no) elseif (Senior Manager) then (yes)
+  :Show Metrics related to the robots;
+  :Return to role select screen when done.;
+else (Quit)
+  :program closes;
+  stop
+endif
+stop
+@enduml

@@ -1,0 +1,27 @@
+@startuml activityDiagram
+start
+if (Building Manager) then (yes)
+    :testing;
+    if(test3) then (yes)
+        :hi;
+    else (no)
+        :test4;
+    endif
+else
+    :test2;
+'   :Shown options Add_robot and Assign_robot;
+'   if(Selects Add Robot) then(yes)
+'     :User presses Add Robot Button;
+'     :Get Size and Type from GUI;
+'     :Create Robot (size, type);
+'     :Add Robot to System;
+'     :Show Robot Added Confirmation to User;
+'   (no) elseif (Selects Assign Robot) then (yes)
+'     :do new room stuff;
+'   (no) else (window closes)
+'     :Go back to role select;
+'   endif
+' (no) else (quit)
+'     stop 
+stop
+@enduml
