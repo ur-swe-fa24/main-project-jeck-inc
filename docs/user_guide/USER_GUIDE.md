@@ -6,7 +6,7 @@ To start up the system, follow these steps:
 2. Build the directory
 3. Run main
 
-**Note:** The user will need to dowloand MongoDB Compass Shell and GUI for the database calls to work correctly.
+**Note:** The user will need to dowloand MongoDB Compass Shell and GUI for the database calls to work correctly. The user will also need ensure that a local server is running on their own machine 
 
 ## Tests
 Example tests can be found in the [tests directory](../../tests)
