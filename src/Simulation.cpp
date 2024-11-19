@@ -44,8 +44,44 @@ namespace simulation
     // Get all robot IDs
     std::string simulation::Simulation::getRobotIds() const {
         std::string robotStr; // Create a string stream to build the string
-        for (const auto& pair : robot_dict) { // Iterate over the map
-            robotStr += std::to_string(pair.first) + "\n"; // Append the robot ID
+        std::string sizeStr;
+        std::string functionStr;
+
+        // Iterate over the map
+        for (const auto& pair : robot_dict) 
+        {   
+            // Get size as a string
+            switch (pair.second.getSize()) 
+            {
+                case Robot::Size::Large:
+                    sizeStr = "Large";
+                    break;
+                case Robot::Size::Medium:
+                    sizeStr = "Medium";
+                    break;
+                case Robot::Size::Small:
+                    sizeStr = "Small";
+                    break;
+                default:
+                    return "Unknown robot size";
+            }
+
+            // Get functino as a string
+            switch (pair.second.getTask()) 
+            {
+                case Robot::Function::Scrub:
+                    functionStr = "Scrubber";
+                    break;
+                case Robot::Function::Shampoo:
+                    functionStr = "Shampooer";
+                    break;
+                case Robot::Function::Vacuum:
+                    functionStr = "Vacuumer";
+                    break;
+                default:
+                    return "Unknown robot function";
+            }
+            robotStr += std::to_string(pair.first) + " - " + sizeStr + " - " + functionStr + "\n"; // Append the robot ID
         }
         return robotStr; // Return the resulting string
     }
