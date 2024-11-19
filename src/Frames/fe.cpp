@@ -18,17 +18,17 @@ FieldE::FieldE(const wxString& title, Simulation& sim, Database& db)
     wxPanel* panel = new wxPanel(this, wxID_ANY);
 
     // Create buttons and input fields
-    wxButton* showRobotsButton = new wxButton(panel, 1001, "Show All Robots", wxPoint(10, 100));
+    wxButton* showRobotsButton = new wxButton(panel, 1001, "Show All Robots", wxPoint(10, 10));
 
-    wxStaticText* robotIdFixLabel = new wxStaticText(panel, wxID_ANY, "Fix Robot ID:", wxPoint(150, 150));
-    robotIdFixInput = new wxTextCtrl(panel, wxID_ANY, "", wxPoint(150, 170), wxSize(100, -1));
-    wxButton* fixRobotButton = new wxButton(panel, 1002, "Fix Robot", wxPoint(10, 170));
+    wxStaticText* robotIdFixLabel = new wxStaticText(panel, wxID_ANY, "Fix Robot ID:", wxPoint(150, 70));
+    robotIdFixInput = new wxTextCtrl(panel, wxID_ANY, "", wxPoint(150, 90), wxSize(100, -1));
+    wxButton* fixRobotButton = new wxButton(panel, 1002, "Fix Robot", wxPoint(10, 90));
 
-    wxStaticText* robotIdStatusLabel = new wxStaticText(panel, wxID_ANY, "Status Robot ID:", wxPoint(150, 220));
-    robotIdStatusInput = new wxTextCtrl(panel, wxID_ANY, "", wxPoint(150, 240), wxSize(100, -1));
-    wxButton* getStatusButton = new wxButton(panel, 1003, "Robot Status", wxPoint(10, 240));
+    wxStaticText* robotIdStatusLabel = new wxStaticText(panel, wxID_ANY, "Status Robot ID:", wxPoint(150, 140));
+    robotIdStatusInput = new wxTextCtrl(panel, wxID_ANY, "", wxPoint(150, 160), wxSize(100, -1));
+    wxButton* getStatusButton = new wxButton(panel, 1003, "Robot Status", wxPoint(10, 160));
 
-    wxButton* backButton = new wxButton(panel, 1004, "Back", wxPoint(10, 300));
+    // wxButton* backButton = new wxButton(panel, 1004, "Back", wxPoint(10, 200));
 
     // Set the window size
     this->SetSize(400, 400);
@@ -49,6 +49,9 @@ void FieldE::FixRobot(wxCommandEvent& event) {
     // Fix the robot in the simulation
     std::string result = sim.fix_robot(robotId);
     wxMessageBox(result, "Fix Robot", wxOK | wxICON_INFORMATION);
+
+    //Clear input field
+    robotIdFixInput->Clear();
 }
 
 // Event handler: Getting the status of a specific robot
@@ -57,8 +60,11 @@ void FieldE::GetRobotStatus(wxCommandEvent& event) {
     int robotId = wxAtoi(robotIdStatusInput->GetValue());
 
     // Retrieve the robot's status
-    std::string status = sim.robot_status(robotId);
+    std::string status = sim.get_robot_info(robotId);
     wxMessageBox(status, "Robot Status", wxOK | wxICON_INFORMATION);
+
+    //Clear input field
+    robotIdStatusInput->Clear();
 }
 
 void FieldE::GoBack(wxCommandEvent& event) {
