@@ -26,11 +26,11 @@ BuildingS::BuildingS(const wxString& title, Simulation& sim, Database& db)
     wxButton* robotStatusButton = new wxButton(panel, 1001, "Robot Status", wxPoint(10, 65));
 
     //Getting size input
-    wxStaticText* robotRefillIdLabel = new wxStaticText(panel, wxID_ANY, "Enter a viable robot id", wxPoint(10, 110));
-    robotRefillId = new wxTextCtrl(panel, wxID_ANY, "", wxPoint(10,130), wxSize(200, -1));
+    wxStaticText* robotRefillIdLabel = new wxStaticText(panel, wxID_ANY, "Enter a viable robot id", wxPoint(10, 130));
+    robotRefillId = new wxTextCtrl(panel, wxID_ANY, "", wxPoint(10,150), wxSize(200, -1));
     
     // Create a button that will trigger the AddingRobot event
-    wxButton* robotRefillButton = new wxButton(panel, 1002, "Refill Robot", wxPoint(10, 165));
+    wxButton* robotRefillButton = new wxButton(panel, 1002, "Refill Robot", wxPoint(10, 185));
 
     // Set the window size for the SubFrame
     this->SetSize(400, 350);
@@ -42,14 +42,19 @@ void BuildingS::RobotStatus(wxCommandEvent& event) {
     int robotId = wxAtoi(robotStatusId->GetValue());
 
     // Retrieve the robot's status
-    std::string status = sim.robot_status(robotId);
+    std::string status = sim.get_robot_info(robotId);
     wxMessageBox(status, "Robot Status", wxOK | wxICON_INFORMATION);
 }
 
 void BuildingS::RobotRefill(wxCommandEvent& event) {
+    //Retrieve value from input field
     int robotId = wxAtoi(robotRefillId->GetValue());
 
+    //provide feedback message to user
     std::string message = sim.fill_robot_fluid(robotId);
-        wxMessageBox(message, "Robot Refill Status", wxOK | wxICON_INFORMATION);
+    wxMessageBox(message, "Robot Refill Status", wxOK | wxICON_INFORMATION);
+
+    //Clear input field
+    robotRefillId->Clear();
 
 }

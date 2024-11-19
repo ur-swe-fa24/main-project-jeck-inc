@@ -110,10 +110,10 @@ Home::Home(const wxString& title) : wxFrame(nullptr, wxID_ANY, title) {
     wxStaticText* label = new wxStaticText(panel, wxID_ANY, "Choose User Role:", wxPoint(10, 10));
     
     wxButton* seniorM = new wxButton(panel, 1001, "Senior Manager", wxPoint(10, 50));
-    wxButton* buildingM = new wxButton(panel, 1002, "Building Manager", wxPoint(10, 80));
-    wxButton* buildingS = new wxButton(panel, 1003, "Building Staff", wxPoint(10, 110));
-    wxButton* fieldM = new wxButton(panel, 1004, "Field Engineer", wxPoint(10, 140));
-    wxButton* quit = new wxButton(panel, 1005, "Quit", wxPoint(10, 170));
+    wxButton* buildingM = new wxButton(panel, 1002, "Building Manager", wxPoint(10, 90));
+    wxButton* buildingS = new wxButton(panel, 1003, "Building Staff", wxPoint(10, 130));
+    wxButton* fieldM = new wxButton(panel, 1004, "Field Engineer", wxPoint(10, 170));
+    wxButton* quit = new wxButton(panel, 1005, "Quit", wxPoint(10, 210));
 
 
     //Setting the size of the GUI
