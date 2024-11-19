@@ -28,7 +28,7 @@ FieldE::FieldE(const wxString& title, Simulation& sim, Database& db)
     robotIdStatusInput = new wxTextCtrl(panel, wxID_ANY, "", wxPoint(150, 240), wxSize(100, -1));
     wxButton* getStatusButton = new wxButton(panel, 1003, "Robot Status", wxPoint(10, 240));
 
-    wxButton* backButton = new wxButton(panel, 1004, "Back", wxPoint(10, 300));
+    // wxButton* backButton = new wxButton(panel, 1004, "Back", wxPoint(10, 300));
 
     // Set the window size
     this->SetSize(400, 400);

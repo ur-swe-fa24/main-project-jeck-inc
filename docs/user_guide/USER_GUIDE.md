@@ -12,44 +12,33 @@ To start up the system, follow these steps:
 Example tests can be found in the [tests directory](../../tests)
 
 ## Guide to Interact with GUI
-The following guide explains how to interact with the Robot Database Simulation system using the GUI. The system enables users to add, manage, and check the status of robots within the simulation environment. Follow these steps to interact efficiently with the simulation and manage the robots effectively.
+The following guide explains how to interact with the Robot Database Simulation system using the GUI. At the beginning you will face the home page where one has the option to choose from one of the four roles: Senior Manager, Building Manager, Building Staff and Field Engineer.
+![Home](./imgs/home.png)
 
-### 1. Adding a Robot
-To add a new robot to the system, follow these steps:
-1. Press the **Add Robot Button** on the GUI.
-2. The system will prompt you to enter the **size** and **type** of the robot.
-3. After entering the required details, the system will create a new robot with the specified characteristics.
-4. The robot will be added to the system database.
-5. A confirmation message will appear, indicating that the robot has been successfully added.
+### Senior Manager
+This role is still under work and will be completed in the next sprint. 
 
-### 2. Fixing a Robot
-If a robot is faulty and needs repair, you can initiate the fix process:
-1. Press the **Fix Button** on the GUI.
-2. Enter the **Robot ID** of the robot you wish to fix.
-3. The system will verify the Robot ID and determine the robot's status:
-   - **Invalid ID**: If the Robot ID is invalid, the system will display an error message.
-   - **Not Faulty**: If the robot is not faulty, a message will be shown indicating that the robot does not require fixing.
-   - **Faulty**: If the robot is faulty, it will be marked as fixed, and a confirmation message will be displayed.
+### Building Manager
+Building Manager will have the ability to add a robot and assign task to robot. Upon pressing one of those buttons, an appropriate message will pop up. Either a success or an error (for instance, invalid robot id.).
 
-### 3. Displaying All Robots
-To view the IDs of all robots currently in the system:
-1. Press the **Show All Robots Button** on the GUI.
-2. The system will display a list of all robot IDs stored within the database.
+![Building Manager](./imgs/bm-before.png)
+![Assign Room](./imgs/assign-fail.png)
+![Assign Room](./imgs/assign-pass.png)
+![Add  Robot](./imgs/add-robot-success-msg.png)
 
-### 4. Checking Robot Status
-To check the operational status of a specific robot:
-1. Press the **Show Robot Status Button** on the GUI.
-2. Enter the **Robot ID** of the robot you want to check.
-3. The system will validate the Robot ID:
-   - **Valid ID**: If the ID is valid, the system will display the robot’s current status (e.g., Operational or Not Operational).
-   - **Invalid ID**: If the ID is invalid, the system will display an error message indicating that the Robot ID is not recognized.
 
-### 5. Quitting the Simulation
-When you are finished using the system:
-1. Press the **Quit Button** on the GUI.
-2. The system will end the simulation thread and close the GUI, effectively shutting down the application.
+### Building Staff
+Building Staff will have the ability to check the robot status or do a maintenance update by filling it with shampoo or whatever necessary items it requires. 
 
-### Additional Information
-- Each action (such as adding, fixing, or displaying robots) runs as a separate process, allowing multiple actions to occur simultaneously within the simulation.
-- Error messages will appear if invalid inputs are provided, helping users correct their actions.
+![Building Staff](./imgs/bs.png)
+![Filled Robot](./imgs/robot-filled.png)
+![Robot Status](./imgs/robot-status.png)
+
+### Field Engineer
+Field Engineer can see all the robots in the simulation, fix a robot if it is broken and/or see the robot status of a particular robot like a Building Staff.
+
+![Field Engineer](./imgs/fe.png)
+![Robot Filled Message](./imgs/robot-filled.png)
+![Robot Status](./imgs/robot-status.png)
+
 
