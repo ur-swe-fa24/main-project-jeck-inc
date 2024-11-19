@@ -34,17 +34,17 @@ BuildingM::BuildingM(const wxString& title, Simulation& sim, Database& db)
 
 
     //Getting size input
-    wxStaticText* robotIdLabel = new wxStaticText(panel, wxID_ANY, "Enter the robot id: (int value)", wxPoint(10, 170));
-    robotId = new wxTextCtrl(panel, wxID_ANY, "(1 - 2 - 3)", wxPoint(10, 190), wxSize(200, -1));
+    wxStaticText* robotIdLabel = new wxStaticText(panel, wxID_ANY, "Enter the robot id: (int value)", wxPoint(10, 190));
+    robotId = new wxTextCtrl(panel, wxID_ANY, "(1 - 2 - 3)", wxPoint(10, 210), wxSize(200, -1));
 
     //Getting function input
-    wxStaticText* roomIdLabel = new wxStaticText(panel, wxID_ANY, "Enter the room id: (int value)", wxPoint(10,220));
-    roomId = new wxTextCtrl(panel, wxID_ANY, "(1 - 2 - 3)", wxPoint(10, 240), wxSize(200, -1));
+    wxStaticText* roomIdLabel = new wxStaticText(panel, wxID_ANY, "Enter the room id: (int value)", wxPoint(10,240));
+    roomId = new wxTextCtrl(panel, wxID_ANY, "(1 - 2 - 3)", wxPoint(10, 260), wxSize(200, -1));
 
-    wxButton* assignTaskButton = new wxButton(panel, 1002, "Assign Robot", wxPoint(10, 280));
+    wxButton* assignTaskButton = new wxButton(panel, 1002, "Assign Robot", wxPoint(10, 300));
 
     // Set the window size for the SubFrame
-    this->SetSize(400, 350);
+    this->SetSize(400, 400);
 }
 
 // Event handler: Adding a robot to the simulation
@@ -72,11 +72,17 @@ void BuildingM::AddingRobot(wxCommandEvent& event) {
 }
 
 void BuildingM::AssignTask(wxCommandEvent& event) {
+    //getting values from input field
     int robotChoice = wxAtoi(robotId->GetValue());
     std::string roomChoice = std::string(roomId->GetValue().mb_str(wxConvUTF8));
 
+    //Message back to user
     std::string message = sim.assign_task(robotChoice, roomChoice);
     wxMessageBox(message, "Success", wxOK | wxICON_INFORMATION);
+
+    //Clear Input Field
+    robotId->Clear();
+    roomId->Clear();
 }
 
 // Function to convert user input to the corresponding enum value
