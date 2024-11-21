@@ -12,6 +12,23 @@ database::Database::Database(){
     interMediateText= "\":\"";
 }
 
+database::Database::~Database(){
+    mongocxx::uri uri("mongodb://localhost:27017");
+    mongocxx::client client(uri);
+
+    mongocxx::database db1 = client["database"];
+    mongocxx::collection robs = db1["robots"]; 
+
+    mongocxx::database db2 = client["sm"];
+    mongocxx::collection stats = db2["stats"];
+
+
+    
+    auto result1 = robs.delete_many(make_document(kvp("testDVal", "Tr")));
+    auto result2 = stats.delete_many(make_document(kvp("testDVal", "Tr")));
+    std::cout << result1->deleted_count() << std::endl;
+    std::cout << result2->deleted_count() << std::endl;
+}
     //Here, we have the area for adding more robots. The commented parts will be used in the future to display functionality like storing a robots task and size.
 void database::Database::add_robot(const robot::Robot& robotInstance){
     robotIds.push_back(robotInstance.getId());
@@ -56,7 +73,7 @@ void database::Database::add_robot(const robot::Robot& robotInstance){
     std::string strCurrID = std::to_string(currId);
 
     bsoncxx::builder::stream::document filter_builder{};
-    filter_builder << "robotID" << strCurrID << "status" << status << "size" << strSize << "currentRoom" << room << "currentTask" << strCurrTask;
+    filter_builder << "robotID" << strCurrID << "status" << status << "size" << strSize << "currentRoom" << room << "currentTask" << strCurrTask << "testDVal" << "Tr";
 
     mongocxx::uri uri("mongodb://localhost:27017");
     mongocxx::client client(uri);
@@ -294,4 +311,5 @@ bool database::Database::update(const robot::Robot& robotInstance){
     else{
         return false;
     }
+
 }   

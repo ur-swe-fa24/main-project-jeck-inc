@@ -28,11 +28,6 @@ using namespace robot;
 // Creating namespace
 namespace database{
 
-constexpr char kMongoDbUri[] = "mongodb://localhost:27017";
-constexpr char kDatabaseName[] = "robotDatabase";
-constexpr char kCollectionName[] = "robots";
-
-
 class Database {
 
 private:
@@ -48,18 +43,13 @@ private:
     std::string endText;
     std::string interMediateText;
 
-    //mongocxx::instance currInst_;
     mongocxx::database db_;
     mongocxx::collection collection_;
 
 public:
     Database();
-        // uri = mongocxx::uri(kMongoDbUri),
-        // client = mongocxx::client(uri),
-        // db = client[kDatabaseName] {}
 
-    // Method to add a robot to the database
-    //void startDB()
+    ~Database();
 
     void add_robot(const robot::Robot& robotInstance);
 
