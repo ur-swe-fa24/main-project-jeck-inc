@@ -220,6 +220,31 @@ namespace simulation
         return returnTasksCompleted;
     }
 
+    // Method for getting a list of room cleanliness
+    unordered_map<std::string, int> Simulation::getAllRoomCleanliness()
+    {
+        unordered_map<std::string, int> roomCleanlinessMap;
+        for (auto& pair : building.rooms)
+        {
+            roomCleanlinessMap[pair.first] = pair.second.percentClean;
+        }
+        return roomCleanlinessMap;
+    }
+
+    // Method for getting a list of ongoing tasks
+    // Key: int robotID
+    // Value: string roomID
+    unordered_map<int, std::string> Simulation::getOngoingTasks()
+    {
+        unordered_map<int, std::string> ongoingTasks;
+        for (auto& pair : robot_dict)
+        {
+            ongoingTasks[pair.first] = pair.second.getRoomAssigned();
+        }
+        return ongoingTasks;
+    }
+
+
     // method to simulate the entire operation
     void Simulation::simulate() 
     {   
