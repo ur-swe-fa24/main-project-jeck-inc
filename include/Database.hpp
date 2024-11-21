@@ -79,6 +79,17 @@ public:
 
     void init_analytics();
 
+    bool setUpTime(const int ut);
+
+    bool setNumTaskCompleted(const int tc);
+
+    bool setNumOfError(const int er);
+
+    bool setTotalRobots(const int trb);
+
+    bool setTotalRoomClned(const int trc);
+
+
     //Method to update a robots info in the database to its current data as saved in the robot class. 
     bool update(const robot::Robot& robotInstance);
 

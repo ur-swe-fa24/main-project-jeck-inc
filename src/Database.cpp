@@ -20,7 +20,7 @@ void database::Database::init_analytics(){
     mongocxx::collection collection = db["stats"]; 
 
     bsoncxx::builder::stream::document filter_builder{};
-    filter_builder << "upTime" << -1 << "taskCompleted" << -1 << "numberOfErrors" << -1 << "totalRobots" << 0 << "totalRoomsCleaned" << 0; 
+    filter_builder << "upTime" << -1 << "numTaskCompleted" << -1 << "numberOfErrors" << -1 << "totalRobots" << 0 << "totalRoomsCleaned" << 0; 
 
     collection.insert_one(filter_builder.view());
 
