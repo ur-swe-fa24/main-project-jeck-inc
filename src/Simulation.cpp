@@ -220,6 +220,48 @@ namespace simulation
         return returnTasksCompleted;
     }
 
+    // Method that takes in a room ID and returns the tentative completion time for that room
+    int Simulation::completionTime(std::string roomID)
+    {
+        // Check if the roomID exists in the building
+        if (building.rooms.find(roomID) == building.rooms.end()) 
+        {
+            return -2; // room doesn't exist
+        }
+
+        // Check if there are any robots cleaning the room
+        if (building.rooms[roomID].robots_cleaning.empty()) 
+        {
+            return -1; // No robots cleaning the room
+        }
+
+        int cleaningPower = 0; // variable for how much of the room is getting cleaned per second
+        
+        // Iterate through each robot in the room
+        for (int robotID : building.rooms[roomID].robots_cleaning)
+        {
+            // switch statement gets how much of the room the robot cleans in one second based on size of the robot
+            int robotSizePower = 0; 
+            switch (robot_dict[robotID].getSize()) 
+            {
+                case Robot::Size::Large:
+                    robotSizePower = 4;
+                    break;
+                case Robot::Size::Medium:
+                    robotSizePower = 3;
+                    break;
+                case Robot::Size::Small:
+                    robotSizePower = 2;
+                    break;
+                default:
+                    break;
+            }
+            cleaningPower += robotSizePower;
+        }
+        int timeUntilCompletion = (100 - building.rooms[roomID].percentClean) / cleaningPower;
+        return timeUntilCompletion;
+    }
+
     // method to simulate the entire operation
     void Simulation::simulate() 
     {   

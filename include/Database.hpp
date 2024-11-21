@@ -8,7 +8,6 @@
 #include "Robot.hpp"
 #include <unordered_map>
 #include <nlohmann/json.hpp>
-//#include "Simulation.hpp"
 
 #include <bsoncxx/v_noabi/bsoncxx/builder/stream/document.hpp>
 #include <bsoncxx/v_noabi/bsoncxx/json.hpp>
@@ -71,7 +70,16 @@ public:
     //Method to get a robot's current task
     std::string getRobotTask(const robot::Robot& robotInstance);
 
+    std::string getRobotUptime(const robot::Robot& robotInstance);
+
+    std::string getRobotLifetime(const robot::Robot& robotInstance);
+
+    void init_analytics();
+
+    //Method to update a robots info in the database to its current data as saved in the robot class. 
     bool update(const robot::Robot& robotInstance);
+
+
 };
 } // namespace database
 
