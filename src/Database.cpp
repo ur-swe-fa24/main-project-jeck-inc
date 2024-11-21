@@ -12,6 +12,20 @@ database::Database::Database(){
     interMediateText= "\":\"";
 }
 
+void database::Database::init_analytics(){
+    mongocxx::uri uri("mongodb://localhost:27017");
+    mongocxx::client client(uri);
+
+    mongocxx::database db = client["sm"];
+    mongocxx::collection collection = db["stats"]; 
+
+    bsoncxx::builder::stream::document filter_builder{};
+    filter_builder << "upTime" << -1 << "taskCompleted" << -1 << "numberOfErrors" << -1 << "totalRobots" << 0 << "totalRoomsCleaned" << 0; 
+
+    collection.insert_one(filter_builder.view());
+
+}
+
     //Here, we have the area for adding more robots. The commented parts will be used in the future to display functionality like storing a robots task and size.
 void database::Database::add_robot(const robot::Robot& robotInstance){
     robotIds.push_back(robotInstance.getId());
@@ -56,7 +70,7 @@ void database::Database::add_robot(const robot::Robot& robotInstance){
     std::string strCurrID = std::to_string(currId);
 
     bsoncxx::builder::stream::document filter_builder{};
-    filter_builder << "robotID" << strCurrID << "status" << status << "size" << strSize << "currentRoom" << room << "currentTask" << strCurrTask;
+    filter_builder << "robotID" << strCurrID << "status" << status << "size" << strSize << "currentRoom" << room << "currentTask" << strCurrTask << "uptime" << 0;
 
     mongocxx::uri uri("mongodb://localhost:27017");
     mongocxx::client client(uri);
@@ -231,8 +245,11 @@ void database::Database::console_message(const std::string& message){
         std::cout << "Message: " << message << std::endl;
     }
 
+
+
 bool database::Database::update(const robot::Robot& robotInstance){
     int id = robotInstance.getId();
+    int upT = 3;//robotInstance.getLifeTime();
     std::string stID = std::to_string(id);
     std::string status = robotInstance.getStatus();
     Robot::Size size = robotInstance.getSize();
@@ -240,6 +257,10 @@ bool database::Database::update(const robot::Robot& robotInstance){
     std::string strSize = "def";
     std::string strCurrTask = "def";
     Robot::Function task = robotInstance.getTask();
+
+    if(status == "Active"){
+        upT = upT + 1;
+    }
 
         switch(size){
         case Robot::Size::Small: 
@@ -295,3 +316,4 @@ bool database::Database::update(const robot::Robot& robotInstance){
         return false;
     }
 }   
+

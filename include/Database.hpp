@@ -8,7 +8,6 @@
 #include "Robot.hpp"
 #include <unordered_map>
 #include <nlohmann/json.hpp>
-//#include "Simulation.hpp"
 
 #include <bsoncxx/v_noabi/bsoncxx/builder/stream/document.hpp>
 #include <bsoncxx/v_noabi/bsoncxx/json.hpp>
@@ -48,18 +47,11 @@ private:
     std::string endText;
     std::string interMediateText;
 
-    //mongocxx::instance currInst_;
     mongocxx::database db_;
     mongocxx::collection collection_;
 
 public:
     Database();
-        // uri = mongocxx::uri(kMongoDbUri),
-        // client = mongocxx::client(uri),
-        // db = client[kDatabaseName] {}
-
-    // Method to add a robot to the database
-    //void startDB()
 
     void add_robot(const robot::Robot& robotInstance);
 
@@ -81,7 +73,16 @@ public:
     //Method to get a robot's current task
     std::string getRobotTask(const robot::Robot& robotInstance);
 
+    std::string getRobotUptime(const robot::Robot& robotInstance);
+
+    std::string getRobotLifetime(const robot::Robot& robotInstance);
+
+    void init_analytics();
+
+    //Method to update a robots info in the database to its current data as saved in the robot class. 
     bool update(const robot::Robot& robotInstance);
+
+
 };
 } // namespace database
 
