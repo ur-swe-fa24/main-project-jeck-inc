@@ -12,6 +12,7 @@
 #include <string>
 #include <fstream>
 #include <unordered_map>
+#include <unordered_set>
 #include <nlohmann/json.hpp>
 #include <spdlog/spdlog.h>
 #include "spdlog/sinks/basic_file_sink.h"
@@ -28,7 +29,9 @@ struct Room {
     std::string size;
     std::string floor_surface;
     std::string access;
+    std::unordered_set<int> robots_cleaning;
     std::vector<std::string> connecting_rooms;
+    int percentClean;
 };
 
 // Struct for the building as a whole, which will contain the rooms
@@ -41,7 +44,7 @@ class Simulation
 {
     private:
         std::vector<int> robots; // Attribute to hold a list of robot identifiers
-        std::vector<Robot> robot_list; // Attribute to hold a list of robots
+        std::unordered_map<int, Robot> robot_dict; // Attribute to hold a list of robots
         std::mutex simulation_mutex; // Mutual Exclusion lock
         std::atomic<bool> running; // Control signal
         Building building; // Building layout
@@ -67,6 +70,8 @@ class Simulation
         // Method to load the map of a building from a json file
         void load_building(const std::string& json_file);
 
+        // Method to assign a room to one robot
+        std::string assign_task(int robotID, std::string roomID);
 
         // Getter for building
         Building get_building() { return building; }
@@ -74,8 +79,17 @@ class Simulation
         //Method to fix the robot when they are faulty
         std::string fix_robot(int id) ;
         
-        //Method to provide robot status (Faulty, Ideal or Active)
+        //Method to provide robot status (Faulty, Idle or Active)
         std::string robot_status(int id);
+
+        // Method to fill a robot with fluid
+        std::string fill_robot_fluid(int id);
+
+        // Method to get info about a robot
+        std::string get_robot_info(int id);
+
+        // Method to pass robot dict/map
+        std::unordered_map<int, Robot> get_robot_dict() const { return robot_dict; };
 };
 
 } // namespace simulation

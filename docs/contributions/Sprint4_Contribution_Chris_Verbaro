@@ -1,0 +1,9 @@
+# Chris Verbaro #
+
+I worked on the following during this sprint:
+- Database work:
+    - Added a getter methods
+    - Fleshed out the setter and getter methods to be more concise
+    - Added an update method.
+    - Coordinated with the simulation to call this method every tick of the simulation.
+    - Added plans to store various metrics involving the robots. 

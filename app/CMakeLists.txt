@@ -18,16 +18,20 @@ target_include_directories(main
 target_link_libraries(main 
     PRIVATE
         Simulation
-        GUI
         Database
         Robot
         mongo::mongocxx_shared
+        bm
+        bs
+        fe
+        sm
 )
 
 #Linking External Libraries
 target_link_libraries(Database
     PRIVATE
         mongo::mongocxx_shared
+        nlohmann_json::nlohmann_json
         ${wxWidgets_LIBRARIES}  # addition
 
 )

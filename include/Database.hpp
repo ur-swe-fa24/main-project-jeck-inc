@@ -6,6 +6,9 @@
 #include <iostream>
 #include <map>
 #include "Robot.hpp"
+#include <unordered_map>
+#include <nlohmann/json.hpp>
+//#include "Simulation.hpp"
 
 #include <bsoncxx/v_noabi/bsoncxx/builder/stream/document.hpp>
 #include <bsoncxx/v_noabi/bsoncxx/json.hpp>
@@ -63,8 +66,22 @@ public:
     // Method to display a message on the console
     void console_message(const std::string& message);
 
-    //Method to get a robots ID
-    void getRobotIDs(const robot::Robot& robotInstance);
+    //Method to get a robot's ID
+    std::string getRobotID(const robot::Robot& robotInstance);
+
+    //Method to get a robot's status
+    std::string getRobotStatus(const robot::Robot& robotInstance);
+
+    //Method to get a robot's size
+    std::string getRobotSize(const robot::Robot& robotInstance);
+
+    //Method to get a robot's current room
+    std::string getRobotRoom(const robot::Robot& robotInstance);
+
+    //Method to get a robot's current task
+    std::string getRobotTask(const robot::Robot& robotInstance);
+
+    bool update(const robot::Robot& robotInstance);
 };
 } // namespace database
 

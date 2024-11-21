@@ -24,6 +24,13 @@ find_package(bsoncxx REQUIRED)
 if (bsoncxx_FOUND)
   message(STATUS "bsoncxx found!")
 endif()
+find_package(wxWidgets REQUIRED COMPONENTS net core base)
+if (wxWidgets_FOUND)
+    message(STATUS "wxWidgets found!")
+endif()
+if(wxWidgets_USE_FILE) # not defined in CONFIG mode
+    include(${wxWidgets_USE_FILE})
+endif()
 
 
 add_library(Database
@@ -35,14 +42,6 @@ target_include_directories(Database
         $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/include>
 )
 
-add_library(GUI
-    src/GUI.cpp 
-)
-
-target_include_directories(GUI
-    PUBLIC
-        $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/include>
-)
 
 add_library(Robot
     src/Robot.cpp 
@@ -61,6 +60,92 @@ target_include_directories(Simulation
     PUBLIC
         $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/include>
 )
+
+
+
+
+
+#============================================================
+# FOR THE FRAMES
+#===========================================================
+
+# SENIOR MANAGER
+add_library(sm
+    src/Frames/sm.cpp
+)
+
+target_include_directories(sm
+    PUBLIC
+        $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/include>
+)
+
+target_link_libraries(sm
+    ${wxWidgets_LIBRARIES} 
+    Simulation
+    Database
+    mongo::mongocxx_shared
+)
+
+#===========================================================
+
+#BUILDING MANAGER
+add_library(bm
+    src/Frames/bm.cpp
+)
+
+target_include_directories(bm
+    PUBLIC
+        $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/include>
+)
+
+target_link_libraries(bm
+    ${wxWidgets_LIBRARIES} 
+    Simulation
+    Database
+    mongo::mongocxx_shared
+)
+
+#===========================================================
+
+#BUILDING STAFF
+add_library(bs
+    src/Frames/bs.cpp
+)
+
+target_include_directories(bs
+    PUBLIC
+        $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/include>
+)
+
+target_link_libraries(bs
+    ${wxWidgets_LIBRARIES} 
+    Simulation
+    Database
+    mongo::mongocxx_shared
+)
+
+#===========================================================
+
+#FIELD ENGINEER
+add_library(fe
+    src/Frames/fe.cpp
+)
+
+target_include_directories(fe
+    PUBLIC
+        $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/include>
+)
+
+target_link_libraries(fe
+    ${wxWidgets_LIBRARIES} 
+    Simulation
+    Database
+    mongo::mongocxx_shared
+)
+
+#===========================================================
+
+
 
 # using spdlog for loggin in spdlog_adapters
 # target_link_libraries(main
@@ -81,6 +166,5 @@ target_link_libraries(Simulation
         nlohmann_json::nlohmann_json
         spdlog::spdlog
 )
-
 add_subdirectory(app)
 add_subdirectory(tests)
