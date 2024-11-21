@@ -23,7 +23,8 @@ using namespace simulation;
 
 //Definition of functions and values
 void updateDatabase(Simulation& sim, Database& db);
-bool dataUpdate = true;
+bool live = true;
+void createNotification(Simulation& sim, Database& db);
 
 
 
@@ -57,6 +58,7 @@ private:
 
     std::thread simulationThread; //thread to run simulation in the background
     std::thread databaseThread;  //thread to update database
+    std::thread notificationThread; //thread for notification
 
     //Declaring Event Table
     wxDECLARE_EVENT_TABLE();
@@ -104,6 +106,11 @@ Home::Home(const wxString& title) : wxFrame(nullptr, wxID_ANY, title) {
     databaseThread = std::thread(updateDatabase, std::ref(sim), std::ref(db));
     databaseThread.detach();
 
+    //Start sending notifications as they come
+    notificationThread = std::thread(createNotification, std::ref(sim), std::ref(db));
+    notificationThread.detach();
+
+
     //Creating Elements (Buttons and Form Field) for GUI
     wxPanel* panel = new wxPanel(this, wxID_ANY);
 
@@ -148,18 +155,26 @@ void Home::OnFE(wxCommandEvent& event){
 //Event when Quit Button is pressed
 void Home::Quit(wxCommandEvent& event) {
     sim.stop(); //Ending the thread
-    dataUpdate=false;
+    live=false;
     Close(true);
 }
 
 void updateDatabase(Simulation& sim, Database& db){
     std::cout << "Things happening" << std::endl;
-    while (dataUpdate){
+    while (live){
         
         std::this_thread::sleep_for(std::chrono::milliseconds(30000)); // Sleep for 30 seconds
 
     }
 
+}
+
+void createNotification(Simulation& sm, Database& db){
+    std::cout << "Notification Center" << std::endl;
+    while (live){
+        
+        std::this_thread::sleep_for(std::chrono::milliseconds(1000)); // Sleep for 1 second
+    }
 }
  
 
