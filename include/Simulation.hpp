@@ -48,7 +48,8 @@ class Simulation
         std::mutex simulation_mutex; // Mutual Exclusion lock
         std::atomic<bool> running; // Control signal
         Building building; // Building layout
-        // Database db;
+        vector<int> faultyRobots; // vector for faulty robots
+        unordered_set<std::string> tasksCompleted; // vector for robots who just completed task
 
     public:
         // Constructor
@@ -90,6 +91,13 @@ class Simulation
 
         // Method to pass robot dict/map
         std::unordered_map<int, Robot> get_robot_dict() const { return robot_dict; };
+
+        // Method for getting faulty robots for UI notification
+        std::vector<int> getFaultyRobots();
+
+        // Method for getting completed tasks for UI notification
+        unordered_set<std::string> getTasksCompleted();
+        
 };
 
 } // namespace simulation
