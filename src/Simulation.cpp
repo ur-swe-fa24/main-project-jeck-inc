@@ -102,9 +102,10 @@ namespace simulation
         if (robot.getStatus() != "Faulty") {
             return "Robot is not faulty";
         }
-        // Actually fixing the robot if needed
-        robot.setStatus("Idle");
-        robot.setRoomAssigned("-1");
+        
+        // Actually fixing the robot
+        robot.setStatus("Active"); // Set robot back to active so it can finish its task
+
         return "Robot is fixed";
     }
 
@@ -139,12 +140,6 @@ namespace simulation
             return "Robot ID not found: " + std::to_string(robotID);
         }
 
-        // CURRENTLY CANNOT ASSIGN A TASK TO A ROBOT THAT ALREADY HAS ONE
-        if (robot_dict[robotID].getStatus() == "Active")
-        {
-            return "Robot already in room: " + robot_dict[robotID].getRoomAssigned();
-        }
-
         // Check if the roomID exists in the building
         if (building.rooms.find(roomID) == building.rooms.end()) {
             return "Room ID not found: " + roomID;
@@ -173,10 +168,23 @@ namespace simulation
             default:
                 return "Unknown robot function.";
         }
-        robot_dict[robotID].setStatus("Active"); // Set status of robot to Active
-        robot_dict[robotID].setRoomAssigned(roomID); // Assign the robot -> the room (robot can only have 1 room)
-        building.rooms[roomID].robots_cleaning.insert(robotID); // Assign the room -> the robot (room can have many robots)
-        return "Room assigned";
+        if (robot_dict[robotID].getStatus() == "Active")
+        {
+            std::queue<std::string>& backLog = robot_dict[robotID].getTaskBacklog(); // Get backlog queue
+            backLog.push(roomID); // Add to backlog
+            return "Room assigned, added to backlog of tasks as robot is currently in another room";
+        }
+        
+        if (robot_dict[robotID].getStatus() == "Idle")
+        {
+            robot_dict[robotID].setStatus("Active"); // Set status of robot to Active
+            robot_dict[robotID].setRoomAssigned(roomID); // Assign the robot -> the room (robot can only have 1 room)
+            building.rooms[roomID].robots_cleaning.insert(robotID); // Assign the room -> the robot (room can have many robots)
+            return "Room assigned, robot getting started now";
+        }
+        
+        return "Robot is faulty and cannot be assigned a room";
+        
     }
 
     // Method to get info about a robot
@@ -239,8 +247,6 @@ namespace simulation
                     // Check if robot is currently Active
                     if (robot.getStatus() == "Active")
                     {
-                        file_logger->info("\tRobot {} is in room {} and performing task {}", robotID, roomID, robotTypeStr);
-                        
                         // Randomly "break" the robot and make it Faulty
                         int randomNum = rand() % 101;
                         if (randomNum < 5) 
@@ -250,6 +256,8 @@ namespace simulation
                         }
                         else
                         {
+                            file_logger->info("\tRobot {} is in room {} and performing task {}", robotID, roomID, robotTypeStr);
+
                             std::string robotRoom = robot.getRoomAssigned();
                         
                             // Check if the room is already 100% clean
@@ -260,9 +268,27 @@ namespace simulation
 
                                 // Robot is\ done cleaning the room
                                 building.rooms[roomID].robots_cleaning.erase(robotID); // Remove robot from the room
-                                robot_dict[robotID].setRoomAssigned("-1"); // Unassign the room from the robot
-                                robot_dict[robotID].setStatus("Idle"); // Set status of robot to Idle
-                                file_logger->info("\tRobot {} has finished cleaning room {} and is now idle", robotID, roomID);
+                                
+                                std::queue<std::string>& backLog = robot_dict[robotID].getTaskBacklog(); // Get backlog queue
+                                
+                                // Check if there is a backlog of tasks for this robot
+                                if (backLog.empty())
+                                {
+                                    robot_dict[robotID].setRoomAssigned("-1"); // Unassign the room from the robot
+                                    robot_dict[robotID].setStatus("Idle"); // Set status of robot to Idle
+                                    file_logger->info("\tRobot {} has finished cleaning room {} and is now idle", robotID, roomID);
+                                }
+                                else
+                                {
+                                    // Get next room in the backlog queue and take it out of the queue
+                                    std::string nextRoom = backLog.front();
+                                    backLog.pop();
+
+                                    // Assign robot the next room
+                                    robot_dict[robotID].setRoomAssigned(nextRoom);
+                                    building.rooms[nextRoom].robots_cleaning.insert(robotID);
+                                    file_logger->info("\tRobot {} has finished cleaning room {} and is now going to clean room {}", robotID, roomID, nextRoom);
+                                }
                             }    
                             else
                             {
@@ -320,6 +346,13 @@ namespace simulation
                                     building.rooms[roomID].robots_cleaning.erase(robotID); // Remove robot from the room
                                     robot_dict[robotID].setRoomAssigned("-1"); // Unassign the room from the robot
                                     robot_dict[robotID].setStatus("Idle"); // Set status of robot to Idle
+                                    
+                                    // Clear out the backlog
+                                    std::queue<std::string>& backLog = robot_dict[robotID].getTaskBacklog(); // Get backlog queue
+                                    while (!backLog.empty())
+                                    {
+                                        backLog.pop();
+                                    }
                                 }
                                 // Robot is out of battery, it uses its reserve battery to go to charging station
                                 else if (new_battery <= 0)
@@ -328,6 +361,13 @@ namespace simulation
                                     building.rooms[roomID].robots_cleaning.erase(robotID); // Remove robot from the room
                                     robot_dict[robotID].setRoomAssigned("-1"); // Unassign the room from the robot
                                     robot_dict[robotID].setStatus("Idle"); // Set status of robot to Idle
+                                    
+                                    // Clear out the backlog
+                                    std::queue<std::string>& backLog = robot_dict[robotID].getTaskBacklog(); // Get backlog queue
+                                    while (!backLog.empty())
+                                    {
+                                        backLog.pop();
+                                    }
                                 }
                                 else
                                 {

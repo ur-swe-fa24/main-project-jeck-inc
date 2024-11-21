@@ -2,7 +2,7 @@
 #define ROBOT_HPP
 
 #include <string>
-
+#include <queue>
 
 namespace robot {
 
@@ -51,7 +51,8 @@ public:
     int getUpTime() const;
     void setTotalLiveTime(int new_time);
     void setUpTime(int new_up_time);
-
+    std::queue<std::string>& getTaskBacklog() { return taskBacklog; }
+    
 
 private:
     static int nextId; // Static variable to hold the next robot ID
@@ -59,11 +60,12 @@ private:
     Function task;    // Robot task
     Size size;        // Robot size
     Status status;    // Robot status
-    int battery;       //Robot Battery
+    int battery;       // Robot Battery
     int fluidLevel;
-    std::string roomAssigned;       //Room-Id Assigned
+    std::string roomAssigned;       // Room-Id Assigned
     int upTime;
     int totalLiveTime;
+    std::queue<std::string> taskBacklog;
 };
 
 } // namespace robot
