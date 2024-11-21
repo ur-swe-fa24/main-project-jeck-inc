@@ -97,6 +97,9 @@ class Simulation
 
         // Method for getting completed tasks for UI notification
         unordered_set<std::string> getTasksCompleted();
+
+        // Method that takes in a room ID and returns the tentative completion time for that room
+        int completionTime(std::string roomID);
         
 };
 
