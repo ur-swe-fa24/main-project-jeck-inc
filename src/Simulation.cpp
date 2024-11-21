@@ -204,6 +204,21 @@ namespace simulation
         "\n\tCurrent Fluid Level: " + std::to_string(robot.getFluidLevel());
     }
 
+    // Method for getting faulty robots for UI notification
+    std::vector<int> Simulation::getFaultyRobots()
+    {
+        vector<int> returnfaultyRobots = faultyRobots;
+        faultyRobots.clear();
+        return returnfaultyRobots;
+    }
+
+    // Method for getting completed tasks for UI notification
+    std::unordered_set<std::string> Simulation::getTasksCompleted()
+    {
+        unordered_set<std::string> returnTasksCompleted = tasksCompleted;
+        tasksCompleted.clear();
+        return returnTasksCompleted;
+    }
 
     // method to simulate the entire operation
     void Simulation::simulate() 
@@ -253,6 +268,7 @@ namespace simulation
                         {
                             file_logger->info("\tRobot {} has become faulty", robotID);
                             robot.setStatus("Faulty");
+                            faultyRobots.push_back(robotID);
                         }
                         else
                         {
@@ -270,6 +286,8 @@ namespace simulation
                                 building.rooms[roomID].robots_cleaning.erase(robotID); // Remove robot from the room
                                 
                                 std::queue<std::string>& backLog = robot_dict[robotID].getTaskBacklog(); // Get backlog queue
+                                
+                                tasksCompleted.insert(roomID); // Add to tasksCompleted for notifcation that room is clean;
                                 
                                 // Check if there is a backlog of tasks for this robot
                                 if (backLog.empty())
