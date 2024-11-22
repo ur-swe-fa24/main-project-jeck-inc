@@ -15,7 +15,17 @@ public:
     
 private:
     // Event handler for adding a robot
-    void AddingRobot(wxCommandEvent& event);
+    void RobotProductivity(wxCommandEvent& event);
+
+    // int allRobotPerformance()
+    wxComboBox* sizeComboBox;
+    wxComboBox* typeComboBox;
+
+    wxArrayString sizeChoices;
+    wxArrayString typeChoices;
+
+
+    wxStaticText* robotProducitivity; 
 
     // Reference to the Simulation object
     simulation::Simulation& sim;

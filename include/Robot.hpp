@@ -63,8 +63,8 @@ private:
     int battery;       // Robot Battery
     int fluidLevel;
     std::string roomAssigned;       // Room-Id Assigned
-    int upTime;
-    int totalLiveTime;
+    int upTime;                     // Robot is actually working
+    int totalLiveTime;              // Time since the robot was originally spawned
     std::queue<std::string> taskBacklog;
 };
 

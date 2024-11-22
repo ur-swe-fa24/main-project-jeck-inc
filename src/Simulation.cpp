@@ -220,6 +220,60 @@ namespace simulation
         return returnTasksCompleted;
     }
 
+    //Method to get the performance of the robots
+    std::vector<std::vector<int>> Simulation::getRobotPerformances(){
+        std::vector<std::vector<int>> info;
+
+        // Iterate through every robot
+        for (auto& pair : robot_dict)
+        {
+            int robotID = pair.first; // Get the robot ID
+            robot::Robot& robot = pair.second; // Get the robot reference
+
+            std::vector<int> myList;
+
+            int size;
+            int type;
+
+            switch (robot.getSize()){
+                case Robot::Size::Large:
+                    size = 0;
+                    break;
+                case Robot::Size::Medium:
+                    size = 1;
+                    break;
+                case Robot::Size::Small:
+                    size = 2;
+                    break;
+                default:
+                    size = -1;
+            }
+
+            switch(robot.getTask()){
+                case Robot::Function::Scrub:
+                    type = 0;
+                    break;
+                case Robot::Function::Shampoo:
+                    type = 1;
+                    break;
+                case Robot::Function::Vacuum:
+                    type = 2;
+                    break;
+                default:
+                    size = -1;
+            }
+
+
+            
+
+            info.push_back({size, type, robot.getTotalLiveTime(), robot.getUpTime()});
+        }
+
+        return info;
+    }
+
+
+
     // method to simulate the entire operation
     void Simulation::simulate() 
     {   
@@ -258,12 +312,15 @@ namespace simulation
                             robotTypeStr = "Unknown";
                     }
 
+                    robot.setTotalLiveTime(robot.getTotalLiveTime()+1);
                     
                     // Check if robot is currently Active
                     if (robot.getStatus() == "Active")
                     {
                         // Randomly "break" the robot and make it Faulty
                         int randomNum = rand() % 101;
+
+                        robot.setUpTime(robot.getUpTime()+1);
                         if (randomNum < 5) 
                         {
                             file_logger->info("\tRobot {} has become faulty", robotID);

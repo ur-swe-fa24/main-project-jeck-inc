@@ -11,6 +11,8 @@
 #include <chrono>
 #include <string>
 #include <fstream>
+#include <variant>
+#include <list>
 #include <unordered_map>
 #include <unordered_set>
 #include <nlohmann/json.hpp>
@@ -97,6 +99,9 @@ class Simulation
 
         // Method for getting completed tasks for UI notification
         unordered_set<std::string> getTasksCompleted();
+
+        // Calculates efficiency of each robot and sends that result
+        std::vector<std::vector<int>> getRobotPerformances();
         
 };
 
