@@ -29,6 +29,8 @@ TEST_CASE("Database class tests"){
 
         REQUIRE(db.getRobotRoom(myRobot) == "7");
         REQUIRE(db.getRobotStatus(myRobot) == "Active");
+
+        REQUIRE_NOTHROW(db.init_analytics());
     }
 
 

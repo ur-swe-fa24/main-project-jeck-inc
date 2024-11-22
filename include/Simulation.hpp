@@ -102,6 +102,20 @@ class Simulation
 
         // Calculates efficiency of each robot and sends that result
         std::vector<std::vector<int>> getRobotPerformances();
+
+        // Method for getting a list of room cleanliness
+        // Key: string roomID
+        // Value: int percentClean
+        unordered_map<std::string, int> getAllRoomCleanliness();
+
+        // Method for getting a list of ongoing tasks
+        // Key: int robotID
+        // Value: string roomID
+        unordered_map<int, std::string> getOngoingTasks();
+
+        // Method that takes in a room ID and returns the tentative completion time for that room
+        int completionTime(std::string roomID);
+
         
 };
 

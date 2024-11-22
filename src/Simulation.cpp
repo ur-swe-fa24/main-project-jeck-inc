@@ -274,6 +274,75 @@ namespace simulation
 
 
 
+    // Method for getting a list of room cleanliness
+    unordered_map<std::string, int> Simulation::getAllRoomCleanliness()
+    {
+        unordered_map<std::string, int> roomCleanlinessMap;
+        for (auto& pair : building.rooms)
+        {
+            roomCleanlinessMap[pair.first] = pair.second.percentClean;
+        }
+        return roomCleanlinessMap;
+    }
+
+    // Method for getting a list of ongoing tasks
+    // Key: int robotID
+    // Value: string roomID
+    unordered_map<int, std::string> Simulation::getOngoingTasks()
+    {
+        unordered_map<int, std::string> ongoingTasks;
+        for (auto& pair : robot_dict)
+        {
+            ongoingTasks[pair.first] = pair.second.getRoomAssigned();
+        }
+        return ongoingTasks;
+    }
+
+
+    // Method that takes in a room ID and returns the tentative completion time for that room
+    int Simulation::completionTime(std::string roomID)
+    {
+        // Check if the roomID exists in the building
+        if (building.rooms.find(roomID) == building.rooms.end()) 
+        {
+            return -2; // room doesn't exist
+        }
+
+        // Check if there are any robots cleaning the room
+        if (building.rooms[roomID].robots_cleaning.empty()) 
+        {
+            return -1; // No robots cleaning the room
+        }
+
+        int cleaningPower = 0; // variable for how much of the room is getting cleaned per second
+        
+        // Iterate through each robot in the room
+        for (int robotID : building.rooms[roomID].robots_cleaning)
+        {
+            // switch statement gets how much of the room the robot cleans in one second based on size of the robot
+            int robotSizePower = 0; 
+            switch (robot_dict[robotID].getSize()) 
+            {
+                case Robot::Size::Large:
+                    robotSizePower = 4;
+                    break;
+                case Robot::Size::Medium:
+                    robotSizePower = 3;
+                    break;
+                case Robot::Size::Small:
+                    robotSizePower = 2;
+                    break;
+                default:
+                    break;
+            }
+            cleaningPower += robotSizePower;
+        }
+        int timeUntilCompletion = (100 - building.rooms[roomID].percentClean) / cleaningPower;
+        return timeUntilCompletion;
+    }
+
+
+
     // method to simulate the entire operation
     void Simulation::simulate() 
     {   
