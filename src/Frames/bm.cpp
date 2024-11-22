@@ -85,7 +85,7 @@ void BuildingM::AssignTask(wxCommandEvent& event) {
     roomId->Clear();
 }
 
-// Function to convert user input to the corresponding enum value
+// Function to convert user input to the corresponding enum Function value
 Robot::Function getFunctionFromInput(int choice) {
     switch (choice) {
         case 1: return Robot::Function::Shampoo;
@@ -95,6 +95,7 @@ Robot::Function getFunctionFromInput(int choice) {
     }
 }
 
+// Function to convert user input to the corresponding enum Size value
 Robot::Size getSizeFromInput(int choice) {
     switch (choice) {
         case 1: return Robot::Size::Small;

@@ -40,31 +40,38 @@ namespace robot {
     
     }
 
+    //Getter Function to get the working time of robot
     int Robot::getUpTime() const {
         return upTime;
     }
 
+    //Getter function to get the total spawned time of the robot
     int Robot::getTotalLiveTime() const {
         return totalLiveTime;
     }
 
+    //Getter function to set the battery of robot
     void Robot::setBattery(int new_battery){
         battery = new_battery;
     }
 
+    //Getter function to set the room assigned for the robot (if any else -1)
     void Robot::setRoomAssigned(std::string newRoom){
         roomAssigned = newRoom;
     }  
 
+    //Getter function to set the fluid level for the robot
     void Robot::setFluidLevel(int updatedFluidLevel)
     {
         fluidLevel = updatedFluidLevel;
     }
 
+    //Getter function to set the total live time of the robot
     void Robot::setTotalLiveTime(int new_time){
         totalLiveTime = new_time;
     }
 
+    //Getter functio to set the total work time of the robot
     void Robot::setUpTime(int new_up_time){
         upTime = new_up_time;
     }

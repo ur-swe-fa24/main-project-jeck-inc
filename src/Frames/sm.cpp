@@ -19,14 +19,14 @@ SeniorM::SeniorM(const wxString& title, Simulation& sim, Database& db)
     // Create a panel for holding the GUI components
     wxPanel* panel = new wxPanel(this, wxID_ANY);
 
-    // wxStaticText* sizeLabel = new wxStaticText(panel, wxID_ANY, "Size", wxPoint(60, 20));
     wxStaticText* sizeLabel = new wxStaticText(panel, wxID_ANY, "Size", wxPoint(100, 30));  
 
-    
+    //Adding Options in the Size DropDown
     sizeChoices.Add("Large");
     sizeChoices.Add("Medium");
     sizeChoices.Add("Small");
 
+    //Creating the SizeComboBox
     sizeComboBox = new wxComboBox(panel, wxID_ANY, "Select an option", 
                             wxPoint(50, 50), wxSize(150, 30), sizeChoices,
                             wxCB_READONLY);
@@ -34,19 +34,21 @@ SeniorM::SeniorM(const wxString& title, Simulation& sim, Database& db)
 
     wxStaticText* typeLabel = new wxStaticText(panel, wxID_ANY, "Type", wxPoint(250, 30));
 
-    
+    //Adding Options in the Type Dropdown
     typeChoices.Add("Scrub");
     typeChoices.Add("Vaccum");
     typeChoices.Add("Shampoo");
 
+    //Creating the TypeComboBox
     typeComboBox = new wxComboBox(panel, wxID_ANY, "Select an option", 
                             wxPoint(200, 50), wxSize(150, 30), typeChoices,
                             wxCB_READONLY);
 
 
-    // Create a button that will trigger the AddingRobot event
-    wxButton* addButton = new wxButton(panel, 1001, "Calculate Robots Productivity", wxPoint(50, 90));
+    // Create a button that will trigger the Calculte event
+    wxButton* calculate = new wxButton(panel, 1001, "Calculate Robots Productivity", wxPoint(50, 90));
 
+    //Create a label for Productivity that will change as per the result
     robotProducitivity = new wxStaticText(panel, wxID_ANY, "", wxPoint(290, 100));
 
     // Set the window size for the SubFrame
@@ -59,15 +61,20 @@ void SeniorM::RobotProductivity(wxCommandEvent& event) {
     std::string size = sizeComboBox->GetValue().ToStdString();
     std::string type = typeComboBox->GetValue().ToStdString();
 
+    //Getting the info about the performance of all the robot
     std::vector<std::vector<int>> robotInfo = sim.getRobotPerformances();
 
     int totalTime = 0;
     int totalWorkTime = 0;
 
-    
+    //iterate over all the robot
     for (auto robot: robotInfo){
-        std::string robotSize;
 
+        //Identifying the robot's type and size for filter purposes
+        //the size and type have been converted to integer which are being converted back to string
+
+        //Getting the size of the robot
+        std::string robotSize;
         switch (robot[0]){
             case 0:
                 robotSize = "Large";
@@ -82,7 +89,7 @@ void SeniorM::RobotProductivity(wxCommandEvent& event) {
                 robotSize = "Unknown";
         }
 
-
+        //Getting the type of the robot
         std::string robotType;
         switch (robot[1]){
             case 0:
@@ -98,27 +105,27 @@ void SeniorM::RobotProductivity(wxCommandEvent& event) {
                 robotType = "Unknonw";
         }
 
+        //Getting the performance values
         int workTime = robot[3];
         int time = robot[2];
 
+        //Checking for the filter
         if ((size == "" || size == robotSize) && (type == "" || type == robotType)){
             totalTime += time;
             totalWorkTime += workTime;
         }
 
-
-
-
     }
 
+    //Default Value
     std::string result = "NA";
 
+    //<aking sure there is no 0 division error
     if (totalTime != 0){
         result = std::to_string(std::round(totalWorkTime/totalTime)) + "%";
     }
 
-
-    std::cout << "Value in the size is " + sizeComboBox->GetValue() << std::endl;
+    //Changing the result
     robotProducitivity->SetLabel(result);
 
   

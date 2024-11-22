@@ -73,8 +73,10 @@ public:
     //Method to get a robot's current task
     std::string getRobotTask(const robot::Robot& robotInstance);
 
+    //Method to get the up time of Robot
     std::string getRobotUptime(const robot::Robot& robotInstance);
 
+    //Method to get the total life time of robot
     std::string getRobotLifetime(const robot::Robot& robotInstance);
 
     void init_analytics();
