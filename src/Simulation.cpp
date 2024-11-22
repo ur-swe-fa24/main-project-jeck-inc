@@ -220,6 +220,32 @@ namespace simulation
         return returnTasksCompleted;
     }
 
+
+    // Method for getting a list of room cleanliness
+    unordered_map<std::string, int> Simulation::getAllRoomCleanliness()
+    {
+        unordered_map<std::string, int> roomCleanlinessMap;
+        for (auto& pair : building.rooms)
+        {
+            roomCleanlinessMap[pair.first] = pair.second.percentClean;
+        }
+        return roomCleanlinessMap;
+    }
+
+    // Method for getting a list of ongoing tasks
+    // Key: int robotID
+    // Value: string roomID
+    unordered_map<int, std::string> Simulation::getOngoingTasks()
+    {
+        unordered_map<int, std::string> ongoingTasks;
+        for (auto& pair : robot_dict)
+        {
+            ongoingTasks[pair.first] = pair.second.getRoomAssigned();
+        }
+        return ongoingTasks;
+    }
+
+
     // Method that takes in a room ID and returns the tentative completion time for that room
     int Simulation::completionTime(std::string roomID)
     {
@@ -261,6 +287,7 @@ namespace simulation
         int timeUntilCompletion = (100 - building.rooms[roomID].percentClean) / cleaningPower;
         return timeUntilCompletion;
     }
+
 
     // method to simulate the entire operation
     void Simulation::simulate() 
