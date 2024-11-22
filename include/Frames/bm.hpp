@@ -26,7 +26,7 @@ private:
     wxTextCtrl* robotId;
     wxTextCtrl* roomId;
 
-    // Reference to the Simulation object
+    // Reference to the Simulation and Database object
     simulation::Simulation& sim;
     database::Database& db;
 

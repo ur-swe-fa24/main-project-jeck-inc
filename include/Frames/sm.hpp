@@ -22,12 +22,12 @@ private:
     wxComboBox* typeComboBox;
 
     wxArrayString sizeChoices;
-    wxArrayString typeChoices;
+    wxArrayString typeChoices;    
 
-
+    //Static Text for Response
     wxStaticText* robotProducitivity; 
 
-    // Reference to the Simulation object
+    // Reference to the Simulation and Database object
     simulation::Simulation& sim;
     database::Database& db;
 
