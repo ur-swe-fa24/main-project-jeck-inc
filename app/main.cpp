@@ -163,16 +163,29 @@ void updateDatabase(Simulation& sim, Database& db){
     std::cout << "Things happening" << std::endl;
     while (live){
         
+        
         std::this_thread::sleep_for(std::chrono::milliseconds(30000)); // Sleep for 30 seconds
 
     }
 
 }
 
-void createNotification(Simulation& sm, Database& db){
+void createNotification(Simulation& sim, Database& db){
     std::cout << "Notification Center" << std::endl;
     while (live){
-        
+        std::vector<int> faultyRobots = sim.getFaultyRobots();
+
+        for (auto robo : faultyRobots){
+            wxMessageBox("Robot Id: " + std::to_string(robo) + " is currently faulty and requires immediate attention", "Robot Status", wxOK | wxICON_INFORMATION);
+        }
+
+        unordered_set<std::string> taskComplete = sim.getTasksCompleted();
+
+        for (auto task : taskComplete){
+            wxMessageBox("Cleaning task for room " + task + " has just been completed.", "Robot Status", wxOK | wxICON_INFORMATION);
+        }
+
+
         std::this_thread::sleep_for(std::chrono::milliseconds(1000)); // Sleep for 1 second
     }
 }
