@@ -46,11 +46,11 @@ Field Engineer can see all the robots in the simulation, fix a robot if it is br
 
 ### Map
 
-The `building.json` file defines the structure and layout of the building for the simulation. Below is an explanation of the key components of this JSON configuration.
+The `building.json` file defines the structure and layout of the building for the simulation. Below is an explanation of the key components of this JSON configuration. The `building.json` configuration file is found in the app folder. 
 
 ### Key Components
 
-- **building_name**: This field specifies the name of the building. In this example, it is set to "School".
+- **building_name**: This field specifies the name of the building. In this example, it is set to "School". 
 
 - **rooms**: This is an array that contains objects representing each room in the building. Each room object includes the following properties:
   - **room_id**: A unique identifier for the room (ex. "0", "1", "2").
@@ -59,5 +59,6 @@ The `building.json` file defines the structure and layout of the building for th
   - **floor_surface**: The type of floor in the room ("carpet", "wood", "tile").
   - **access**: Indicates the access level for the room
   - **connecting_rooms**: An array of room IDs that are directly connected to this room
+  
 
 
