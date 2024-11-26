@@ -19,12 +19,17 @@ private:
     void RobotRefill(wxCommandEvent& event);
     void TaskHistory(wxCommandEvent& event);
     void CleanRooms(wxCommandEvent& event);
+    void TentativeCompletionTime(wxCommandEvent& event);
 
 
     //for robotstatus
     wxTextCtrl* robotStatusId;
     wxTextCtrl* robotRefillId;
     wxTextCtrl* cleanThreshold;
+    wxTextCtrl* tentativeCompletionRoomId;
+
+    wxStaticText* completionTime; 
+
 
 
     // Reference to the Simulation and Database object
