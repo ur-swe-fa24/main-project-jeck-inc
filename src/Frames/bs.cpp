@@ -11,6 +11,7 @@ wxBEGIN_EVENT_TABLE(BuildingS, wxFrame)
     EVT_BUTTON(1002, BuildingS::RobotRefill) 
     EVT_BUTTON(1003, BuildingS::TaskHistory) 
     EVT_BUTTON(1004, BuildingS::CleanRooms) 
+    EVT_BUTTON(1005, BuildingS::TentativeCompletionTime) 
 wxEND_EVENT_TABLE()
 
 // Constructor definition
@@ -34,19 +35,27 @@ BuildingS::BuildingS(const wxString& title, Simulation& sim, Database& db)
     // Create a button that will trigger the AddingRobot event
     wxButton* robotRefillButton = new wxButton(panel, 1002, "Refill Robot", wxPoint(10, 185));
 
+    //Getting tentative time for unclean rooms
+    wxStaticText* tCTLabel = new wxStaticText(panel, wxID_ANY, "Tentative Clearning Time", wxPoint(10, 250));
+    tentativeCompletionRoomId = new wxTextCtrl(panel, wxID_ANY, "Room Id", wxPoint(180,245), wxSize(100, -1));
+    wxButton* calculateTCTButton = new wxButton(panel, 1005, "Calculate Completion Time", wxPoint(10, 280));
+    completionTime = new wxStaticText(panel, wxID_ANY, "", wxPoint(250, 285));
+
+    
+
     //Getting list of Unclean Room
     // wxStaticText* listUncleanLabel = new wxStaticText(panel, wxID_ANY, "List of Uncleaned Rooms", wxPoint(10, 250));
-    wxStaticText* listUncleanThreshLabel = new wxStaticText(panel, wxID_ANY, "Enter Threshold", wxPoint(10, 250));
-    cleanThreshold = new wxTextCtrl(panel, wxID_ANY, "80", wxPoint(125,245), wxSize(50, -1));
-    wxButton* cleanRoomsButton = new wxButton(panel, 1004, "List of Unclean Rooms", wxPoint(10, 280));
+    wxStaticText* listUncleanThreshLabel = new wxStaticText(panel, wxID_ANY, "Enter Threshold", wxPoint(10, 350));
+    cleanThreshold = new wxTextCtrl(panel, wxID_ANY, "80", wxPoint(125,345), wxSize(50, -1));
+    wxButton* cleanRoomsButton = new wxButton(panel, 1004, "List of Unclean Rooms", wxPoint(10, 380));
 
     //Getting list of ongoing task
-    wxButton* ongoingTasksButton = new wxButton(panel, 1003, "List of Ongoing Task", wxPoint(10, 350));
+    wxButton* ongoingTasksButton = new wxButton(panel, 1003, "List of Ongoing Task", wxPoint(10, 450));
 
 
 
     // Set the window size for the SubFrame
-    this->SetSize(400, 450);
+    this->SetSize(400, 550);
 }
 
 // Event handler: Creates a Message Box to Display to the Status of a Robot
@@ -121,3 +130,24 @@ void BuildingS::CleanRooms(wxCommandEvent& event){
 
 
 }
+
+
+void BuildingS::TentativeCompletionTime(wxCommandEvent& event){
+    int roomId = wxAtoi(tentativeCompletionRoomId->GetValue());
+
+    int result = sim.completionTime(std::to_string(roomId));
+
+
+
+    if (result == -1){
+        wxMessageBox("No Robots are cleaning the room at the moment", "Room's Tentative Cleaning Time", wxOK | wxICON_INFORMATION);
+
+    }else if ( result == -2){
+        wxMessageBox("Room Id doesn't exist", "Room's Tentative Cleaning Time", wxOK | wxICON_INFORMATION);
+
+    }else{
+        completionTime->SetLabel(std::to_string(result) + " seconds");
+    }
+    
+}
+
