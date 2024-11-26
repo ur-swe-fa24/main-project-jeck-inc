@@ -27,11 +27,6 @@ using namespace robot;
 // Creating namespace
 namespace database{
 
-constexpr char kMongoDbUri[] = "mongodb://localhost:27017";
-constexpr char kDatabaseName[] = "robotDatabase";
-constexpr char kCollectionName[] = "robots";
-
-
 class Database {
 
 private:
@@ -52,6 +47,8 @@ private:
 
 public:
     Database();
+
+    ~Database();
 
     void add_robot(const robot::Robot& robotInstance);
 
