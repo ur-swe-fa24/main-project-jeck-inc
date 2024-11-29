@@ -91,9 +91,9 @@ public:
 
 
     //Method to update a robots info in the database to its current data as saved in the robot class. 
-    bool update(const robot::Robot& robotInstance);
+    bool updateRobots(const robot::Robot& robotInstance);
 
-
+    
 };
 } // namespace database
 

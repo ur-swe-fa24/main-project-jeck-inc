@@ -20,7 +20,7 @@ void database::Database::init_analytics(){
     mongocxx::collection collection = db["stats"]; 
 
     bsoncxx::builder::stream::document filter_builder{};
-    filter_builder << "upTime" << -1 << "numTaskCompleted" << -1 << "numberOfErrors" << -1 << "totalRobots" << 0 << "totalRoomsCleaned" << 0; 
+    filter_builder << "DatabaseID" << 1 << "upTime" << -1 << "numTaskCompleted" << -1 << "numberOfErrors" << -1 << "totalRobots" << 0 << "totalRoomsCleaned" << 0; 
 
     collection.insert_one(filter_builder.view());
 
@@ -247,7 +247,7 @@ void database::Database::console_message(const std::string& message){
 
 
 
-bool database::Database::update(const robot::Robot& robotInstance){
+bool database::Database::updateRobots(const robot::Robot& robotInstance){
     int id = robotInstance.getId();
     int upT = 3;//robotInstance.getLifeTime();
     std::string stID = std::to_string(id);
@@ -317,3 +317,127 @@ bool database::Database::update(const robot::Robot& robotInstance){
     }
 }   
 
+bool database::Database::setUpTime(const int ut){
+    int dbID = 1;
+    mongocxx::uri uri("mongodb://localhost:27017");
+    mongocxx::client client(uri);
+
+    mongocxx::database db = client["database"];
+    mongocxx::collection collection = db["robots"]; 
+
+    bsoncxx::builder::stream::document filter_builder{};
+    filter_builder << "DatabaseID" << dbID; 
+
+    bsoncxx::builder::stream::document update_builder;
+    update_builder << "$set" << bsoncxx::builder::stream::open_document
+    << "upTime" << ut << bsoncxx::builder::stream::close_document;
+
+    auto result = collection.update_one(filter_builder.view(), update_builder.view());
+
+    if(result){
+        return true;
+    }
+    else{
+        return false;
+    }
+}
+
+bool database::Database::setNumTaskCompleted(const int tc){
+    int dbID = 1;
+    mongocxx::uri uri("mongodb://localhost:27017");
+    mongocxx::client client(uri);
+
+    mongocxx::database db = client["database"];
+    mongocxx::collection collection = db["robots"]; 
+
+    bsoncxx::builder::stream::document filter_builder{};
+    filter_builder << "DatabaseID" << dbID; 
+
+    bsoncxx::builder::stream::document update_builder;
+    update_builder << "$set" << bsoncxx::builder::stream::open_document
+    << "numTaskCompleted" << tc << bsoncxx::builder::stream::close_document;
+
+    auto result = collection.update_one(filter_builder.view(), update_builder.view());
+
+    if(result){
+        return true;
+    }
+    else{
+        return false;
+    }
+}
+
+bool database::Database::setNumOfError(const int er){
+    int dbID = 1;
+    mongocxx::uri uri("mongodb://localhost:27017");
+    mongocxx::client client(uri);
+
+    mongocxx::database db = client["database"];
+    mongocxx::collection collection = db["robots"]; 
+
+    bsoncxx::builder::stream::document filter_builder{};
+    filter_builder << "DatabaseID" << dbID; 
+
+    bsoncxx::builder::stream::document update_builder;
+    update_builder << "$set" << bsoncxx::builder::stream::open_document
+    << "numberOfErrors" << er << bsoncxx::builder::stream::close_document;
+
+    auto result = collection.update_one(filter_builder.view(), update_builder.view());
+
+    if(result){
+        return true;
+    }
+    else{
+        return false;
+    }
+}
+
+bool database::Database::setTotalRobots(const int trb){
+    int dbID = 1;
+    mongocxx::uri uri("mongodb://localhost:27017");
+    mongocxx::client client(uri);
+
+    mongocxx::database db = client["database"];
+    mongocxx::collection collection = db["robots"]; 
+
+    bsoncxx::builder::stream::document filter_builder{};
+    filter_builder << "DatabaseID" << dbID; 
+
+    bsoncxx::builder::stream::document update_builder;
+    update_builder << "$set" << bsoncxx::builder::stream::open_document
+    << "totalRobots" << trb << bsoncxx::builder::stream::close_document;
+
+    auto result = collection.update_one(filter_builder.view(), update_builder.view());
+
+    if(result){
+        return true;
+    }
+    else{
+        return false;
+    }
+}
+
+bool database::Database::setTotalRoomClned(const int trc){
+    int dbID = 1;
+    mongocxx::uri uri("mongodb://localhost:27017");
+    mongocxx::client client(uri);
+
+    mongocxx::database db = client["database"];
+    mongocxx::collection collection = db["robots"]; 
+
+    bsoncxx::builder::stream::document filter_builder{};
+    filter_builder << "DatabaseID" << dbID; 
+
+    bsoncxx::builder::stream::document update_builder;
+    update_builder << "$set" << bsoncxx::builder::stream::open_document
+    << "totalRoomsCleaned" << trc << bsoncxx::builder::stream::close_document;
+
+    auto result = collection.update_one(filter_builder.view(), update_builder.view());
+
+    if(result){
+        return true;
+    }
+    else{
+        return false;
+    }
+}
