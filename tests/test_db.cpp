@@ -25,12 +25,18 @@ TEST_CASE("Database class tests"){
         myRobot.setStatus("Active");
         myRobot.setRoomAssigned("7");
 
-        db.update(myRobot);
+        db.updateRobots(myRobot);
 
         REQUIRE(db.getRobotRoom(myRobot) == "7");
         REQUIRE(db.getRobotStatus(myRobot) == "Active");
 
         REQUIRE_NOTHROW(db.init_analytics());
+
+        REQUIRE(db.setNumOfError(1) == true);
+        REQUIRE(db.setNumTaskCompleted(2) == true);
+        REQUIRE(db.setTotalRobots(3) == true);
+        REQUIRE(db.setTotalRoomClned(4) == true);
+        REQUIRE(db.setUpTime(5) == true);
     }
 
 
