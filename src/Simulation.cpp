@@ -302,6 +302,9 @@ namespace simulation
     // Method that takes in a room ID and returns the tentative completion time for that room
     int Simulation::completionTime(std::string roomID)
     {
+        
+        std::lock_guard<std::mutex> lock(simulation_mutex);
+
         // Check if the roomID exists in the building
         if (building.rooms.find(roomID) == building.rooms.end()) 
         {
@@ -335,9 +338,26 @@ namespace simulation
                 default:
                     break;
             }
+            // percentage of the room the robot cleans per second is dependent on the size of the room
+            if (building.rooms[roomID].size == "large") 
+            {
+                robotSizePower = 3 * robotSizePower;
+            } 
+            else if (building.rooms[roomID].size == "medium") 
+            {
+                robotSizePower = 4 * robotSizePower;
+            } 
+            else if (building.rooms[roomID].size == "small") 
+            {
+                robotSizePower = 6 * robotSizePower;
+            }
             cleaningPower += robotSizePower;
         }
-        int timeUntilCompletion = (100 - building.rooms[roomID].percentClean) / cleaningPower;
+        int timeUntilCompletion = (100 - building.rooms[roomID].percentClean) / (cleaningPower - 3);
+        if (timeUntilCompletion < 0)
+        {
+            return 0;
+        }
         return timeUntilCompletion;
     }
 
@@ -399,6 +419,7 @@ namespace simulation
                         else
                         {
                             file_logger->info("\tRobot {} is in room {} and performing task {}", robotID, roomID, robotTypeStr);
+                            
 
                             std::string robotRoom = robot.getRoomAssigned();
                         
@@ -456,7 +477,7 @@ namespace simulation
                                     default:
                                         break;
                                 }
-
+                                cout << robot_size_power << endl;
                                 // The size of the room and the size of the robot together determine how long
                                 // it will take for the entire room to be clean
                                 // It takes the same amount of time for a small robot to clean a small room,
@@ -474,7 +495,8 @@ namespace simulation
                                 {
                                     building.rooms[roomID].percentClean += 6 * robot_size_power;
                                 }
-
+                                cout << building.rooms[roomID].percentClean << endl;
+                                cout << "HERE" << endl;
                                 // Robots has their battery go down
                                 int new_battery = robot_dict[robotID].getBattery() - 2;
                                 robot_dict[robotID].setBattery(new_battery); 
@@ -544,6 +566,13 @@ namespace simulation
                     {
                         pair.second.percentClean = 0; // Ensure cleanliness doesn't go below 0%
                     }
+                    int percentCleanRoom = building.rooms[pair.first].percentClean;
+                    if (percentCleanRoom > 100)
+                    {
+                        percentCleanRoom = 100;
+                    }
+                    file_logger->info("\tRoom ID {} is now {} percent clean.", pair.first, percentCleanRoom);
+
                 }
             }
             file_logger->info("\t--- TIMESTAMP {} END---\n", timeCount);
