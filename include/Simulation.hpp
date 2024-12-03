@@ -116,6 +116,9 @@ class Simulation
         // Method that takes in a room ID and returns the tentative completion time for that room
         int completionTime(std::string roomID);
 
+        // Method that takes in a robot ID and returns the tentative completion time for that robot
+        int robotCompletionTime(int robotID);
+
         
 };
 
