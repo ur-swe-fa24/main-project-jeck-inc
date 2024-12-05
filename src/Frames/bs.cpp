@@ -1,9 +1,7 @@
-
 #include "Frames/bs.hpp"
 #include "Robot.hpp"
 #include "Simulation.hpp"
 #include "Database.hpp"
-
 
 // Event table that connects the button to the event handler
 wxBEGIN_EVENT_TABLE(BuildingS, wxFrame)
@@ -41,8 +39,6 @@ BuildingS::BuildingS(const wxString& title, Simulation& sim, Database& db)
     wxButton* calculateTCTButton = new wxButton(panel, 1005, "Calculate Completion Time", wxPoint(10, 280));
     completionTime = new wxStaticText(panel, wxID_ANY, "", wxPoint(250, 285));
 
-    
-
     //Getting list of Unclean Room
     // wxStaticText* listUncleanLabel = new wxStaticText(panel, wxID_ANY, "List of Uncleaned Rooms", wxPoint(10, 250));
     wxStaticText* listUncleanThreshLabel = new wxStaticText(panel, wxID_ANY, "Enter Threshold", wxPoint(10, 350));
@@ -51,8 +47,6 @@ BuildingS::BuildingS(const wxString& title, Simulation& sim, Database& db)
 
     //Getting list of ongoing task
     wxButton* ongoingTasksButton = new wxButton(panel, 1003, "List of Ongoing Task", wxPoint(10, 450));
-
-
 
     // Set the window size for the SubFrame
     this->SetSize(400, 550);
@@ -79,7 +73,6 @@ void BuildingS::RobotRefill(wxCommandEvent& event) {
 
     //Clear input field
     robotRefillId->Clear();
-
 }
 
 // Event handler: Shows the List of Ongoing Tasks
@@ -96,7 +89,6 @@ void BuildingS::TaskHistory(wxCommandEvent& event){
 
     //Showing that information in a message box
     wxMessageBox(result, "Ongoing Tasks", wxOK | wxICON_INFORMATION);
-
 }
 
 // Event handler: Shows the list of Unclean Rooms
@@ -127,27 +119,21 @@ void BuildingS::CleanRooms(wxCommandEvent& event){
 
     //Showing the result to user in the wxMessageBox
     wxMessageBox(result, "Room's Cleanliness Information", wxOK | wxICON_INFORMATION);
-
-
 }
-
 
 void BuildingS::TentativeCompletionTime(wxCommandEvent& event){
     int roomId = wxAtoi(tentativeCompletionRoomId->GetValue());
 
     int result = sim.completionTime(std::to_string(roomId));
 
-
-
     if (result == -1){
         wxMessageBox("No Robots are cleaning the room at the moment", "Room's Tentative Cleaning Time", wxOK | wxICON_INFORMATION);
 
-    }else if ( result == -2){
+    } else if ( result == -2){
         wxMessageBox("Room Id doesn't exist", "Room's Tentative Cleaning Time", wxOK | wxICON_INFORMATION);
 
-    }else{
+    } else{
         completionTime->SetLabel(std::to_string(result) + " seconds");
-    }
-    
+    } 
 }
 

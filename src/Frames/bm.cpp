@@ -1,9 +1,7 @@
-
 #include "Frames/bm.hpp"
 #include "Robot.hpp"
 #include "Simulation.hpp"
 #include "Database.hpp"
-
 
 //Function Definition that will be utilized later
 Robot::Function getFunctionFromInput(int choice);
@@ -31,7 +29,6 @@ BuildingM::BuildingM(const wxString& title, Simulation& sim, Database& db)
     functionInput = new wxTextCtrl(panel, wxID_ANY, "(1 - 2 - 3)", wxPoint(10, 80), wxSize(200, -1));
 
     wxButton* addButton = new wxButton(panel, 1001, "Add Robot", wxPoint(10, 120));
-
 
     //Getting size input
     wxStaticText* robotIdLabel = new wxStaticText(panel, wxID_ANY, "Enter the robot id: (int value)", wxPoint(10, 190));

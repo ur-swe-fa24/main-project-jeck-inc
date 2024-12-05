@@ -21,7 +21,6 @@ private:
     void CleanRooms(wxCommandEvent& event);
     void TentativeCompletionTime(wxCommandEvent& event);
 
-
     //for robotstatus
     wxTextCtrl* robotStatusId;
     wxTextCtrl* robotRefillId;
@@ -29,8 +28,6 @@ private:
     wxTextCtrl* tentativeCompletionRoomId;
 
     wxStaticText* completionTime; 
-
-
 
     // Reference to the Simulation and Database object
     simulation::Simulation& sim;

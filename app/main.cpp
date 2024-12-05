@@ -20,52 +20,43 @@ using namespace database;
 using namespace robot;
 using namespace simulation;
 
-
 //Definition of functions and values
 void updateDatabase(Simulation& sim, Database& db);
 bool live = true;
 void createNotification(Simulation& sim, Database& db);
 
-
-
 // Main application class
 class MyApp : public wxApp {
-public:
-    virtual bool OnInit();
-    
+    public:
+        virtual bool OnInit();
+    };
+
+    // Frame class
+    class Home : public wxFrame {
+    public:
+        Home(const wxString& title);
+        
+    private:
+        // Event handlers of Each Button
+        void OnSM(wxCommandEvent& event);
+        void OnBM(wxCommandEvent& event);
+        void OnBS(wxCommandEvent& event);
+        void OnFE(wxCommandEvent& event);
+        void Quit(wxCommandEvent& event);
+
+        // Simulation sim(Database db);
+        Simulation sim;
+
+        mongocxx::instance currInst{};
+        Database db; //Create the database object.
+
+        std::thread simulationThread; //thread to run simulation in the background
+        std::thread databaseThread;  //thread to update database
+        std::thread notificationThread; //thread for notification
+
+        //Declaring Event Table
+        wxDECLARE_EVENT_TABLE();
 };
-
-// Frame class
-class Home : public wxFrame {
-public:
-    Home(const wxString& title);
-    
-
-private:
-    // Event handlers of Each Button
-    void OnSM(wxCommandEvent& event);
-    void OnBM(wxCommandEvent& event);
-    void OnBS(wxCommandEvent& event);
-    void OnFE(wxCommandEvent& event);
-    void Quit(wxCommandEvent& event);
-
-    
-    // Simulation sim(Database db);
-    Simulation sim;
-
-    mongocxx::instance currInst{};
-    Database db; //Create the database object.
-
-    std::thread simulationThread; //thread to run simulation in the background
-    std::thread databaseThread;  //thread to update database
-    std::thread notificationThread; //thread for notification
-
-    //Declaring Event Table
-    wxDECLARE_EVENT_TABLE();
-};
-
-
-
 
 //Event Table
 wxBEGIN_EVENT_TABLE(Home, wxFrame)
@@ -74,26 +65,20 @@ wxBEGIN_EVENT_TABLE(Home, wxFrame)
     EVT_BUTTON(1003, Home::OnBS)
     EVT_BUTTON(1004, Home::OnFE)
     EVT_BUTTON(1005, Home::Quit)
-
 wxEND_EVENT_TABLE()
-
-
-
 
 //Calling the App
 wxIMPLEMENT_APP(MyApp);
 
 //Actually running the GUI
 bool MyApp::OnInit() {
-    Home* home = new Home("Frame Test");
+    Home* home = new Home("Robot Fleet Management");
     home->Show(true);
     return true;
 }
 
-
 //Main Fram Constructor
 Home::Home(const wxString& title) : wxFrame(nullptr, wxID_ANY, title) {
-    
     // Input json file for building configuration
     std::string file_name = "../../app/building.json";
     sim.load_building(file_name);
@@ -110,7 +95,6 @@ Home::Home(const wxString& title) : wxFrame(nullptr, wxID_ANY, title) {
     notificationThread = std::thread(createNotification, std::ref(sim), std::ref(db));
     notificationThread.detach();
 
-
     //Creating Elements (Buttons and Form Field) for GUI
     wxPanel* panel = new wxPanel(this, wxID_ANY);
 
@@ -122,10 +106,8 @@ Home::Home(const wxString& title) : wxFrame(nullptr, wxID_ANY, title) {
     wxButton* fieldM = new wxButton(panel, 1004, "Field Engineer", wxPoint(10, 170));
     wxButton* quit = new wxButton(panel, 1005, "Quit", wxPoint(10, 210));
 
-
     //Setting the size of the GUI
     this->SetSize(400, 350);
-
 }
 
 //Pressing Senior Manager will take you to SM Frame
@@ -162,12 +144,8 @@ void Home::Quit(wxCommandEvent& event) {
 void updateDatabase(Simulation& sim, Database& db){
     std::cout << "Things happening" << std::endl;
     while (live){
-        
-        
         std::this_thread::sleep_for(std::chrono::milliseconds(30000)); // Sleep for 30 seconds
-
     }
-
 }
 
 void createNotification(Simulation& sim, Database& db){
@@ -178,21 +156,12 @@ void createNotification(Simulation& sim, Database& db){
         for (auto robo : faultyRobots){
             wxMessageBox("Robot Id: " + std::to_string(robo) + " is currently faulty and requires immediate attention", "Robot Status", wxOK | wxICON_INFORMATION);
         }
-
         unordered_set<std::string> taskComplete = sim.getTasksCompleted();
 
         for (auto task : taskComplete){
             wxMessageBox("Cleaning task for room " + task + " has just been completed.", "Robot Status", wxOK | wxICON_INFORMATION);
         }
-
-
         std::this_thread::sleep_for(std::chrono::milliseconds(1000)); // Sleep for 1 second
     }
 }
  
-
-
-
-
-
-

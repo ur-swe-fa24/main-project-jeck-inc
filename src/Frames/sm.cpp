@@ -1,9 +1,7 @@
-
 #include "Frames/sm.hpp"
 #include "Robot.hpp"
 #include "Simulation.hpp"
 #include "Database.hpp"
-
 
 // Event table that connects the button to the event handler
 wxBEGIN_EVENT_TABLE(SeniorM, wxFrame)
@@ -13,8 +11,6 @@ wxEND_EVENT_TABLE()
 // Constructor definition
 SeniorM::SeniorM(const wxString& title, Simulation& sim, Database& db)
     : wxFrame(nullptr, wxID_ANY, title), sim(sim), db(db){
-
-
 
     // Create a panel for holding the GUI components
     wxPanel* panel = new wxPanel(this, wxID_ANY);
@@ -30,7 +26,6 @@ SeniorM::SeniorM(const wxString& title, Simulation& sim, Database& db)
     sizeComboBox = new wxComboBox(panel, wxID_ANY, "Select an option", 
                             wxPoint(50, 50), wxSize(150, 30), sizeChoices,
                             wxCB_READONLY);
-
 
     wxStaticText* typeLabel = new wxStaticText(panel, wxID_ANY, "Type", wxPoint(250, 30));
 
@@ -69,7 +64,6 @@ void SeniorM::RobotProductivity(wxCommandEvent& event) {
 
     //iterate over all the robot
     for (auto robot: robotInfo){
-
         //Identifying the robot's type and size for filter purposes
         //the size and type have been converted to integer which are being converted back to string
 
@@ -114,7 +108,6 @@ void SeniorM::RobotProductivity(wxCommandEvent& event) {
             totalTime += time;
             totalWorkTime += workTime;
         }
-
     }
 
     //Default Value
@@ -127,7 +120,4 @@ void SeniorM::RobotProductivity(wxCommandEvent& event) {
 
     //Changing the result
     robotProducitivity->SetLabel(result);
-
-  
-
 }
