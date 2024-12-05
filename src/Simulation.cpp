@@ -417,10 +417,40 @@ namespace simulation
         return completeTime; // this is the max it could take without a problem to the robot
     }
 
+    //  Method to get a dictionary with a series of stats for the database
+    //  key                -      value
+    //  clockSimTime       -      int
+    //  numTasksCompleted  -      int
+    //  totalNumRobots     -      int
+    //  totalRoomsCleaned  -      int
+    unordered_map<std::string, int> Simulation::getDBStats()
+    {
+        unordered_map<std::string, int> statsMap;
+        statsMap["clockSimTime"] = timeCount;
+        statsMap["totalNumRobots"] = robots.size();
+        statsMap["numTasksCompleted"] = numTasksCompleted;
+        
+        // reset statistic
+        numTasksCompleted = 0;
+        
+        return statsMap;
+    }
+
+    // vector of robot ids that have errored since this function was last called
+    std::vector<int> Simulation::getFaultyRobotsDB()
+    {
+        vector<int> returnFaultyRobots = faultyRobotsDB;
+        faultyRobotsDB.clear();
+        return returnFaultyRobots;
+    }
+
     // method to simulate the entire operation
     void Simulation::simulate() 
     {   
-        int timeCount = 0;
+        // initialize stats to 0
+        timeCount = 0;
+        numTasksCompleted = 0;
+
         auto file_logger = spdlog::basic_logger_mt("file_logger", "logs.txt");
         file_logger->info("\t----- BEGIN SIMULATION -----\n");
         while (running)
@@ -469,6 +499,7 @@ namespace simulation
                             file_logger->info("\tRobot {} has become faulty", robotID);
                             robot.setStatus("Faulty");
                             faultyRobots.push_back(robotID);
+                            faultyRobotsDB.push_back(robotID);
                         }
                         else
                         {
@@ -508,6 +539,8 @@ namespace simulation
                                     building.rooms[nextRoom].robots_cleaning.insert(robotID);
                                     file_logger->info("\tRobot {} has finished cleaning room {} and is now going to clean room {}", robotID, roomID, nextRoom);
                                 }
+
+                                numTasksCompleted++; // increment 
                             }    
                             else
                             {
@@ -531,7 +564,7 @@ namespace simulation
                                     default:
                                         break;
                                 }
-                                // cout << robot_size_power << endl;
+
                                 // The size of the room and the size of the robot together determine how long
                                 // it will take for the entire room to be clean
                                 // It takes the same amount of time for a small robot to clean a small room,
@@ -549,8 +582,7 @@ namespace simulation
                                 {
                                     building.rooms[roomID].percentClean += 6 * robot_size_power;
                                 }
-                                // cout << building.rooms[roomID].percentClean << endl;
-                                // cout << "HERE" << endl;
+
                                 // Robots has their battery go down
                                 int new_battery = robot_dict[robotID].getBattery() - 2;
                                 robot_dict[robotID].setBattery(new_battery); 
