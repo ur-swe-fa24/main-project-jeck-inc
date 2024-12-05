@@ -17,6 +17,7 @@ private:
     // Event handler for adding a robot
     void AddingRobot(wxCommandEvent& event);
     void AssignTask(wxCommandEvent& event);
+    void BacklogCompletionTime(wxCommandEvent& event);
 
     //for add robot
     wxTextCtrl* sizeInput;
@@ -25,6 +26,11 @@ private:
     //for assign task
     wxTextCtrl* robotId;
     wxTextCtrl* roomId;
+
+    //for completion time
+    wxTextCtrl* robotIdCompletionTime; 
+    wxStaticText* completionTime; 
+
 
     // Reference to the Simulation and Database object
     simulation::Simulation& sim;
