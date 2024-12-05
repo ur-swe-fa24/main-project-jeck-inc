@@ -1,3 +1,10 @@
+/*
+Robot class simulates a robot entity. It is mostly used by Simulation and is instantiated in our GUI-System Manager class. 
+It has attributes like task, size, id, status, roomAssigned, battery and fluilevel
+Building Manager fixes and updates robot using the GUI. 
+Robot rate work and faulty probability are defined in Simulation. 
+*/
+
 #include "Robot.hpp"
 
 namespace robot {
