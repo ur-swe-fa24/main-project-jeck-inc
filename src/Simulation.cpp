@@ -564,6 +564,7 @@ namespace simulation
                                     default:
                                         break;
                                 }
+
                                 // The size of the room and the size of the robot together determine how long
                                 // it will take for the entire room to be clean
                                 // It takes the same amount of time for a small robot to clean a small room,
@@ -581,7 +582,6 @@ namespace simulation
                                 {
                                     building.rooms[roomID].percentClean += 6 * robot_size_power;
                                 }
-                                cout << building.rooms[roomID].percentClean << endl;
 
                                 // Robots has their battery go down
                                 int new_battery = robot_dict[robotID].getBattery() - 2;
