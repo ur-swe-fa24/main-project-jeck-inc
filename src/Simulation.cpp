@@ -1,3 +1,12 @@
+/*
+
+This is the Simulation Class. One instance of the class runs over the period of the simulation. Simulation is reposnsible for ticking the digital discrete time.
+Every tick will carry out one unit of work: cleaning room, decreasing fluid, battery, creating faultiness with certain probability and so on. 
+Simulation only communicates with our GUI-System Manager class. It also interacts with Robot class but that is one way communication.  Any information sent to database goes through the System manager. 
+Simulation runs on its own thread which is killed using poision input when the simulation ends. 
+*/
+
+
 #include "Simulation.hpp"
 
 namespace simulation 

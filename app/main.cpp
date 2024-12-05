@@ -1,3 +1,12 @@
+/*
+This is our main.cpp. Also, our GUI-System Manager component. 
+The wxWidget is the main controller of the system. The user interacts with the GUI (which have links to  other GUIs, each designated for a role) and provide us the relevant information. 
+The input retrieved from the GUI is used by the System Mangaer aspect of the code to demand actions from Simulation or Database. 
+Along with the threads created by the GUI, the System Manager also creates a thread for the simulation, a thread for updating database and a thread for notifications.
+*/
+
+
+
 #include <thread>
 #include <string>
 #include <wx/wx.h>
