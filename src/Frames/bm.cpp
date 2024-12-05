@@ -64,17 +64,17 @@ BuildingM::BuildingM(const wxString& title, Simulation& sim, Database& db)
 void BuildingM::BacklogCompletionTime(wxCommandEvent& event){
     int robotId = wxAtoi(robotIdCompletionTime->GetValue());
 
-    // int result = sim.robotCompletionTime(robotId);
+    int result = sim.robotCompletionTime(robotId);
 
-    // if (result == -1){
-    //     wxMessageBox("Robot is not active at the moment", "Robot's Tentative Cleaning Time", wxOK | wxICON_INFORMATION);
+    if (result == -1){
+        wxMessageBox("Robot is not active at the moment", "Robot's Tentative Cleaning Time", wxOK | wxICON_INFORMATION);
 
-    // }else if ( result == -2){
-    //     wxMessageBox("Robot Id doesn't exist", "Robot's Tentative Cleaning Time", wxOK | wxICON_INFORMATION);
+    }else if ( result == -2){
+        wxMessageBox("Robot Id doesn't exist", "Robot's Tentative Cleaning Time", wxOK | wxICON_INFORMATION);
 
-    // }else{
-    //     completionTime->SetLabel(std::to_string(result) + " seconds");
-    // }
+    }else{
+        completionTime->SetLabel(std::to_string(result) + " seconds");
+    }
 
 
 }
