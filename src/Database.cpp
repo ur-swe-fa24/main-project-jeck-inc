@@ -2,6 +2,9 @@
 #include <string>
 #include <iostream>
 #include <map>
+#include <chrono>
+#include <iomanip>
+#include <sstream>
 #include "Database.hpp"
 #include "Robot.hpp"
 
@@ -26,8 +29,8 @@ database::Database::~Database(){
     
     auto result1 = robs.delete_many(make_document(kvp("testDVal", "Tr")));
     auto result2 = stats.delete_many(make_document(kvp("testDVal", "Tr")));
-    std::cout << result1->deleted_count() << std::endl;
-    std::cout << result2->deleted_count() << std::endl;
+    //std::cout << result1->deleted_count() << std::endl;
+    //std::cout << result2->deleted_count() << std::endl;
 }
 
 void database::Database::init_analytics(){
@@ -37,8 +40,18 @@ void database::Database::init_analytics(){
     mongocxx::database db = client["sm"];
     mongocxx::collection collection = db["stats"]; 
 
+    auto current = std::chrono::system_clock::now();
+    auto now_timet = std::chrono::system_clock::to_time_t(current);
+    auto now_local = localtime(&now_timet);
+
+    std::stringstream ss;
+    ss << std::put_time(now_local, "%c");
+    std::string timeString = ss.str();
+
+    //std::cout << "Local Time " << std::put_time(now_local, "%c") << std::endl;
+
     bsoncxx::builder::stream::document filter_builder{};
-    filter_builder << "DatabaseID" << 1 << "upTime" << -1 << "numTaskCompleted" << -1 << "numberOfErrors" << -1 << "totalRobots" << 0 << "totalRoomsCleaned" << 0; 
+    filter_builder << "DatabaseID" << 1 << "curretTime" << timeString << "numTaskCompleted" << -1 << "numberOfErrors" << -1 << "totalRobots" << 0 << "totalRoomsCleaned" << 0; 
 
     collection.insert_one(filter_builder.view());
 
@@ -337,9 +350,7 @@ bool database::Database::updateRobots(const robot::Robot& robotInstance){
 
 }   
   
-
-
-bool database::Database::setUpTime(const int ut){
+bool database::Database::setCurrentTime(const int ut){
     int dbID = 1;
     mongocxx::uri uri("mongodb://localhost:27017");
     mongocxx::client client(uri);
@@ -352,9 +363,11 @@ bool database::Database::setUpTime(const int ut){
 
     bsoncxx::builder::stream::document update_builder;
     update_builder << "$set" << bsoncxx::builder::stream::open_document
-    << "upTime" << ut << bsoncxx::builder::stream::close_document;
+    << "currentTime" << ut << bsoncxx::builder::stream::close_document;
 
     auto result = collection.update_one(filter_builder.view(), update_builder.view());
+
+    std::cout << ut << std::endl;
 
     if(result){
         return true;
@@ -378,6 +391,8 @@ bool database::Database::setNumTaskCompleted(const int tc){
     bsoncxx::builder::stream::document update_builder;
     update_builder << "$set" << bsoncxx::builder::stream::open_document
     << "numTaskCompleted" << tc << bsoncxx::builder::stream::close_document;
+
+    std::cout << tc << std::endl;
 
     auto result = collection.update_one(filter_builder.view(), update_builder.view());
 
@@ -462,4 +477,17 @@ bool database::Database::setTotalRoomClned(const int trc){
     else{
         return false;
     }
+}
+
+bool database::Database::updateSM(const int ut, const std::vector<int> failedRobots, const int trb, const int trc){
+    int dbID = 1; 
+
+    bool UTComplete = this->setCurrentTime(8);
+    std::cout << UTComplete << std::endl;
+    bool taskCompBool = setNumTaskCompleted(7);
+    bool totalNumOfErrBool = setNumOfError(6);
+    bool totalNumRobBool = setTotalRobots(5);
+
+
+    return false;
 }

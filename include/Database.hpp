@@ -78,15 +78,17 @@ public:
 
     void init_analytics();
 
-    bool setUpTime(const int ut);
+    bool setCurrentTime(const int ut);
 
     bool setNumTaskCompleted(const int tc);
 
     bool setNumOfError(const int er);
-
+    
     bool setTotalRobots(const int trb);
 
     bool setTotalRoomClned(const int trc);
+
+    bool updateSM(const int ut, const std::vector<int> failedRobots, const int trb, const int trc);
 
 
     //Method to update a robots info in the database to its current data as saved in the robot class. 
