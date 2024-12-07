@@ -51,7 +51,12 @@ void database::Database::init_analytics(){
     //std::cout << "Local Time " << std::put_time(now_local, "%c") << std::endl;
 
     bsoncxx::builder::stream::document filter_builder{};
-    filter_builder << "DatabaseID" << 1 << "curretTime" << timeString << "numTaskCompleted" << -1 << "numberOfErrors" << -1 << "totalRobots" << 0 << "totalRoomsCleaned" << 0; 
+    filter_builder << "DatabaseID" << 1 << 
+    "curretTime" << timeString << 
+    "numTaskCompleted" << -1 << 
+    "numberOfErrors" << -1 << 
+    "totalRobots" << 0 << 
+    "totalRoomsCleaned" << 0; 
 
     collection.insert_one(filter_builder.view());
 
@@ -350,13 +355,13 @@ bool database::Database::updateRobots(const robot::Robot& robotInstance){
 
 }   
   
-bool database::Database::setCurrentTime(const int ut){
+bool database::Database::setCurrentTime(const std::string ut){
     int dbID = 1;
     mongocxx::uri uri("mongodb://localhost:27017");
     mongocxx::client client(uri);
 
-    mongocxx::database db = client["database"];
-    mongocxx::collection collection = db["robots"]; 
+    mongocxx::database db = client["sm"];
+    mongocxx::collection collection = db["stats"]; 
 
     bsoncxx::builder::stream::document filter_builder{};
     filter_builder << "DatabaseID" << dbID; 
@@ -382,8 +387,8 @@ bool database::Database::setNumTaskCompleted(const int tc){
     mongocxx::uri uri("mongodb://localhost:27017");
     mongocxx::client client(uri);
 
-    mongocxx::database db = client["database"];
-    mongocxx::collection collection = db["robots"]; 
+    mongocxx::database db = client["sm"];
+    mongocxx::collection collection = db["stats"]; 
 
     bsoncxx::builder::stream::document filter_builder{};
     filter_builder << "DatabaseID" << dbID; 
@@ -409,8 +414,8 @@ bool database::Database::setNumOfError(const int er){
     mongocxx::uri uri("mongodb://localhost:27017");
     mongocxx::client client(uri);
 
-    mongocxx::database db = client["database"];
-    mongocxx::collection collection = db["robots"]; 
+    mongocxx::database db = client["sm"];
+    mongocxx::collection collection = db["stats"]; 
 
     bsoncxx::builder::stream::document filter_builder{};
     filter_builder << "DatabaseID" << dbID; 
@@ -434,8 +439,8 @@ bool database::Database::setTotalRobots(const int trb){
     mongocxx::uri uri("mongodb://localhost:27017");
     mongocxx::client client(uri);
 
-    mongocxx::database db = client["database"];
-    mongocxx::collection collection = db["robots"]; 
+    mongocxx::database db = client["sm"];
+    mongocxx::collection collection = db["stats"]; 
 
     bsoncxx::builder::stream::document filter_builder{};
     filter_builder << "DatabaseID" << dbID; 
@@ -459,8 +464,8 @@ bool database::Database::setTotalRoomClned(const int trc){
     mongocxx::uri uri("mongodb://localhost:27017");
     mongocxx::client client(uri);
 
-    mongocxx::database db = client["database"];
-    mongocxx::collection collection = db["robots"]; 
+    mongocxx::database db = client["sm"];
+    mongocxx::collection collection = db["stats"]; 
 
     bsoncxx::builder::stream::document filter_builder{};
     filter_builder << "DatabaseID" << dbID; 
@@ -479,14 +484,48 @@ bool database::Database::setTotalRoomClned(const int trc){
     }
 }
 
-bool database::Database::updateSM(const int ut, const std::vector<int> failedRobots, const int trb, const int trc){
+bool database::Database::updateSM(const int ut, const std::vector<int> failedRobots, const int trb, const int taskComp){
     int dbID = 1; 
+    
+    mongocxx::uri uri("mongodb://localhost:27017");
+    mongocxx::client client(uri);
 
-    bool UTComplete = this->setCurrentTime(8);
+    mongocxx::database db = client["sm"];
+    mongocxx::collection collection = db["stats"]; 
+
+    bsoncxx::builder::stream::document filter_builder{};
+    filter_builder << "DatabaseID" << 1;
+
+    auto result = collection.find_one(filter_builder.view());
+    bsoncxx::document::view doc = result->view();
+
+    std::string print = bsoncxx::to_json(doc);
+
+    nlohmann::json ex1 = nlohmann::json::parse(print);
+
+    int currNumFailRobots = ex1["numberOfErrors"];
+
+    int newNumFailRobos = currNumFailRobots + failedRobots.size();
+    
+    int currNumRobots = ex1["totalRobots"];
+    
+    std::cout << "failhots" << currNumFailRobots << std::endl;
+    // std::cout << "robs" << currNumRobots << std::endl; 
+
+
+    auto current = std::chrono::system_clock::now();
+    auto now_timet = std::chrono::system_clock::to_time_t(current);
+    auto now_local = localtime(&now_timet);
+
+    std::stringstream ss;
+    ss << std::put_time(now_local, "%c");
+    std::string currtime = ss.str();
+
+    bool UTComplete = this->setCurrentTime(currtime);
     std::cout << UTComplete << std::endl;
-    bool taskCompBool = setNumTaskCompleted(7);
-    bool totalNumOfErrBool = setNumOfError(6);
-    bool totalNumRobBool = setTotalRobots(5);
+    bool taskCompBool = setNumTaskCompleted(taskComp);
+    bool totalNumOfErrBool = setNumOfError(newNumFailRobos);
+    bool totalNumRobBool = setTotalRobots(trb);
 
 
     return false;

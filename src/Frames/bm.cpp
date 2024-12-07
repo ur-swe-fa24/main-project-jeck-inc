@@ -50,6 +50,7 @@ BuildingM::BuildingM(const wxString& title, Simulation& sim, Database& db)
 // Event handler: Adding a robot to the simulation
 void BuildingM::AddingRobot(wxCommandEvent& event) {
     //Getting Values from GUI
+    std::vector<int> f = {1,2,3};
     int sizeChoice = wxAtoi(sizeInput->GetValue());
     int functionChoice = wxAtoi(functionInput->GetValue());
 
@@ -62,6 +63,7 @@ void BuildingM::AddingRobot(wxCommandEvent& event) {
     sim.add_robot(myRobot);
     db.add_robot(myRobot);
 
+    db.updateSM(2,f,3,7);
     //Message of Successful Creation
     wxMessageBox("Robot added successfully with id: " + std::to_string(myRobot.getId()), "Success", wxOK | wxICON_INFORMATION);
 

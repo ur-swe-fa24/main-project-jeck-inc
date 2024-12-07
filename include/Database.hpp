@@ -78,7 +78,7 @@ public:
 
     void init_analytics();
 
-    bool setCurrentTime(const int ut);
+    bool setCurrentTime(std::string ut);
 
     bool setNumTaskCompleted(const int tc);
 
