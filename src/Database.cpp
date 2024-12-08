@@ -8,6 +8,15 @@
 #include "Database.hpp"
 #include "Robot.hpp"
 
+//Overview: This database class initializes and maintains a database with three distinct sections. The first section stores each robot 
+//instance and the associated values with it (status, size, etc). The second section stores total amounts of things done by the cleaning 
+//system (tasks, errors, etc). The final section stores only tasks compelted and errors but does so for any particular section of time.
+//The later two collections are used for analytics for those in senior management, while the robot collection is used for general tab-keeping
+//for the field engineer and building manager. Data is passed to the system meanger, who then passes that info to the database by using 
+//the provided setter methods. If a getter method is called, all data is passed to the system manager, which then handles sending the data
+//to its final destination. 
+
+//basic initialization for the database. 
 database::Database::Database(){
     isOn = true;
     startText = "{\"";
@@ -15,6 +24,8 @@ database::Database::Database(){
     interMediateText= "\":\"";
 }
 
+//Destructor for the database. This removes all the robots from the active list. Since we are treating our system as a 24/7 type of product.
+//we imagine that everytime the database is reinitialized we want a fresh slate. 
 database::Database::~Database(){
     mongocxx::uri uri("mongodb://localhost:27017");
     mongocxx::client client(uri);
@@ -26,8 +37,6 @@ database::Database::~Database(){
     mongocxx::collection stats = db2["stats"];
 
 
-
-
     
     auto result1 = robs.delete_many(make_document(kvp("testDVal", "Tr")));
     auto result2 = stats.delete_many(make_document(kvp("testDVal", "Tr")));
@@ -35,6 +44,8 @@ database::Database::~Database(){
     //std::cout << result2->deleted_count() << std::endl;
 }
 
+//initializes the analytics part of the database. creates a data section for the system time, number of total task completed, number of total
+//errors, number of total robots, and number of rooms cleaned. 
 void database::Database::init_analytics(){
     mongocxx::uri uri("mongodb://localhost:27017");
     mongocxx::client client(uri);
@@ -50,8 +61,6 @@ void database::Database::init_analytics(){
     ss << std::put_time(now_local, "%c");
     std::string timeString = ss.str();
 
-    //std::cout << "Local Time " << std::put_time(now_local, "%c") << std::endl;
-
     bsoncxx::builder::stream::document filter_builder{};
     filter_builder << "DatabaseID" << 1 << 
     "curretTime" << timeString << 
@@ -64,7 +73,7 @@ void database::Database::init_analytics(){
 
 }
 
-    //Here, we have the area for adding more robots. The commented parts will be used in the future to display functionality like storing a robots task and size.
+    //Here, we have the area for adding more robots. We take the robot instance, get its data using getter methods, than update the db.
 void database::Database::add_robot(const robot::Robot& robotInstance){
     robotIds.push_back(robotInstance.getId());
     int currId = robotInstance.getId();
@@ -119,12 +128,11 @@ void database::Database::add_robot(const robot::Robot& robotInstance){
     }
 
 
-//This returns all the IDs we have saved. In the future, we can search the database to return any specific robot's ID, type, and size. But, for the sake of this demo we are just going to print all the IDs we have present. 
+//This returns the information about the robot that we want. It takes in a robot instance and returns a string that corresponds to the robotID.
 std::string database::Database::getRobotID(const robot::Robot& robot){
     int id = robot.getId();
     std::string nf = "not_found";
     std::string strCurrID = std::to_string(id);
-    // std::string robotJson = startText + "robotID" + interMediateText + strCurrID + endText;
     
     mongocxx::uri uri("mongodb://localhost:27017");
     mongocxx::client client(uri);
@@ -156,8 +164,7 @@ std::string database::Database::getRobotStatus(const robot::Robot& robot){
     int id = robot.getId();
     std::string nf = "robot_not_found_in_database";
     std::string strCurrID = std::to_string(id);
-    // std::string robotJson = startText + "robotID" + interMediateText + strCurrID + endText;
-    
+        
     mongocxx::uri uri("mongodb://localhost:27017");
     mongocxx::client client(uri);
 
@@ -188,8 +195,7 @@ std::string database::Database::getRobotSize(const robot::Robot& robot){
     int id = robot.getId();
     std::string nf = "robot_not_found_in_database";
     std::string strCurrID = std::to_string(id);
-    // std::string robotJson = startText + "robotID" + interMediateText + strCurrID + endText;
-    
+        
     mongocxx::uri uri("mongodb://localhost:27017");
     mongocxx::client client(uri);
 
@@ -220,8 +226,7 @@ std::string database::Database::getRobotRoom(const robot::Robot& robot){
     int id = robot.getId();
     std::string nf = "robot_not_found_in_database";
     std::string strCurrID = std::to_string(id);
-    // std::string robotJson = startText + "robotID" + interMediateText + strCurrID + endText;
-    
+
     mongocxx::uri uri("mongodb://localhost:27017");
     mongocxx::client client(uri);
 
@@ -251,7 +256,6 @@ std::string database::Database::getRobotTask(const robot::Robot& robot){
     int id = robot.getId();
     std::string nf = "robot_not_found_in_database";
     std::string strCurrID = std::to_string(id);
-    // std::string robotJson = startText + "robotID" + interMediateText + strCurrID + endText;
     
     mongocxx::uri uri("mongodb://localhost:27017");
     mongocxx::client client(uri);
@@ -283,11 +287,11 @@ void database::Database::console_message(const std::string& message){
         std::cout << "Message: " << message << std::endl;
     }
 
-
-
+//Gets all the data relating to the robot instance passed to it, checks for updates relative to the old data in the db, then updates the 
+//db accordingly. 
 bool database::Database::updateRobots(const robot::Robot& robotInstance){
     int id = robotInstance.getId();
-    int upT = 3;//robotInstance.getLifeTime();
+    int upT = 3;
     std::string stID = std::to_string(id);
     std::string status = robotInstance.getStatus();
     Robot::Size size = robotInstance.getSize();
@@ -357,6 +361,7 @@ bool database::Database::updateRobots(const robot::Robot& robotInstance){
 
 }   
   
+//sets the currentTime based on the time inputted by the user. This is mainly used for testing, as system time is usually relied on. 
 bool database::Database::setCurrentTime(const std::string ut){
     int dbID = 1;
     mongocxx::uri uri("mongodb://localhost:27017");
@@ -384,6 +389,7 @@ bool database::Database::setCurrentTime(const std::string ut){
     }
 }
 
+//sets the number of total tasks completed in the database to the input varaible tc.
 bool database::Database::setNumTaskCompleted(const int tc){
     int dbID = 1;
     mongocxx::uri uri("mongodb://localhost:27017");
@@ -411,6 +417,7 @@ bool database::Database::setNumTaskCompleted(const int tc){
     }
 }
 
+//sets the number of total errors in the database to the input varaible er.
 bool database::Database::setNumOfError(const int er){
     int dbID = 1;
     mongocxx::uri uri("mongodb://localhost:27017");
@@ -436,6 +443,7 @@ bool database::Database::setNumOfError(const int er){
     }
 }
 
+//sets the number of total amount of robots in the database to the input varaible tc.
 bool database::Database::setTotalRobots(const int trb){
     int dbID = 1;
     mongocxx::uri uri("mongodb://localhost:27017");
@@ -461,6 +469,7 @@ bool database::Database::setTotalRobots(const int trb){
     }
 }
 
+//sets the number of total tasks completed in the database to the input varaible tc.
 bool database::Database::setTotalRoomClned(const int trc){
     int dbID = 1;
     mongocxx::uri uri("mongodb://localhost:27017");
@@ -486,6 +495,7 @@ bool database::Database::setTotalRoomClned(const int trc){
     }
 }
 
+//updates the database using the setter methods defined above for the analytics parts of the database.
 bool database::Database::updateSM(const int ut, const std::vector<int> failedRobots, const int trb, const int taskComp){
     int dbID = 1; 
     
@@ -510,10 +520,6 @@ bool database::Database::updateSM(const int ut, const std::vector<int> failedRob
     int newNumFailRobos = currNumFailRobots + failedRobots.size();
     
     int currNumRobots = ex1["totalRobots"];
-    
-    std::cout << "failhots" << currNumFailRobots << std::endl;
-    // std::cout << "robs" << currNumRobots << std::endl; 
-
 
     auto current = std::chrono::system_clock::now();
     auto now_timet = std::chrono::system_clock::to_time_t(current);
@@ -524,7 +530,6 @@ bool database::Database::updateSM(const int ut, const std::vector<int> failedRob
     std::string currtime = ss.str();
 
     bool UTComplete = this->setCurrentTime(currtime);
-    std::cout << UTComplete << std::endl;
     bool taskCompBool = setNumTaskCompleted(taskComp);
     bool totalNumOfErrBool = setNumOfError(newNumFailRobos);
     bool totalNumRobBool = setTotalRobots(trb);
@@ -533,6 +538,7 @@ bool database::Database::updateSM(const int ut, const std::vector<int> failedRob
     return false;
 }
 
+//inits the 3rd collection, which stores tasks completed and error rates for any specific time. 
 bool database::Database::init_TaskCompletedAndErrorRates(){
     mongocxx::uri uri("mongodb://localhost:27017");
     mongocxx::client client(uri);
@@ -562,6 +568,7 @@ bool database::Database::init_TaskCompletedAndErrorRates(){
     return true;
 }
 
+//updates the amount of tasksCompleted and Errors for the last time stamp.
 bool database::Database::updateTCER(const int tskCompleted, const int Ers){
     std::string newRelTime = "time" + std::to_string(timeStamps);
     std::string timeErrorLabel = newRelTime + "ER";
@@ -595,10 +602,12 @@ bool database::Database::updateTCER(const int tskCompleted, const int Ers){
     return true;
 }
 
+//returns the relative time of the database, used in the TCER database.
 int database::Database::getDBTime(){
     return timeStamps;
 }
 
+//returns the amount of tasks completed and errors for the inputted time seqeuence. 
 std::unordered_map<std::string, std::vector<int>> database::Database::getTCER(const std::string time){
     std::unordered_map<std::string, std::vector<int>> resMap;
     std::unordered_map<std::string, std::vector<int>> nf;
