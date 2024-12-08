@@ -182,8 +182,8 @@ void SeniorM::RobotProductivity(wxCommandEvent& event) {
         }
 
         //Getting the performance values
-        int workTime = robot[3];
-        int time = robot[2];
+        int workTime = robot[4];
+        int time = robot[3];
 
         //Checking for the filter
         if ((size == "" || size == robotSize) && (type == "" || type == robotType)){

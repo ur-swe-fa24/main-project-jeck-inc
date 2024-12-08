@@ -269,7 +269,7 @@ namespace simulation
                     type = 2;
                     break;
                 default:
-                    size = -1;
+                    type = -1;
             }
 
             info.push_back({size, type, robot.getTotalLiveTime(), robot.getUpTime()});

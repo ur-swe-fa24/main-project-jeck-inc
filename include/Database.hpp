@@ -108,8 +108,6 @@ public:
 
     std::vector<int> getTCER(const std::string time);
 
-    int getDBTime(); 
-
     //returns the relative time of the database
     int getDBTime(); 
 
