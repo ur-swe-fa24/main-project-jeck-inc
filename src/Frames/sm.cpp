@@ -7,7 +7,11 @@
 
 // Event table that connects the button to the event handler
 wxBEGIN_EVENT_TABLE(SeniorM, wxFrame)
-    EVT_BUTTON(1001, SeniorM::RobotProductivity)  // Event binding: button click (ID 1001) triggers AddingRobot
+    EVT_BUTTON(1001, SeniorM::RobotProductivity)  
+    EVT_BUTTON(1002, SeniorM::TaskCompleted)  
+    EVT_BUTTON(1003, SeniorM::FaultyRobots)  
+
+
 wxEND_EVENT_TABLE()
 
 // Constructor definition
@@ -46,13 +50,85 @@ SeniorM::SeniorM(const wxString& title, Simulation& sim, Database& db)
 
 
     // Create a button that will trigger the Calculte event
-    wxButton* calculate = new wxButton(panel, 1001, "Calculate Robots Productivity", wxPoint(50, 90));
+    wxButton* productivityButton = new wxButton(panel, 1001, "Calculate Robots Productivity", wxPoint(50, 90));
 
     //Create a label for Productivity that will change as per the result
     robotProducitivity = new wxStaticText(panel, wxID_ANY, "", wxPoint(290, 100));
 
+    wxStaticText* taskCompltedLabel = new wxStaticText(panel, wxID_ANY, "Number of Task Completed in", wxPoint(50, 165));  
+
+    timeChoices.Add("30 seconds");
+    timeChoices.Add("60 seconds");
+    timeChoices.Add("120 seconds");
+    timeChoices.Add("240 seconds");
+    
+    taskCompleteTimeComboBox = new wxComboBox(panel, wxID_ANY, "Select an option", 
+                            wxPoint(270, 160), wxSize(150, 30), timeChoices,
+                            wxCB_READONLY);
+
+
+    wxButton* taskcompletionButton = new wxButton(panel, 1002, "Calculate Task Completed", wxPoint(50, 200));
+
+    taskCompleted = new wxStaticText(panel, wxID_ANY, "", wxPoint(290, 200));
+
+
+
+    wxStaticText* errorCreatedLabel = new wxStaticText(panel, wxID_ANY, "Number of Faulty Robots", wxPoint(50, 285));  
+    
+    faultyRobotComboBox = new wxComboBox(panel, wxID_ANY, "Select an option", 
+                            wxPoint(270, 280), wxSize(150, 30), timeChoices,
+                            wxCB_READONLY);
+
+    wxButton* faultyRobotButton = new wxButton(panel, 1003, "Count Faulty Robots", wxPoint(50, 320));
+
+    faultyRobots = new wxStaticText(panel, wxID_ANY, "", wxPoint(290, 320));
+
+
     // Set the window size for the SubFrame
-    this->SetSize(400, 350);
+    this->SetSize(450, 500);
+}
+
+
+
+void SeniorM::TaskCompleted(wxCommandEvent& event){
+    
+    std::string threshold = taskCompleteTimeComboBox->GetValue().ToStdString();
+    int threshold_val;
+    std::stringstream ss(threshold);
+    ss >> threshold_val; //removing seconds to create a int value
+    threshold_val /= 30;
+
+    int total_completed_tasks = 0;
+    int curr_relative_time = db.getDBTime();
+
+    for (int i = max(0, curr_relative_time - threshold_val); i < curr_relative_time; i++){
+        std::vector<int> results = db.getTCER("time"+std::to_string(i));
+        total_completed_tasks == results[1];
+    }
+
+    taskCompleted->SetLabel(std::to_string(total_completed_tasks));
+
+
+}
+
+
+void SeniorM::FaultyRobots(wxCommandEvent& event){
+    std::string threshold = taskCompleteTimeComboBox->GetValue().ToStdString();
+    int error_robots;
+    std::stringstream ss(threshold);
+    ss >> error_robots; //removing seconds to create a int value
+    error_robots /= 30;
+
+    int total_error_robots = 0;
+    int curr_relative_time = db.getDBTime();
+
+    for (int i = max(0, curr_relative_time - error_robots); i < curr_relative_time; i++){
+        std::vector<int> results = db.getTCER("time"+std::to_string(i));
+        total_error_robots == results[0];
+    }
+
+    taskCompleted->SetLabel(std::to_string(total_error_robots));
+
 }
 
 // Event handler: Adding a robot to the simulation
@@ -102,7 +178,7 @@ void SeniorM::RobotProductivity(wxCommandEvent& event) {
                 robotType = "Vaccum";
                 break;
             default:
-                robotType = "Unknonw";
+                robotType = "Unknown";
         }
 
         //Getting the performance values

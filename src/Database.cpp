@@ -597,7 +597,11 @@ bool database::Database::updateTCER(const int tskCompleted, const int Ers){
     return true;
 }
 
-std::unordered_map<std::string, std::vector<int>> database::Database::getTCER(const std::string time){
+int database::Database::getDBTime(){
+    return timeStamps;
+}
+
+std::vector<int> database::Database::getTCER(const std::string time){
     std::unordered_map<std::string, std::vector<int>> resMap;
     std::unordered_map<std::string, std::vector<int>> nf;
     std::vector<int> emptVec = {0,0};
@@ -629,11 +633,11 @@ std::unordered_map<std::string, std::vector<int>> database::Database::getTCER(co
 
         std::vector<int> TCERatGivenTime = {errors,taskCompleted};
 
-        return resMap;
+        return TCERatGivenTime;
         }
 
     else{
-        return nf;
+        return emptVec;
         }
 }
 

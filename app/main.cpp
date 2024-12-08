@@ -65,8 +65,6 @@ private:
     mongocxx::instance currInst{};
     Database db; //Create the database object.
     // Need to initialize these somewhere, not sure where to best place to do this?
-    // db.init_TaskCompletedAndErrorRates();
-    // db.init_analytics();
 
     std::thread simulationThread; //thread to run simulation in the background
     std::thread databaseThread;  //thread to update database
@@ -122,6 +120,9 @@ Home::Home(const wxString& title) : wxFrame(nullptr, wxID_ANY, title) {
     notificationThread = std::thread(createNotification, std::ref(sim), std::ref(db));
     notificationThread.detach();
 
+    db.init_TaskCompletedAndErrorRates();
+    db.init_analytics();
+
 
     //Creating Elements (Buttons and Form Field) for GUI
     wxPanel* panel = new wxPanel(this, wxID_ANY);
@@ -174,8 +175,12 @@ void Home::Quit(wxCommandEvent& event) {
 void updateDatabase(Simulation& sim, Database& db){
     std::cout << "Things happening" << std::endl;
     while (live){
-        
-        
+        unordered_map<std::string, int> results = sim.getDBStats();
+        vector<int> faultyRobots = sim.getFaultyRobots();
+
+        // db.updateSM(0, faultyRobots, results["totalNumRobots"], results["numTasksCompleted"]);
+        db.updateTCER(results["numTasksCompleted"], faultyRobots.size());
+             
         std::this_thread::sleep_for(std::chrono::milliseconds(30000)); // Sleep for 30 seconds
 
     }
