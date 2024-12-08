@@ -103,7 +103,7 @@ void SeniorM::TaskCompleted(wxCommandEvent& event){
 
     for (int i = max(0, curr_relative_time - threshold_val); i < curr_relative_time; i++){
         std::vector<int> results = db.getTCER("time"+std::to_string(i));
-        total_completed_tasks == results[1];
+        total_completed_tasks += results[1];
     }
 
     taskCompleted->SetLabel(std::to_string(total_completed_tasks));
@@ -124,7 +124,7 @@ void SeniorM::FaultyRobots(wxCommandEvent& event){
 
     for (int i = max(0, curr_relative_time - error_robots); i < curr_relative_time; i++){
         std::vector<int> results = db.getTCER("time"+std::to_string(i));
-        total_error_robots == results[0];
+        total_error_robots += results[0];
     }
 
     taskCompleted->SetLabel(std::to_string(total_error_robots));
