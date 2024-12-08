@@ -581,8 +581,6 @@ bool database::Database::updateTCER(const int tskCompleted, const int Ers){
     ss << std::put_time(now_local, "%c");
     std::string timeString = ss.str();
 
-    //std::cout << "Local Time " << std::put_time(now_local, "%c") << std::endl;
-
     bsoncxx::builder::stream::document filter_builder{};
     filter_builder << "DatabaseID" << 1 << 
     "curretTime" << timeString << 
@@ -595,6 +593,10 @@ bool database::Database::updateTCER(const int tskCompleted, const int Ers){
     timeStamps = timeStamps + 1;
 
     return true;
+}
+
+int database::Database::getDBTime(){
+    return timeStamps;
 }
 
 std::unordered_map<std::string, std::vector<int>> database::Database::getTCER(const std::string time){
