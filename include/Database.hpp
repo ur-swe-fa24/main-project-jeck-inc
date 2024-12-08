@@ -106,7 +106,7 @@ public:
 
     bool updateTCER(const int tskCompleted, const int Ers);
 
-    std::unordered_map<std::string, std::vector<int>> getTCER(const std::string time);
+    std::vector<int> getTCER(const std::string time);
 
     //returns the relative time of the database
     int getDBTime(); 

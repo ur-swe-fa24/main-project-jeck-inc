@@ -174,8 +174,12 @@ void Home::Quit(wxCommandEvent& event) {
 void updateDatabase(Simulation& sim, Database& db){
     std::cout << "Things happening" << std::endl;
     while (live){
-        
-        
+        unordered_map<std::string, int> results = sim.getDBStats();
+        vector<int> faultyRobots = sim.getFaultyRobots();
+
+        // db.updateSM(0, faultyRobots, results["totalNumRobots"], results["numTasksCompleted"]);
+        db.updateTCER(results["numTasksCompleted"], faultyRobots.size());
+             
         std::this_thread::sleep_for(std::chrono::milliseconds(30000)); // Sleep for 30 seconds
 
     }
