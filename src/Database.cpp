@@ -26,6 +26,8 @@ database::Database::~Database(){
     mongocxx::collection stats = db2["stats"];
 
 
+
+
     
     auto result1 = robs.delete_many(make_document(kvp("testDVal", "Tr")));
     auto result2 = stats.delete_many(make_document(kvp("testDVal", "Tr")));
@@ -55,8 +57,8 @@ void database::Database::init_analytics(){
     "curretTime" << timeString << 
     "numTaskCompleted" << -1 << 
     "numberOfErrors" << -1 << 
-    "totalRobots" << 0 << 
-    "totalRoomsCleaned" << 0; 
+    "totalRobots" << -1 << 
+    "totalRoomsCleaned" << -1; 
 
     collection.insert_one(filter_builder.view());
 
@@ -530,3 +532,108 @@ bool database::Database::updateSM(const int ut, const std::vector<int> failedRob
 
     return false;
 }
+
+bool database::Database::init_TaskCompletedAndErrorRates(){
+    mongocxx::uri uri("mongodb://localhost:27017");
+    mongocxx::client client(uri);
+
+    mongocxx::database db = client["sm"];
+    mongocxx::collection collection = db["TCER"]; 
+
+    auto current = std::chrono::system_clock::now();
+    auto now_timet = std::chrono::system_clock::to_time_t(current);
+    auto now_local = localtime(&now_timet);
+
+    std::stringstream ss;
+    ss << std::put_time(now_local, "%c");
+    std::string timeString = ss.str();
+
+    bsoncxx::builder::stream::document filter_builder{};
+    filter_builder << "DatabaseID" << 1 << 
+    "curretTime" << timeString << 
+    "relativeTime" << "time0" << 
+    "time0TC" << 0 <<
+    "Time0ER" << 0;
+
+    timeStamps = timeStamps + 1;
+
+    collection.insert_one(filter_builder.view());
+
+    return true;
+}
+
+bool database::Database::updateTCER(const int tskCompleted, const int Ers){
+    std::string newRelTime = "time" + std::to_string(timeStamps);
+    std::string timeErrorLabel = newRelTime + "ER";
+    std::string timeTaskLable = newRelTime + "TC";
+
+    mongocxx::uri uri("mongodb://localhost:27017");
+    mongocxx::client client(uri);
+
+    mongocxx::database db = client["sm"];
+    mongocxx::collection collection = db["TCER"]; 
+
+    auto current = std::chrono::system_clock::now();
+    auto now_timet = std::chrono::system_clock::to_time_t(current);
+    auto now_local = localtime(&now_timet);
+
+    std::stringstream ss;
+    ss << std::put_time(now_local, "%c");
+    std::string timeString = ss.str();
+
+    //std::cout << "Local Time " << std::put_time(now_local, "%c") << std::endl;
+
+    bsoncxx::builder::stream::document filter_builder{};
+    filter_builder << "DatabaseID" << 1 << 
+    "curretTime" << timeString << 
+    "relativeTime" << newRelTime << 
+    timeTaskLable << tskCompleted <<
+    timeErrorLabel << Ers;
+
+    collection.insert_one(filter_builder.view());
+
+    timeStamps = timeStamps + 1;
+
+    return true;
+}
+
+std::unordered_map<std::string, std::vector<int>> database::Database::getTCER(const std::string time){
+    std::unordered_map<std::string, std::vector<int>> resMap;
+    std::unordered_map<std::string, std::vector<int>> nf;
+    std::vector<int> emptVec = {0,0};
+    std::string foundTimeERKey = time + "ER";
+    std::string foundTimeTCKey = time + "TC";
+
+    
+    nf["time_not_found"] = emptVec;
+    
+    mongocxx::uri uri("mongodb://localhost:27017");
+    mongocxx::client client(uri);
+
+    mongocxx::database db = client["sm"];
+    mongocxx::collection collection = db["TCER"]; 
+
+    bsoncxx::builder::stream::document filter_builder{};
+    filter_builder << "relativeTime" << time;
+    
+    auto result = collection.find_one(filter_builder.view());
+    if(result){
+
+        bsoncxx::document::view doc = result->view();
+
+        std::string print = bsoncxx::to_json(doc);
+        nlohmann::json ex1 = nlohmann::json::parse(print);
+
+        int errors = ex1[foundTimeERKey];
+        int taskCompleted = ex1[foundTimeTCKey];
+
+        std::vector<int> TCERatGivenTime = {errors,taskCompleted};
+
+        return resMap;
+        }
+
+    else{
+        return nf;
+        }
+}
+

@@ -34,6 +34,7 @@ private:
     // Logss will imitate the database
     // Change its datatype as you see fit
     std::vector<std::string> logs; 
+    int timeStamps;
     std::vector<int> robotIds; //vector to hold the robot's ids 
     std::map<int,Robot::Function> robotTypes; //map to hold the robot's type.
     std::map<int,Robot::Size> robotSize; //map to hold the size of each robot.
@@ -94,7 +95,12 @@ public:
     //Method to update a robots info in the database to its current data as saved in the robot class. 
     bool updateRobots(const robot::Robot& robotInstance);
 
-    
+    bool init_TaskCompletedAndErrorRates();
+
+    bool updateTCER(const int tskCompleted, const int Ers);
+
+    std::unordered_map<std::string, std::vector<int>> getTCER(const std::string time);
+
 };
 } // namespace database
 

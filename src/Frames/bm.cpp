@@ -95,7 +95,6 @@ void BuildingM::AddingRobot(wxCommandEvent& event) {
     sim.add_robot(myRobot);
     db.add_robot(myRobot);
 
-    db.updateSM(2,f,3,7);
     //Message of Successful Creation
     wxMessageBox("Robot added successfully with id: " + std::to_string(myRobot.getId()), "Success", wxOK | wxICON_INFORMATION);
 
