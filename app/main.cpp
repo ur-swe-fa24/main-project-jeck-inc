@@ -64,6 +64,9 @@ private:
 
     mongocxx::instance currInst{};
     Database db; //Create the database object.
+    // Need to initialize these somewhere, not sure where to best place to do this?
+    // db.init_TaskCompletedAndErrorRates();
+    // db.init_analytics();
 
     std::thread simulationThread; //thread to run simulation in the background
     std::thread databaseThread;  //thread to update database

@@ -25,7 +25,7 @@ database::Database::~Database(){
     mongocxx::database db2 = client["sm"];
     mongocxx::collection stats = db2["stats"];
 
-    
+
 
 
     
@@ -57,8 +57,8 @@ void database::Database::init_analytics(){
     "curretTime" << timeString << 
     "numTaskCompleted" << -1 << 
     "numberOfErrors" << -1 << 
-    "totalRobots" << 0 << 
-    "totalRoomsCleaned" << 0; 
+    "totalRobots" << -1 << 
+    "totalRoomsCleaned" << -1; 
 
     collection.insert_one(filter_builder.view());
 
