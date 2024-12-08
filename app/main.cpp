@@ -123,7 +123,6 @@ Home::Home(const wxString& title) : wxFrame(nullptr, wxID_ANY, title) {
     db.init_TaskCompletedAndErrorRates();
     db.init_analytics();
 
-
     //Creating Elements (Buttons and Form Field) for GUI
     wxPanel* panel = new wxPanel(this, wxID_ANY);
 
