@@ -95,7 +95,13 @@ void BuildingM::AddingRobot(wxCommandEvent& event) {
     sim.add_robot(myRobot);
     db.add_robot(myRobot);
 
-    db.updateSM(2,f,3,7);
+    db.init_TaskCompletedAndErrorRates();
+    db.updateTCER(1,2);
+    db.updateTCER(4,3);
+    db.updateTCER(10,9);
+
+    std::unordered_map<std::string, std::vector<int>> testing = db.getTCER("time2");
+
     //Message of Successful Creation
     wxMessageBox("Robot added successfully with id: " + std::to_string(myRobot.getId()), "Success", wxOK | wxICON_INFORMATION);
 
