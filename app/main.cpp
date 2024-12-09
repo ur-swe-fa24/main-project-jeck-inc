@@ -5,8 +5,6 @@ The input retrieved from the GUI is used by the System Mangaer aspect of the cod
 Along with the threads created by the GUI, the System Manager also creates a thread for the simulation, a thread for updating database and a thread for notifications.
 */
 
-
-
 #include <thread>
 #include <string>
 #include <wx/wx.h>
@@ -14,9 +12,11 @@ Along with the threads created by the GUI, the System Manager also creates a thr
 #include <wx/file.h>
 #include <wx/txtstrm.h>
 #include <wx/textfile.h>
+#include <wx/dcclient.h>
 #include "Robot.hpp"
 #include "Database.hpp"
 #include "Simulation.hpp"
+#include "RoundedButton.hpp"
 #include "spdlog/spdlog.h"
 #include "spdlog/sinks/basic_file_sink.h"
 
@@ -29,53 +29,43 @@ using namespace database;
 using namespace robot;
 using namespace simulation;
 
-
 //Definition of functions and values
 void updateDatabase(Simulation& sim, Database& db);
 bool live = true;
 void createNotification(Simulation& sim, Database& db);
 
-
-
 // Main application class
 class MyApp : public wxApp {
-public:
-    virtual bool OnInit();
-    
+    public:
+        virtual bool OnInit();
+    };
+
+    // Frame class
+    class Home : public wxFrame {
+    public:
+        Home(const wxString& title);
+        
+    private:
+        // Event handlers of Each Button
+        void OnSM(wxCommandEvent& event);
+        void OnBM(wxCommandEvent& event);
+        void OnBS(wxCommandEvent& event);
+        void OnFE(wxCommandEvent& event);
+        void Quit(wxCommandEvent& event);
+
+        // Simulation sim(Database db);
+        Simulation sim;
+
+        mongocxx::instance currInst{};
+        Database db; //Create the database object.
+
+        std::thread simulationThread; //thread to run simulation in the background
+        std::thread databaseThread;  //thread to update database
+        std::thread notificationThread; //thread for notification
+
+        //Declaring Event Table
+        wxDECLARE_EVENT_TABLE();
 };
-
-// Frame class
-class Home : public wxFrame {
-public:
-    Home(const wxString& title);
-    
-
-private:
-    // Event handlers of Each Button
-    void OnSM(wxCommandEvent& event);
-    void OnBM(wxCommandEvent& event);
-    void OnBS(wxCommandEvent& event);
-    void OnFE(wxCommandEvent& event);
-    void Quit(wxCommandEvent& event);
-
-    
-    // Simulation sim(Database db);
-    Simulation sim;
-
-    mongocxx::instance currInst{};
-    Database db; //Create the database object.
-    // Need to initialize these somewhere, not sure where to best place to do this?
-
-    std::thread simulationThread; //thread to run simulation in the background
-    std::thread databaseThread;  //thread to update database
-    std::thread notificationThread; //thread for notification
-
-    //Declaring Event Table
-    wxDECLARE_EVENT_TABLE();
-};
-
-
-
 
 //Event Table
 wxBEGIN_EVENT_TABLE(Home, wxFrame)
@@ -84,27 +74,80 @@ wxBEGIN_EVENT_TABLE(Home, wxFrame)
     EVT_BUTTON(1003, Home::OnBS)
     EVT_BUTTON(1004, Home::OnFE)
     EVT_BUTTON(1005, Home::Quit)
-
 wxEND_EVENT_TABLE()
-
-
-
 
 //Calling the App
 wxIMPLEMENT_APP(MyApp);
 
-//Actually running the GUI
+// Initialize the GUI
 bool MyApp::OnInit() {
-    Home* home = new Home("Frame Test");
+    Home* home = new Home("Robot Fleet Management");
     home->Show(true);
     return true;
 }
 
+// // Helper class for custom rounded buttons
+// class RoundedButton : public wxPanel {
+// public:
+//     RoundedButton(wxWindow* parent, int id, const wxString& label, const wxColour& nTextColor = wxColour("#dedede"), const wxColour& hTextColor = wxColour("#656565"), const wxSize& size = wxSize(370, 40))
+//     : wxPanel(parent, id, wxDefaultPosition, size, wxBORDER_NONE), label(label), normalTextColor(nTextColor), hoverTextColor(hTextColor), normalBgColor(wxColour("#757575")), 
+//     hoverBgColor(wxColour("#aaaaaa")), normalBorderColor(wxColour("#aaaaaa")), hoverBorderColor(wxColour("#ffffff")), isHovered(false) {
+//         Bind(wxEVT_PAINT, &RoundedButton::OnPaint, this);
+//         Bind(wxEVT_LEFT_DOWN, &RoundedButton::OnClick, this);
+//         Bind(wxEVT_ENTER_WINDOW, &RoundedButton::OnMouseEnter, this);  // Handle mouse enter
+//         Bind(wxEVT_LEAVE_WINDOW, &RoundedButton::OnMouseLeave, this);  // Handle mouse leave
+//     }
 
-//Main Fram Constructor
-Home::Home(const wxString& title) : wxFrame(nullptr, wxID_ANY, title) {
-    
-    // Input json file for building configuration
+// private:
+//     wxString label;
+//     wxColour normalTextColor;       // Default text color
+//     wxColour hoverTextColor;        // Hover text color
+//     wxColour normalBgColor;         // Default background color
+//     wxColour hoverBgColor;          // Hover background color
+//     wxColour normalBorderColor;     // Default border color
+//     wxColour hoverBorderColor;      // Hover border color
+//     bool isHovered;                 // Track hover state
+
+//     void OnPaint(wxPaintEvent& event) {
+//         wxPaintDC dc(this);
+
+//         // Set rounded rectangle background and border
+//         wxBrush brush(isHovered ? hoverBgColor : normalBgColor);  // Background color based on hover state
+//         wxPen pen(isHovered ? hoverBorderColor : normalBorderColor, 1);  // Border color based on hover state with line thickness 1
+//         dc.SetBrush(brush);
+//         dc.SetPen(pen);
+//         dc.DrawRoundedRectangle(0, 0, GetSize().GetWidth(), GetSize().GetHeight(), 12);  // Rounded corners radius: 12
+
+//         // Draw button text
+//         dc.SetTextForeground(isHovered ? hoverTextColor : normalTextColor);  // Text color based on hover state
+//         dc.SetFont(wxFont(15, wxFONTFAMILY_DEFAULT, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_BOLD));
+//         wxSize textSize = dc.GetTextExtent(label);
+//         dc.DrawText(label, (GetSize().GetWidth() - textSize.GetWidth()) / 2,
+//                     (GetSize().GetHeight() - textSize.GetHeight()) / 2);
+//     }
+
+//     void OnClick(wxMouseEvent& event) {
+//         wxCommandEvent clickEvent(wxEVT_BUTTON, GetId());
+//         clickEvent.SetEventObject(this);
+//         GetParent()->ProcessWindowEvent(clickEvent);  // Forward the click event to the parent
+//     }
+
+//     void OnMouseEnter(wxMouseEvent& event) {
+//         SetCursor(wxCursor(wxCURSOR_HAND));  // Change cursor to hand when hovering
+//         isHovered = true;  // Update hover state
+//         Refresh();         // Redraw the button to apply the new color
+//     }
+
+//     void OnMouseLeave(wxMouseEvent& event) {
+//         SetCursor(wxCursor(wxCURSOR_ARROW));  // Reset cursor to default arrow when leaving
+//         isHovered = false;  // Update hover state
+//         Refresh();          // Redraw the button to apply the new color
+//     }
+// };
+
+//Main Frame Constructor
+Home::Home(const wxString& title) : wxFrame(nullptr, wxID_ANY, title, wxDefaultPosition, wxSize(500, 550)) {
+    //Input json file for building configuration
     std::string file_name = "../../app/building.json";
     sim.load_building(file_name);
 
@@ -120,24 +163,55 @@ Home::Home(const wxString& title) : wxFrame(nullptr, wxID_ANY, title) {
     notificationThread = std::thread(createNotification, std::ref(sim), std::ref(db));
     notificationThread.detach();
 
+
+
     db.init_TaskCompletedAndErrorRates();
     db.init_analytics();
 
     //Creating Elements (Buttons and Form Field) for GUI
     wxPanel* panel = new wxPanel(this, wxID_ANY);
+    panel->SetBackgroundColour(wxColour("#0d1c3f"));  //Set dark blue background color
 
-    wxStaticText* label = new wxStaticText(panel, wxID_ANY, "Choose User Role:", wxPoint(10, 10));
-    
-    wxButton* seniorM = new wxButton(panel, 1001, "Senior Manager", wxPoint(10, 50));
-    wxButton* buildingM = new wxButton(panel, 1002, "Building Manager", wxPoint(10, 90));
-    wxButton* buildingS = new wxButton(panel, 1003, "Building Staff", wxPoint(10, 130));
-    wxButton* fieldM = new wxButton(panel, 1004, "Field Engineer", wxPoint(10, 170));
-    wxButton* quit = new wxButton(panel, 1005, "Quit", wxPoint(10, 210));
+    // Vertical box sizer for layout
+    wxBoxSizer* vbox = new wxBoxSizer(wxVERTICAL);
 
+    // Cobotiq logo
+    wxInitAllImageHandlers();  // Ensures PNG and other formats are supported
+    wxImage::AddHandler(new wxPNGHandler());  // Add PNG handler
+    wxBitmap logoBitmap(wxT("../../app/cobotiq-logo.png"), wxBITMAP_TYPE_PNG);
+    wxImage logoImage = logoBitmap.ConvertToImage();  // Convert to wxImage
+    logoImage.Rescale(350, 60, wxIMAGE_QUALITY_HIGH);  // Rescale the image to desired size in high quality
+    wxBitmap scaledLogo(logoImage);  // Convert back to wxBitmap
+    wxStaticBitmap* logo = new wxStaticBitmap(panel, wxID_ANY, scaledLogo);  // Add the scaled logo to the layout
+    vbox->Add(logo, 0, wxALIGN_CENTER | wxTOP, 58);  // Add the logo with spacing
 
-    //Setting the size of the GUI
-    this->SetSize(400, 350);
+    // Warning Label
+    wxStaticText* warning = new wxStaticText(panel, wxID_ANY, "*Not affiliated with Cobotiq", wxDefaultPosition, wxDefaultSize, wxALIGN_CENTER);
+    warning->SetFont(wxFont(8, wxFONTFAMILY_DEFAULT, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_NORMAL));
+    warning->SetForegroundColour(wxColour("#dedede"));
+    vbox->Add(warning, 0, wxALIGN_CENTER | wxTOP, 0);  // Spacing below the logo
 
+    // Title label
+    wxStaticText* label = new wxStaticText(panel, wxID_ANY, "Choose User Role:", wxDefaultPosition, wxDefaultSize, wxALIGN_CENTER);
+    label->SetFont(wxFont(17, wxFONTFAMILY_DEFAULT, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_BOLD));
+    label->SetForegroundColour(wxColour("#dedede"));
+    vbox->Add(label, 0, wxALIGN_CENTER | wxTOP, 32);  // Spacing below the logo
+
+    // Add instances of RoundedButton
+    vbox->Add(new RoundedButton(panel, 1001, "Senior Manager"), 0, wxALIGN_CENTER | wxTOP, 15);
+    vbox->Add(new RoundedButton(panel, 1002, "Building Manager"), 0, wxALIGN_CENTER | wxTOP, 15);
+    vbox->Add(new RoundedButton(panel, 1003, "Building Staff"), 0, wxALIGN_CENTER | wxTOP, 15);
+    vbox->Add(new RoundedButton(panel, 1004, "Field Engineer"), 0, wxALIGN_CENTER | wxTOP, 15);
+    vbox->Add(new RoundedButton(panel, 1005, "Quit", wxColour("#B02121"), wxColour("#B22222")), 0, wxALIGN_CENTER | wxTOP, 15);
+
+    // Developer label
+    wxStaticText* devLabel = new wxStaticText(panel, wxID_ANY, "Developed by JECK Inc.", wxDefaultPosition, wxDefaultSize, wxALIGN_CENTER);
+    devLabel->SetFont(wxFont(10, wxFONTFAMILY_DEFAULT, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_BOLD));
+    devLabel->SetForegroundColour(wxColour("#dedede"));
+    vbox->Add(devLabel, 0, wxALIGN_CENTER | wxTOP, 35);  // Spacing below the buttons
+
+    // Set the layout to the panel
+    panel->SetSizer(vbox);
 }
 
 //Pressing Senior Manager will take you to SM Frame
@@ -179,11 +253,8 @@ void updateDatabase(Simulation& sim, Database& db){
 
         // db.updateSM(0, faultyRobots, results["totalNumRobots"], results["numTasksCompleted"]);
         db.updateTCER(results["numTasksCompleted"], faultyRobots.size());
-             
         std::this_thread::sleep_for(std::chrono::milliseconds(30000)); // Sleep for 30 seconds
-
     }
-
 }
 
 void createNotification(Simulation& sim, Database& db){
@@ -194,21 +265,11 @@ void createNotification(Simulation& sim, Database& db){
         for (auto robo : faultyRobots){
             wxMessageBox("Robot Id: " + std::to_string(robo) + " is currently faulty and requires immediate attention", "Robot Status", wxOK | wxICON_INFORMATION);
         }
-
         unordered_set<std::string> taskComplete = sim.getTasksCompleted();
 
         for (auto task : taskComplete){
             wxMessageBox("Cleaning task for room " + task + " has just been completed.", "Robot Status", wxOK | wxICON_INFORMATION);
         }
-
-
         std::this_thread::sleep_for(std::chrono::milliseconds(1000)); // Sleep for 1 second
     }
 }
- 
-
-
-
-
-
-

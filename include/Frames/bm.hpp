@@ -19,9 +19,9 @@ private:
     void AssignTask(wxCommandEvent& event);
     void BacklogCompletionTime(wxCommandEvent& event);
 
-    //for add robot
-    wxTextCtrl* sizeInput;
-    wxTextCtrl* functionInput;
+    // Dropdown menus for add robot
+    wxComboBox* sizeDropdown;
+    wxComboBox* functionDropdown;
 
     //for assign task
     wxTextCtrl* robotId;

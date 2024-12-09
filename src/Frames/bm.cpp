@@ -1,11 +1,10 @@
-
 #include "Frames/bm.hpp"
+#include "RoundedButton.hpp"  // Include the custom button class
 #include "Robot.hpp"
 #include "Simulation.hpp"
 #include "Database.hpp"
 
-
-//Function Definition that will be utilized later
+// Function Definition that will be utilized later
 Robot::Function getFunctionFromInput(int choice);
 Robot::Size getSizeFromInput(int choice);
 
@@ -16,34 +15,78 @@ wxBEGIN_EVENT_TABLE(BuildingM, wxFrame)
     EVT_BUTTON(1003, BuildingM::BacklogCompletionTime)
 wxEND_EVENT_TABLE()
 
-// Constructor definition
 BuildingM::BuildingM(const wxString& title, Simulation& sim, Database& db)
-    : wxFrame(nullptr, wxID_ANY, title), sim(sim), db(db){
+    : wxFrame(nullptr, wxID_ANY, title, wxDefaultPosition, wxSize(500, 600)), sim(sim), db(db) {
 
     // Create a panel for holding the GUI components
     wxPanel* panel = new wxPanel(this, wxID_ANY);
+    panel->SetBackgroundColour(wxColour("#0d1c3f"));  // Match the theme
 
-    //Getting size input
-    wxStaticText* sizeLabel = new wxStaticText(panel, wxID_ANY, "Enter robot size (1: Small, 2: Medium, 3: Large):", wxPoint(10, 10));
-    sizeInput = new wxTextCtrl(panel, wxID_ANY, "(1 - 2 - 3)", wxPoint(10, 30), wxSize(200, -1));
+    // Main vertical box sizer
+    wxBoxSizer* mainSizer = new wxBoxSizer(wxVERTICAL);
 
-    //Getting function input
-    wxStaticText* functionLabel = new wxStaticText(panel, wxID_ANY, "Enter robot function (1: Shampoo, 2: Vacuum, 3: Scrub):", wxPoint(10, 60));
-    functionInput = new wxTextCtrl(panel, wxID_ANY, "(1 - 2 - 3)", wxPoint(10, 80), wxSize(200, -1));
+    // Title label
+    wxStaticText* titleLabel = new wxStaticText(panel, wxID_ANY, "Building Manager Controls", wxDefaultPosition, wxDefaultSize, wxALIGN_CENTER);
+    titleLabel->SetFont(wxFont(17, wxFONTFAMILY_DEFAULT, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_BOLD));
+    titleLabel->SetForegroundColour(wxColour("#dedede"));
+    mainSizer->Add(titleLabel, 0, wxALIGN_CENTER | wxTOP, 20);
 
-    wxButton* addButton = new wxButton(panel, 1001, "Add Robot", wxPoint(10, 120));
+    // Dropdowns section
+    wxBoxSizer* dropdownSizer = new wxBoxSizer(wxVERTICAL);
 
+    // Robot size dropdown
+    wxStaticText* sizeLabel = new wxStaticText(panel, wxID_ANY, "Select robot size:", wxDefaultPosition, wxDefaultSize, wxALIGN_LEFT);
+    sizeLabel->SetForegroundColour(wxColour("#dedede"));
+    dropdownSizer->Add(sizeLabel, 0, wxALIGN_LEFT | wxLEFT | wxBOTTOM, 5);
 
-    //Getting size input
-    wxStaticText* robotIdLabel = new wxStaticText(panel, wxID_ANY, "Enter the robot id: (int value)", wxPoint(10, 190));
-    robotId = new wxTextCtrl(panel, wxID_ANY, "(1 - 2 - 3)", wxPoint(10, 210), wxSize(200, -1));
+    sizeDropdown = new wxComboBox(panel, wxID_ANY, "", wxDefaultPosition, wxSize(300, 30), 0, nullptr, wxCB_READONLY);
+    sizeDropdown->Append("Small");
+    sizeDropdown->Append("Medium");
+    sizeDropdown->Append("Large");
+    dropdownSizer->Add(sizeDropdown, 0, wxALIGN_CENTER | wxBOTTOM, 15);
 
-    //Getting function input
-    wxStaticText* roomIdLabel = new wxStaticText(panel, wxID_ANY, "Enter the room id: (int value)", wxPoint(10,240));
-    roomId = new wxTextCtrl(panel, wxID_ANY, "(1 - 2 - 3)", wxPoint(10, 260), wxSize(200, -1));
+    // Robot function dropdown
+    wxStaticText* functionLabel = new wxStaticText(panel, wxID_ANY, "Select robot function:", wxDefaultPosition, wxDefaultSize, wxALIGN_LEFT);
+    functionLabel->SetForegroundColour(wxColour("#dedede"));
+    dropdownSizer->Add(functionLabel, 0, wxALIGN_LEFT | wxLEFT | wxBOTTOM, 5);
 
-    wxButton* assignTaskButton = new wxButton(panel, 1002, "Assign Robot", wxPoint(10, 300));
+    functionDropdown = new wxComboBox(panel, wxID_ANY, "", wxDefaultPosition, wxSize(300, 30), 0, nullptr, wxCB_READONLY);
+    functionDropdown->Append("Shampoo");
+    functionDropdown->Append("Vacuum");
+    functionDropdown->Append("Scrub");
+    dropdownSizer->Add(functionDropdown, 0, wxALIGN_CENTER | wxBOTTOM, 20);
 
+    mainSizer->Add(dropdownSizer, 0, wxALIGN_CENTER | wxTOP, 20);
+
+    // Add Robot button
+    mainSizer->Add(new RoundedButton(panel, 1001, "Add Robot"), 0, wxALIGN_CENTER | wxBOTTOM, 20);
+
+    // Text fields section
+    wxBoxSizer* textFieldSizer = new wxBoxSizer(wxVERTICAL);
+
+    // Robot ID text field
+    wxStaticText* robotIdLabel = new wxStaticText(panel, wxID_ANY, "Enter robot ID (integer):", wxDefaultPosition, wxDefaultSize, wxALIGN_LEFT);
+    robotIdLabel->SetForegroundColour(wxColour("#dedede"));
+    textFieldSizer->Add(robotIdLabel, 0, wxALIGN_LEFT | wxLEFT | wxBOTTOM, 5);
+
+    robotId = new wxTextCtrl(panel, wxID_ANY, "", wxDefaultPosition, wxSize(300, 30));
+    textFieldSizer->Add(robotId, 0, wxALIGN_CENTER | wxBOTTOM, 15);
+
+    // Room ID text field
+    wxStaticText* roomIdLabel = new wxStaticText(panel, wxID_ANY, "Enter room ID (integer):", wxDefaultPosition, wxDefaultSize, wxALIGN_LEFT);
+    roomIdLabel->SetForegroundColour(wxColour("#dedede"));
+    textFieldSizer->Add(roomIdLabel, 0, wxALIGN_LEFT | wxLEFT | wxBOTTOM, 5);
+
+    roomId = new wxTextCtrl(panel, wxID_ANY, "", wxDefaultPosition, wxSize(300, 30));
+    textFieldSizer->Add(roomId, 0, wxALIGN_CENTER | wxBOTTOM, 20);
+
+    mainSizer->Add(textFieldSizer, 0, wxALIGN_CENTER | wxTOP, 20);
+
+    // Assign Robot button
+    mainSizer->Add(new RoundedButton(panel, 1002, "Assign Robot"), 0, wxALIGN_CENTER | wxBOTTOM, 20);
+
+    // Set the layout
+    panel->SetSizer(mainSizer);
 
     //
     wxStaticText* completionTimeLabel = new wxStaticText(panel, wxID_ANY, "Robot Backlog Completion Time", wxPoint(10,370));
@@ -75,66 +118,53 @@ void BuildingM::BacklogCompletionTime(wxCommandEvent& event){
     }else{
         completionTime->SetLabel(std::to_string(result) + " seconds");
     }
-
-
 }
 
 // Event handler: Adding a robot to the simulation
 void BuildingM::AddingRobot(wxCommandEvent& event) {
-    //Getting Values from GUI
-    std::vector<int> f = {1,2,3};
-    int sizeChoice = wxAtoi(sizeInput->GetValue());
-    int functionChoice = wxAtoi(functionInput->GetValue());
+    wxString sizeSelection = sizeDropdown->GetValue();
+    wxString functionSelection = functionDropdown->GetValue();
 
+    Robot::Size size;
+    Robot::Function func;
+
+    // Map size and function selections to enums
+    if (sizeSelection == "Small")
+        size = Robot::Size::Small;
+    else if (sizeSelection == "Medium")
+        size = Robot::Size::Medium;
+    else if (sizeSelection == "Large")
+        size = Robot::Size::Large;
+
+    if (functionSelection == "Shampoo")
+        func = Robot::Function::Shampoo;
+    else if (functionSelection == "Vacuum")
+        func = Robot::Function::Vacuum;
+    else if (functionSelection == "Scrub")
+        func = Robot::Function::Scrub;
+
+    // Create and add robot
     // Creation of the robot
-    Robot::Function func = getFunctionFromInput(functionChoice);
-    Robot::Size size = getSizeFromInput(sizeChoice);
+    
     Robot myRobot(func, size);
-
-    //Adding Robot in both components: Simulation & Database
     sim.add_robot(myRobot);
     db.add_robot(myRobot);
 
-    //Message of Successful Creation
-    wxMessageBox("Robot added successfully with id: " + std::to_string(myRobot.getId()), "Success", wxOK | wxICON_INFORMATION);
+    wxMessageBox("Robot added successfully with ID: " + std::to_string(myRobot.getId()), "Success", wxOK | wxICON_INFORMATION);
 
-    //Clearing the input field
-    sizeInput->Clear();
-    functionInput->Clear();
-    
+    // Clear selections
+    sizeDropdown->SetSelection(wxNOT_FOUND);
+    functionDropdown->SetSelection(wxNOT_FOUND);
 }
 
 void BuildingM::AssignTask(wxCommandEvent& event) {
-    //getting values from input field
     int robotChoice = wxAtoi(robotId->GetValue());
-    std::string roomChoice = std::string(roomId->GetValue().mb_str(wxConvUTF8));
+    wxString roomChoice = roomId->GetValue();
 
-    //Message back to user
-    std::string message = sim.assign_task(robotChoice, roomChoice);
+    std::string message = sim.assign_task(robotChoice, std::string(roomChoice.mb_str(wxConvUTF8)));
     wxMessageBox(message, "Success", wxOK | wxICON_INFORMATION);
 
-    //Clear Input Field
+    // Clear input fields
     robotId->Clear();
     roomId->Clear();
 }
-
-// Function to convert user input to the corresponding enum Function value
-Robot::Function getFunctionFromInput(int choice) {
-    switch (choice) {
-        case 1: return Robot::Function::Shampoo;
-        case 2: return Robot::Function::Vacuum;
-        case 3: return Robot::Function::Scrub;
-        default: throw std::invalid_argument("Invalid choice for function");
-    }
-}
-
-// Function to convert user input to the corresponding enum Size value
-Robot::Size getSizeFromInput(int choice) {
-    switch (choice) {
-        case 1: return Robot::Size::Small;
-        case 2: return Robot::Size::Medium;
-        case 3: return Robot::Size::Large;
-        default: throw std::invalid_argument("Invalid choice for size");
-    }
-}
-
