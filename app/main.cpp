@@ -127,7 +127,7 @@ Home::Home(const wxString& title) : wxFrame(nullptr, wxID_ANY, title, wxDefaultP
     // Helper class for custom rounded buttons
     class RoundedButton : public wxPanel {
     public:
-        RoundedButton(wxWindow* parent, int id, const wxString& label, const wxColour& nTextColor = wxColour("#dedede"), const wxColour& hTextColor = wxColour("#606060"), const wxSize& size = wxSize(370, 40))
+        RoundedButton(wxWindow* parent, int id, const wxString& label, const wxColour& nTextColor = wxColour("#dedede"), const wxColour& hTextColor = wxColour("#656565"), const wxSize& size = wxSize(370, 40))
         : wxPanel(parent, id, wxDefaultPosition, size, wxBORDER_NONE), label(label), normalTextColor(nTextColor), hoverTextColor(hTextColor), normalBgColor(wxColour("#757575")), 
         hoverBgColor(wxColour("#aaaaaa")), normalBorderColor(wxColour("#aaaaaa")), hoverBorderColor(wxColour("#ffffff")), isHovered(false) {
             Bind(wxEVT_PAINT, &RoundedButton::OnPaint, this);
