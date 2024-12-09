@@ -1,3 +1,4 @@
+//***bm.hpp***//
 #ifndef BUILDINGM_H
 #define BUILDINGM_H
 

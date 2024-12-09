@@ -1,3 +1,4 @@
+//***sm.cpp***//
 #include "Frames/sm.hpp"
 #include "Robot.hpp"
 #include "Simulation.hpp"
@@ -6,6 +7,7 @@
 // Event table that connects the button to the event handler
 wxBEGIN_EVENT_TABLE(SeniorM, wxFrame)
     EVT_BUTTON(1001, SeniorM::RobotProductivity)  // Event binding: button click (ID 1001) triggers AddingRobot
+    // EVT_BUTTON(1002, SeniorM::GoBack)
 wxEND_EVENT_TABLE()
 
 // Constructor definition
@@ -46,8 +48,10 @@ SeniorM::SeniorM(const wxString& title, Simulation& sim, Database& db)
     //Create a label for Productivity that will change as per the result
     robotProducitivity = new wxStaticText(panel, wxID_ANY, "", wxPoint(290, 100));
 
+    // wxButton* backButton = new wxButton(panel, 1002, "Back", wxPoint(10, 300));
+
     // Set the window size for the SubFrame
-    this->SetSize(400, 350);
+    this->SetSize(400, 400);
 }
 
 // Event handler: Adding a robot to the simulation
@@ -113,7 +117,7 @@ void SeniorM::RobotProductivity(wxCommandEvent& event) {
     //Default Value
     std::string result = "NA";
 
-    //<aking sure there is no 0 division error
+    //Making sure there is no 0 division error
     if (totalTime != 0){
         result = std::to_string(std::round(totalWorkTime/totalTime)) + "%";
     }

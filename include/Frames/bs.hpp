@@ -1,3 +1,4 @@
+//***bs.hpp***//
 #ifndef BUILDINGS_H
 #define BUILDINGS_H
 

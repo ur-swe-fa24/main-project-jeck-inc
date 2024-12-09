@@ -1,3 +1,4 @@
+//***main.cpp***//
 #include <thread>
 #include <string>
 #include <wx/wx.h>
@@ -5,6 +6,7 @@
 #include <wx/file.h>
 #include <wx/txtstrm.h>
 #include <wx/textfile.h>
+#include <wx/dcclient.h>
 #include "Robot.hpp"
 #include "Database.hpp"
 #include "Simulation.hpp"
@@ -70,16 +72,16 @@ wxEND_EVENT_TABLE()
 //Calling the App
 wxIMPLEMENT_APP(MyApp);
 
-//Actually running the GUI
+// Initialize the GUI
 bool MyApp::OnInit() {
     Home* home = new Home("Robot Fleet Management");
     home->Show(true);
     return true;
 }
 
-//Main Fram Constructor
-Home::Home(const wxString& title) : wxFrame(nullptr, wxID_ANY, title) {
-    // Input json file for building configuration
+//Main Frame Constructor
+Home::Home(const wxString& title) : wxFrame(nullptr, wxID_ANY, title, wxDefaultPosition, wxSize(450, 550)) {
+    //Input json file for building configuration
     std::string file_name = "../../app/building.json";
     sim.load_building(file_name);
 
@@ -97,17 +99,83 @@ Home::Home(const wxString& title) : wxFrame(nullptr, wxID_ANY, title) {
 
     //Creating Elements (Buttons and Form Field) for GUI
     wxPanel* panel = new wxPanel(this, wxID_ANY);
+    panel->SetBackgroundColour(wxColour("#0d1c3f"));  //Set dark blue background color
 
-    wxStaticText* label = new wxStaticText(panel, wxID_ANY, "Choose User Role:", wxPoint(10, 10));
-    
-    wxButton* seniorM = new wxButton(panel, 1001, "Senior Manager", wxPoint(10, 50));
-    wxButton* buildingM = new wxButton(panel, 1002, "Building Manager", wxPoint(10, 90));
-    wxButton* buildingS = new wxButton(panel, 1003, "Building Staff", wxPoint(10, 130));
-    wxButton* fieldM = new wxButton(panel, 1004, "Field Engineer", wxPoint(10, 170));
-    wxButton* quit = new wxButton(panel, 1005, "Quit", wxPoint(10, 210));
+    //Title label
+    wxStaticText* label = new wxStaticText(panel, wxID_ANY, "Choose User Role:", wxDefaultPosition, wxDefaultSize, wxALIGN_CENTER);  // CHANGED: Centered title label
+    label->SetFont(wxFont(18, wxFONTFAMILY_DEFAULT, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_BOLD));  //Styled label font
 
-    //Setting the size of the GUI
-    this->SetSize(400, 350);
+
+     // Vertical box sizer for layout
+    wxBoxSizer* vbox = new wxBoxSizer(wxVERTICAL);
+    vbox->Add(label, 0, wxALIGN_CENTER | wxTOP, 50);  // Adjusted spacing above the label
+
+    // // Create custom-styled buttons
+    // auto createStyledButton = [&](wxWindow* parent, int id, const wxString& labelText) -> wxButton* {
+    //     wxButton* button = new wxButton(parent, id, labelText, wxDefaultPosition, wxSize(300, 50), wxBORDER_NONE);  // CHANGED: Removed default button border
+    //     button->SetFont(wxFont(16, wxFONTFAMILY_DEFAULT, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_BOLD));  // CHANGED: Bold font for text
+    //     button->SetBackgroundColour(wxColour("#595959"));  // Dark Gray Background
+    //     button->SetForegroundColour(wxColour("#ffffff"));  // Whiteish text
+    //     button->SetWindowStyleFlag(wxBORDER_SIMPLE);  // CHANGED: Added simple border style
+    //     // button->SetWindowBorderRadius(10);  // CHANGED: Added rounded corners (adjust radius as needed)
+    //     return button;
+    // };
+
+    // Helper class for custom rounded buttons
+    class RoundedButton : public wxPanel {
+    public:
+        RoundedButton(wxWindow* parent, int id, const wxString& label, const wxSize& size = wxSize(300, 50))
+            : wxPanel(parent, id, wxDefaultPosition, size, wxBORDER_NONE), label(label) {
+            SetBackgroundColour(wxColour("#0d1c3f"));  // Match parent background
+            Bind(wxEVT_PAINT, &RoundedButton::OnPaint, this);
+            Bind(wxEVT_LEFT_DOWN, &RoundedButton::OnClick, this);
+        }
+
+    private:
+        wxString label;
+
+        void OnPaint(wxPaintEvent& event) {
+            wxPaintDC dc(this);
+
+            // Set rounded rectangle background and border
+            wxBrush brush(wxColour("#595959"));  // Dark gray background
+            wxPen pen(wxColour("#A9A9A9"), 2);   // Gray border
+            dc.SetBrush(brush);
+            dc.SetPen(pen);
+            dc.DrawRoundedRectangle(0, 0, GetSize().GetWidth(), GetSize().GetHeight(), 20);  // Rounded corners radius: 20
+
+            // Draw button text
+            dc.SetTextForeground(wxColour("#ffffff"));  // Whiteish text
+            dc.SetFont(wxFont(16, wxFONTFAMILY_DEFAULT, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_BOLD));
+            wxSize textSize = dc.GetTextExtent(label);
+            dc.DrawText(label, (GetSize().GetWidth() - textSize.GetWidth()) / 2,
+                        (GetSize().GetHeight() - textSize.GetHeight()) / 2);
+        }
+
+        void OnClick(wxMouseEvent& event) {
+            wxCommandEvent clickEvent(wxEVT_BUTTON, GetId());
+            clickEvent.SetEventObject(this);
+            GetParent()->ProcessWindowEvent(clickEvent);  // Forward the click event to the parent
+        }
+    };
+
+    // Add instances of RoundedButton
+    vbox->Add(new RoundedButton(panel, 1001, "Senior Manager"), 0, wxALIGN_CENTER | wxTOP, 20);
+    vbox->Add(new RoundedButton(panel, 1002, "Building Manager"), 0, wxALIGN_CENTER | wxTOP, 20);
+    vbox->Add(new RoundedButton(panel, 1003, "Building Staff"), 0, wxALIGN_CENTER | wxTOP, 20);
+    vbox->Add(new RoundedButton(panel, 1004, "Field Engineer"), 0, wxALIGN_CENTER | wxTOP, 20);
+    vbox->Add(new RoundedButton(panel, 1005, "Quit"), 0, wxALIGN_CENTER | wxTOP, 20);
+
+
+    // // Add buttons with custom styling
+    // vbox->Add(createStyledButton(panel, 1001, "Senior Manager"), 0, wxALIGN_CENTER | wxALL, 10);
+    // vbox->Add(createStyledButton(panel, 1002, "Building Manager"), 0, wxALIGN_CENTER | wxALL, 10);
+    // vbox->Add(createStyledButton(panel, 1003, "Building Staff"), 0, wxALIGN_CENTER | wxALL, 10);
+    // vbox->Add(createStyledButton(panel, 1004, "Field Engineer"), 0, wxALIGN_CENTER | wxALL, 10);
+    // vbox->Add(createStyledButton(panel, 1005, "Quit"), 0, wxALIGN_CENTER | wxALL, 10);
+
+    // Set the layout to the panel
+    panel->SetSizer(vbox);
 }
 
 //Pressing Senior Manager will take you to SM Frame
@@ -164,4 +232,3 @@ void createNotification(Simulation& sim, Database& db){
         std::this_thread::sleep_for(std::chrono::milliseconds(1000)); // Sleep for 1 second
     }
 }
- 

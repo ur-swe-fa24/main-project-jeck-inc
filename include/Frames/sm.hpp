@@ -1,3 +1,4 @@
+//***sm.hpp***//
 #ifndef SENIORM_H
 #define SENIORM_H
 
@@ -14,8 +15,9 @@ public:
     SeniorM(const wxString& title, simulation::Simulation& sim, database::Database& db);
     
 private:
-    // Event handler for adding a robot
-    void RobotProductivity(wxCommandEvent& event);
+    // Event handlers for buttons
+    void RobotProductivity(wxCommandEvent& event); //Get Robot Productivity Button
+    void GoBack(wxCommandEvent& event); //Back Button
 
     // int allRobotPerformance()
     wxComboBox* sizeComboBox;

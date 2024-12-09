@@ -1,3 +1,4 @@
+//***fe.cpp***//
 #include "Frames/fe.hpp"
 #include "Robot.hpp"
 #include "Simulation.hpp"
@@ -27,6 +28,8 @@ FieldE::FieldE(const wxString& title, Simulation& sim, Database& db)
     wxStaticText* robotIdStatusLabel = new wxStaticText(panel, wxID_ANY, "Status Robot ID:", wxPoint(150, 140));
     robotIdStatusInput = new wxTextCtrl(panel, wxID_ANY, "", wxPoint(150, 160), wxSize(100, -1));
     wxButton* getStatusButton = new wxButton(panel, 1003, "Robot Status", wxPoint(10, 160));
+
+    wxButton* backButton = new wxButton(panel, 1004, "Back", wxPoint(10, 300));
 
     // Set the window size
     this->SetSize(400, 400);
