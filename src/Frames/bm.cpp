@@ -144,14 +144,8 @@ void BuildingM::AddingRobot(wxCommandEvent& event) {
         func = Robot::Function::Scrub;
 
     // Create and add robot
-    //Getting Values from GUI
-    std::vector<int> f = {1,2,3};
-    int sizeChoice = wxAtoi(sizeInput->GetValue());
-    int functionChoice = wxAtoi(functionInput->GetValue());
-
     // Creation of the robot
-    Robot::Function func = getFunctionFromInput(functionChoice);
-    Robot::Size size = getSizeFromInput(sizeChoice);
+    
     Robot myRobot(func, size);
     sim.add_robot(myRobot);
     db.add_robot(myRobot);
