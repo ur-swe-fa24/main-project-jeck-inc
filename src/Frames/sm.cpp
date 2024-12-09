@@ -1,4 +1,3 @@
-//***sm.cpp***//
 #include "Frames/sm.hpp"
 #include "RoundedButton.hpp"
 #include "Robot.hpp"
@@ -10,13 +9,11 @@ wxBEGIN_EVENT_TABLE(SeniorM, wxFrame)
     EVT_BUTTON(1001, SeniorM::RobotProductivity)  // Event binding: button click (ID 1001) triggers AddingRobot
     EVT_BUTTON(1002, SeniorM::TaskCompleted)  
     EVT_BUTTON(1003, SeniorM::FaultyRobots)  
-
-
 wxEND_EVENT_TABLE()
 
 // Constructor definition
 SeniorM::SeniorM(const wxString& title, Simulation& sim, Database& db)
-    : wxFrame(nullptr, wxID_ANY, title, wxDefaultPosition, wxSize(500, 550)), sim(sim), db(db) {
+    : wxFrame(nullptr, wxID_ANY, title, wxDefaultPosition, wxSize(500, 650)), sim(sim), db(db) {
     // Create a panel for holding the GUI components
     wxPanel* panel = new wxPanel(this, wxID_ANY);
     panel->SetBackgroundColour(wxColour("#0d1c3f"));  // Dark blue background
@@ -56,12 +53,8 @@ SeniorM::SeniorM(const wxString& title, Simulation& sim, Database& db)
     typeComboBox = new wxComboBox(panel, wxID_ANY, "Select Type", wxDefaultPosition, wxSize(200, 30), typeChoices, wxCB_READONLY);
     vbox->Add(typeComboBox, 0, wxALIGN_CENTER | wxTOP, 5);
 
-
     // Calculate button using RoundedButton
     vbox->Add(new RoundedButton(panel, 1001, "Calculate Robots Productivity"), 0, wxALIGN_CENTER | wxTOP, 20);
-//     // Create a button that will trigger the Calculte event
-//     wxButton* productivityButton = new wxButton(panel, 1001, "Calculate Robots Productivity", wxPoint(50, 90));
-
 
     // Result label for productivity
     robotProducitivity = new wxStaticText(panel, wxID_ANY, "", wxDefaultPosition, wxDefaultSize, wxALIGN_CENTER);
@@ -69,45 +62,54 @@ SeniorM::SeniorM(const wxString& title, Simulation& sim, Database& db)
     robotProducitivity->SetForegroundColour(wxColour("#FFFFFF"));
     vbox->Add(robotProducitivity, 0, wxALIGN_CENTER | wxTOP, 20);
 
-    // Set the layout to the panel
-    panel->SetSizer(vbox);
-    wxStaticText* taskCompltedLabel = new wxStaticText(panel, wxID_ANY, "Number of Task Completed in", wxPoint(50, 165));  
+    wxBoxSizer* taskCompletedSizer = new wxBoxSizer(wxVERTICAL);
+
+    // Task Completed Section
+    wxStaticText* taskCompletedLabel = new wxStaticText(panel, wxID_ANY, "Number of Tasks Completed in:", wxDefaultPosition, wxDefaultSize, wxALIGN_LEFT);
+    taskCompletedLabel->SetFont(wxFont(12, wxFONTFAMILY_DEFAULT, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_NORMAL));
+    taskCompletedLabel->SetForegroundColour(wxColour("#ffffff"));
+    taskCompletedSizer->Add(taskCompletedLabel, 0, wxALIGN_LEFT | wxBOTTOM, 5);
 
     timeChoices.Add("30 seconds");
     timeChoices.Add("60 seconds");
     timeChoices.Add("120 seconds");
     timeChoices.Add("240 seconds");
-    
-    taskCompleteTimeComboBox = new wxComboBox(panel, wxID_ANY, "Select an option", 
-                            wxPoint(270, 160), wxSize(150, 30), timeChoices,
-                            wxCB_READONLY);
 
+    taskCompleteTimeComboBox = new wxComboBox(panel, wxID_ANY, "Select an option", wxDefaultPosition, wxSize(300, 30), timeChoices, wxCB_READONLY);
+    taskCompletedSizer->Add(taskCompleteTimeComboBox, 0, wxALIGN_CENTER | wxBOTTOM, 10);
 
-    wxButton* taskcompletionButton = new wxButton(panel, 1002, "Calculate Task Completed", wxPoint(50, 200));
+    taskCompletedSizer->Add(new RoundedButton(panel, 1002, "Calculate Task Completed"), 0, wxALIGN_CENTER | wxBOTTOM, 10);
 
-    taskCompleted = new wxStaticText(panel, wxID_ANY, "", wxPoint(290, 200));
+    taskCompleted = new wxStaticText(panel, wxID_ANY, "", wxDefaultPosition, wxDefaultSize);
+    taskCompleted->SetForegroundColour(wxColour("#ffffff"));
+    taskCompletedSizer->Add(taskCompleted, 0, wxALIGN_LEFT);
 
+    // Faulty Robots Section
+    wxBoxSizer* faultyRobotsSizer = new wxBoxSizer(wxVERTICAL);
 
+    wxStaticText* faultyRobotsLabel = new wxStaticText(panel, wxID_ANY, "Number of Faulty Robots:", wxDefaultPosition, wxDefaultSize, wxALIGN_LEFT);
+    faultyRobotsLabel->SetFont(wxFont(12, wxFONTFAMILY_DEFAULT, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_NORMAL));
+    faultyRobotsLabel->SetForegroundColour(wxColour("#ffffff"));
+    faultyRobotsSizer->Add(faultyRobotsLabel, 0, wxALIGN_LEFT | wxBOTTOM, 5);
 
-    wxStaticText* errorCreatedLabel = new wxStaticText(panel, wxID_ANY, "Number of Faulty Robots", wxPoint(50, 285));  
-    
-    faultyRobotComboBox = new wxComboBox(panel, wxID_ANY, "Select an option", 
-                            wxPoint(270, 280), wxSize(150, 30), timeChoices,
-                            wxCB_READONLY);
+    faultyRobotComboBox = new wxComboBox(panel, wxID_ANY, "Select an option", wxDefaultPosition, wxSize(300, 30), timeChoices, wxCB_READONLY);
+    faultyRobotsSizer->Add(faultyRobotComboBox, 0, wxALIGN_CENTER | wxBOTTOM, 10);
 
-    wxButton* faultyRobotButton = new wxButton(panel, 1003, "Count Faulty Robots", wxPoint(50, 320));
+    faultyRobotsSizer->Add(new RoundedButton(panel, 1003, "Count Faulty Robots"), 0, wxALIGN_CENTER | wxBOTTOM, 10);
 
-    faultyRobots = new wxStaticText(panel, wxID_ANY, "", wxPoint(290, 320));
+    faultyRobots = new wxStaticText(panel, wxID_ANY, "", wxDefaultPosition, wxDefaultSize);
+    faultyRobots->SetForegroundColour(wxColour("#ffffff"));
+    faultyRobotsSizer->Add(faultyRobots, 0, wxALIGN_LEFT);
 
+    // Add sections to the main vbox
+    vbox->Add(taskCompletedSizer, 0, wxALIGN_CENTER | wxTOP, 20);
+    vbox->Add(faultyRobotsSizer, 0, wxALIGN_CENTER | wxTOP, 20);
 
-    // Set the window size for the SubFrame
-    this->SetSize(450, 500);
+    // Set the layout to the panel
+    panel->SetSizer(vbox);
 }
 
-
-
 void SeniorM::TaskCompleted(wxCommandEvent& event){
-    
     std::string threshold = taskCompleteTimeComboBox->GetValue().ToStdString();
     int threshold_val;
     std::stringstream ss(threshold);
@@ -123,8 +125,6 @@ void SeniorM::TaskCompleted(wxCommandEvent& event){
     }
 
     taskCompleted->SetLabel(std::to_string(total_completed_tasks));
-
-
 }
 
 
@@ -144,8 +144,6 @@ void SeniorM::FaultyRobots(wxCommandEvent& event){
     }
 
     faultyRobots->SetLabel(std::to_string(total_error_robots));
-
-
 }
 
 // Event handler: Adding a robot to the simulation
