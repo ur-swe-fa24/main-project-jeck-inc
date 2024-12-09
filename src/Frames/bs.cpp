@@ -54,14 +54,14 @@ BuildingS::BuildingS(const wxString& title, Simulation& sim, Database& db) : wxF
 
     // Tentative Completion Time Section
     wxBoxSizer* completionSizer = new wxBoxSizer(wxVERTICAL);
-    wxStaticText* tCTLabel = new wxStaticText(panel, wxID_ANY, "Tentative Cleaning Time:", wxDefaultPosition, wxDefaultSize, wxALIGN_LEFT);
+    wxStaticText* tCTLabel = new wxStaticText(panel, wxID_ANY, "Enter a Room ID:", wxDefaultPosition, wxDefaultSize, wxALIGN_LEFT);
     tCTLabel->SetForegroundColour(wxColour("#ffffff"));
     completionSizer->Add(tCTLabel, 0, wxALIGN_LEFT | wxLEFT | wxBOTTOM, 5);
 
     tentativeCompletionRoomId = new wxTextCtrl(panel, wxID_ANY, "", wxDefaultPosition, wxSize(300, 30));
     completionSizer->Add(tentativeCompletionRoomId, 0, wxALIGN_CENTER | wxBOTTOM, 10);
 
-    completionSizer->Add(new RoundedButton(panel, 1005, "Calculate Completion Time"), 0, wxALIGN_CENTER | wxBOTTOM, 15);
+    completionSizer->Add(new RoundedButton(panel, 1005, "Calculate Room Completion Time"), 0, wxALIGN_CENTER | wxBOTTOM, 15);
     completionTime = new wxStaticText(panel, wxID_ANY, "", wxDefaultPosition, wxDefaultSize, wxALIGN_CENTER);
     completionTime->SetForegroundColour(wxColour("#ffffff"));
     completionSizer->Add(completionTime, 0, wxALIGN_CENTER | wxTOP, 5);
