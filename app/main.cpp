@@ -80,7 +80,7 @@ bool MyApp::OnInit() {
 }
 
 //Main Frame Constructor
-Home::Home(const wxString& title) : wxFrame(nullptr, wxID_ANY, title, wxDefaultPosition, wxSize(450, 550)) {
+Home::Home(const wxString& title) : wxFrame(nullptr, wxID_ANY, title, wxDefaultPosition, wxSize(500, 550)) {
     //Input json file for building configuration
     std::string file_name = "../../app/building.json";
     sim.load_building(file_name);
@@ -101,52 +101,64 @@ Home::Home(const wxString& title) : wxFrame(nullptr, wxID_ANY, title, wxDefaultP
     wxPanel* panel = new wxPanel(this, wxID_ANY);
     panel->SetBackgroundColour(wxColour("#0d1c3f"));  //Set dark blue background color
 
-    //Title label
-    wxStaticText* label = new wxStaticText(panel, wxID_ANY, "Choose User Role:", wxDefaultPosition, wxDefaultSize, wxALIGN_CENTER);  // CHANGED: Centered title label
-    label->SetFont(wxFont(18, wxFONTFAMILY_DEFAULT, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_BOLD));  //Styled label font
-
-
-     // Vertical box sizer for layout
+    // Vertical box sizer for layout
     wxBoxSizer* vbox = new wxBoxSizer(wxVERTICAL);
-    vbox->Add(label, 0, wxALIGN_CENTER | wxTOP, 50);  // Adjusted spacing above the label
 
-    // // Create custom-styled buttons
-    // auto createStyledButton = [&](wxWindow* parent, int id, const wxString& labelText) -> wxButton* {
-    //     wxButton* button = new wxButton(parent, id, labelText, wxDefaultPosition, wxSize(300, 50), wxBORDER_NONE);  // CHANGED: Removed default button border
-    //     button->SetFont(wxFont(16, wxFONTFAMILY_DEFAULT, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_BOLD));  // CHANGED: Bold font for text
-    //     button->SetBackgroundColour(wxColour("#595959"));  // Dark Gray Background
-    //     button->SetForegroundColour(wxColour("#ffffff"));  // Whiteish text
-    //     button->SetWindowStyleFlag(wxBORDER_SIMPLE);  // CHANGED: Added simple border style
-    //     // button->SetWindowBorderRadius(10);  // CHANGED: Added rounded corners (adjust radius as needed)
-    //     return button;
-    // };
+    // Cobotiq logo
+    wxInitAllImageHandlers();  // Ensures PNG and other formats are supported
+    wxImage::AddHandler(new wxPNGHandler());  // Add PNG handler
+    wxBitmap logoBitmap(wxT("../../app/cobotiq-logo.png"), wxBITMAP_TYPE_PNG);
+    wxImage logoImage = logoBitmap.ConvertToImage();  // Convert to wxImage
+    logoImage.Rescale(350, 60, wxIMAGE_QUALITY_HIGH);  // Rescale the image to desired size in high quality
+    wxBitmap scaledLogo(logoImage);  // Convert back to wxBitmap
+    wxStaticBitmap* logo = new wxStaticBitmap(panel, wxID_ANY, scaledLogo);  // Add the scaled logo to the layout
+    vbox->Add(logo, 0, wxALIGN_CENTER | wxTOP, 58);  // Add the logo with spacing
+
+    // Warning Label
+    wxStaticText* warning = new wxStaticText(panel, wxID_ANY, "*Not affiliated with Cobotiq", wxDefaultPosition, wxDefaultSize, wxALIGN_CENTER);
+    warning->SetFont(wxFont(8, wxFONTFAMILY_DEFAULT, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_NORMAL));
+    vbox->Add(warning, 0, wxALIGN_CENTER | wxTOP, 0);  // Spacing below the logo
+
+    // Title label
+    wxStaticText* label = new wxStaticText(panel, wxID_ANY, "Choose User Role:", wxDefaultPosition, wxDefaultSize, wxALIGN_CENTER);
+    label->SetFont(wxFont(17, wxFONTFAMILY_DEFAULT, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_BOLD));
+    vbox->Add(label, 0, wxALIGN_CENTER | wxTOP, 32);  // Spacing below the logo
 
     // Helper class for custom rounded buttons
     class RoundedButton : public wxPanel {
     public:
-        RoundedButton(wxWindow* parent, int id, const wxString& label, const wxSize& size = wxSize(300, 50))
-            : wxPanel(parent, id, wxDefaultPosition, size, wxBORDER_NONE), label(label) {
-            SetBackgroundColour(wxColour("#0d1c3f"));  // Match parent background
+        RoundedButton(wxWindow* parent, int id, const wxString& label, const wxColour& nTextColor = wxColour("#dedede"), const wxColour& hTextColor = wxColour("#606060"), const wxSize& size = wxSize(370, 40))
+        : wxPanel(parent, id, wxDefaultPosition, size, wxBORDER_NONE), label(label), normalTextColor(nTextColor), hoverTextColor(hTextColor), normalBgColor(wxColour("#757575")), 
+        hoverBgColor(wxColour("#aaaaaa")), normalBorderColor(wxColour("#aaaaaa")), hoverBorderColor(wxColour("#ffffff")), isHovered(false) {
             Bind(wxEVT_PAINT, &RoundedButton::OnPaint, this);
             Bind(wxEVT_LEFT_DOWN, &RoundedButton::OnClick, this);
+            Bind(wxEVT_ENTER_WINDOW, &RoundedButton::OnMouseEnter, this);  // Handle mouse enter
+            Bind(wxEVT_LEAVE_WINDOW, &RoundedButton::OnMouseLeave, this);  // Handle mouse leave
         }
 
     private:
         wxString label;
+        wxColour normalTextColor;       // Default text color
+        wxColour hoverTextColor;        // Hover text color
+        wxColour normalBgColor;         // Default background color
+        wxColour hoverBgColor;          // Hover background color
+        wxColour normalBorderColor;     // Default border color
+        wxColour hoverBorderColor;      // Hover border color
+        bool isHovered;                 // Track hover state
 
         void OnPaint(wxPaintEvent& event) {
             wxPaintDC dc(this);
 
             // Set rounded rectangle background and border
-            wxBrush brush(wxColour("#595959"));  // Dark gray background
-            wxPen pen(wxColour("#A9A9A9"), 2);   // Gray border
+            wxBrush brush(isHovered ? hoverBgColor : normalBgColor);  // Background color based on hover state
+            wxPen pen(isHovered ? hoverBorderColor : normalBorderColor, 1);  // Border color based on hover state with line thickness 1
             dc.SetBrush(brush);
             dc.SetPen(pen);
-            dc.DrawRoundedRectangle(0, 0, GetSize().GetWidth(), GetSize().GetHeight(), 20);  // Rounded corners radius: 20
+            dc.DrawRoundedRectangle(0, 0, GetSize().GetWidth(), GetSize().GetHeight(), 12);  // Rounded corners radius: 12
 
             // Draw button text
-            dc.SetTextForeground(wxColour("#ffffff"));  // Whiteish text
-            dc.SetFont(wxFont(16, wxFONTFAMILY_DEFAULT, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_BOLD));
+            dc.SetTextForeground(isHovered ? hoverTextColor : normalTextColor);  // Text color based on hover state
+            dc.SetFont(wxFont(15, wxFONTFAMILY_DEFAULT, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_BOLD));
             wxSize textSize = dc.GetTextExtent(label);
             dc.DrawText(label, (GetSize().GetWidth() - textSize.GetWidth()) / 2,
                         (GetSize().GetHeight() - textSize.GetHeight()) / 2);
@@ -157,22 +169,32 @@ Home::Home(const wxString& title) : wxFrame(nullptr, wxID_ANY, title, wxDefaultP
             clickEvent.SetEventObject(this);
             GetParent()->ProcessWindowEvent(clickEvent);  // Forward the click event to the parent
         }
+
+        void OnMouseEnter(wxMouseEvent& event) {
+            SetCursor(wxCursor(wxCURSOR_HAND));  // Change cursor to hand when hovering
+            isHovered = true;  // Update hover state
+            Refresh();         // Redraw the button to apply the new color
+        }
+
+        void OnMouseLeave(wxMouseEvent& event) {
+            SetCursor(wxCursor(wxCURSOR_ARROW));  // Reset cursor to default arrow when leaving
+            isHovered = false;  // Update hover state
+            Refresh();          // Redraw the button to apply the new color
+        }
     };
 
+
     // Add instances of RoundedButton
-    vbox->Add(new RoundedButton(panel, 1001, "Senior Manager"), 0, wxALIGN_CENTER | wxTOP, 20);
-    vbox->Add(new RoundedButton(panel, 1002, "Building Manager"), 0, wxALIGN_CENTER | wxTOP, 20);
-    vbox->Add(new RoundedButton(panel, 1003, "Building Staff"), 0, wxALIGN_CENTER | wxTOP, 20);
-    vbox->Add(new RoundedButton(panel, 1004, "Field Engineer"), 0, wxALIGN_CENTER | wxTOP, 20);
-    vbox->Add(new RoundedButton(panel, 1005, "Quit"), 0, wxALIGN_CENTER | wxTOP, 20);
+    vbox->Add(new RoundedButton(panel, 1001, "Senior Manager"), 0, wxALIGN_CENTER | wxTOP, 15);
+    vbox->Add(new RoundedButton(panel, 1002, "Building Manager"), 0, wxALIGN_CENTER | wxTOP, 15);
+    vbox->Add(new RoundedButton(panel, 1003, "Building Staff"), 0, wxALIGN_CENTER | wxTOP, 15);
+    vbox->Add(new RoundedButton(panel, 1004, "Field Engineer"), 0, wxALIGN_CENTER | wxTOP, 15);
+    vbox->Add(new RoundedButton(panel, 1005, "Quit", wxColour("#B02121"), wxColour("#B22222")), 0, wxALIGN_CENTER | wxTOP, 15);
 
-
-    // // Add buttons with custom styling
-    // vbox->Add(createStyledButton(panel, 1001, "Senior Manager"), 0, wxALIGN_CENTER | wxALL, 10);
-    // vbox->Add(createStyledButton(panel, 1002, "Building Manager"), 0, wxALIGN_CENTER | wxALL, 10);
-    // vbox->Add(createStyledButton(panel, 1003, "Building Staff"), 0, wxALIGN_CENTER | wxALL, 10);
-    // vbox->Add(createStyledButton(panel, 1004, "Field Engineer"), 0, wxALIGN_CENTER | wxALL, 10);
-    // vbox->Add(createStyledButton(panel, 1005, "Quit"), 0, wxALIGN_CENTER | wxALL, 10);
+    // Developer label
+    wxStaticText* devLabel = new wxStaticText(panel, wxID_ANY, "Developed by JECK Inc.", wxDefaultPosition, wxDefaultSize, wxALIGN_CENTER);
+    devLabel->SetFont(wxFont(10, wxFONTFAMILY_DEFAULT, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_BOLD));
+    vbox->Add(devLabel, 0, wxALIGN_CENTER | wxTOP, 35);  // Spacing below the buttons
 
     // Set the layout to the panel
     panel->SetSizer(vbox);
