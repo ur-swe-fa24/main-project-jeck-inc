@@ -182,15 +182,14 @@ void SeniorM::RobotProductivity(wxCommandEvent& event) {
         }
 
         //Getting the performance values
-        int workTime = robot[4];
-        int time = robot[3];
+        int workTime = robot[3]; // get up
+        int time = robot[2]; // get liveTime
 
         //Checking for the filter
         if ((size == "" || size == robotSize) && (type == "" || type == robotType)){
             totalTime += time;
             totalWorkTime += workTime;
         }
-
     }
 
     //Default Value
@@ -198,7 +197,7 @@ void SeniorM::RobotProductivity(wxCommandEvent& event) {
 
     //<aking sure there is no 0 division error
     if (totalTime != 0){
-        result = std::to_string(std::round(totalWorkTime/totalTime)) + "%";
+        result = std::to_string(std::round(100 * totalWorkTime/totalTime)) + "%";
     }
 
     //Changing the result
