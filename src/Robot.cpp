@@ -18,6 +18,8 @@ namespace robot {
             roomAssigned = "-1";
             battery = 100;
             fluidLevel = 100;
+            upTime = 0;
+            totalLiveTime = 0;
     }
 
     // Getter for the robot ID
