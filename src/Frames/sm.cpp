@@ -1,5 +1,6 @@
 //***sm.cpp***//
 #include "Frames/sm.hpp"
+#include "RoundedButton.hpp"
 #include "Robot.hpp"
 #include "Simulation.hpp"
 #include "Database.hpp"
@@ -12,46 +13,57 @@ wxEND_EVENT_TABLE()
 
 // Constructor definition
 SeniorM::SeniorM(const wxString& title, Simulation& sim, Database& db)
-    : wxFrame(nullptr, wxID_ANY, title), sim(sim), db(db){
-
+    : wxFrame(nullptr, wxID_ANY, title, wxDefaultPosition, wxSize(500, 550)), sim(sim), db(db) {
     // Create a panel for holding the GUI components
     wxPanel* panel = new wxPanel(this, wxID_ANY);
+    panel->SetBackgroundColour(wxColour("#0d1c3f"));  // Dark blue background
 
-    wxStaticText* sizeLabel = new wxStaticText(panel, wxID_ANY, "Size", wxPoint(100, 30));  
+    // Create a vertical box sizer for layout
+    wxBoxSizer* vbox = new wxBoxSizer(wxVERTICAL);
 
-    //Adding Options in the Size DropDown
+    // Title label
+    wxStaticText* titleLabel = new wxStaticText(panel, wxID_ANY, "Senior Manager Dashboard", wxDefaultPosition, wxDefaultSize, wxALIGN_CENTER);
+    titleLabel->SetFont(wxFont(18, wxFONTFAMILY_DEFAULT, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_BOLD));
+    titleLabel->SetForegroundColour(wxColour("#FFFFFF"));  // White text
+    vbox->Add(titleLabel, 0, wxALIGN_CENTER | wxTOP, 20);
+
+    // Size dropdown label and combo box
+    wxStaticText* sizeLabel = new wxStaticText(panel, wxID_ANY, "Size", wxDefaultPosition, wxDefaultSize, wxALIGN_CENTER);
+    sizeLabel->SetFont(wxFont(14, wxFONTFAMILY_DEFAULT, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_NORMAL));
+    sizeLabel->SetForegroundColour(wxColour("#FFFFFF"));
+    vbox->Add(sizeLabel, 0, wxALIGN_CENTER | wxTOP, 15);
+
     sizeChoices.Add("Large");
     sizeChoices.Add("Medium");
     sizeChoices.Add("Small");
 
-    //Creating the SizeComboBox
-    sizeComboBox = new wxComboBox(panel, wxID_ANY, "Select an option", 
-                            wxPoint(50, 50), wxSize(150, 30), sizeChoices,
-                            wxCB_READONLY);
+    sizeComboBox = new wxComboBox(panel, wxID_ANY, "Select Size", wxDefaultPosition, wxSize(200, 30), sizeChoices, wxCB_READONLY);
+    vbox->Add(sizeComboBox, 0, wxALIGN_CENTER | wxTOP, 5);
 
-    wxStaticText* typeLabel = new wxStaticText(panel, wxID_ANY, "Type", wxPoint(250, 30));
+    // Type dropdown label and combo box
+    wxStaticText* typeLabel = new wxStaticText(panel, wxID_ANY, "Type", wxDefaultPosition, wxDefaultSize, wxALIGN_CENTER);
+    typeLabel->SetFont(wxFont(14, wxFONTFAMILY_DEFAULT, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_NORMAL));
+    typeLabel->SetForegroundColour(wxColour("#FFFFFF"));
+    vbox->Add(typeLabel, 0, wxALIGN_CENTER | wxTOP, 15);
 
-    //Adding Options in the Type Dropdown
     typeChoices.Add("Scrub");
-    typeChoices.Add("Vaccum");
+    typeChoices.Add("Vacuum");
     typeChoices.Add("Shampoo");
 
-    //Creating the TypeComboBox
-    typeComboBox = new wxComboBox(panel, wxID_ANY, "Select an option", 
-                            wxPoint(200, 50), wxSize(150, 30), typeChoices,
-                            wxCB_READONLY);
+    typeComboBox = new wxComboBox(panel, wxID_ANY, "Select Type", wxDefaultPosition, wxSize(200, 30), typeChoices, wxCB_READONLY);
+    vbox->Add(typeComboBox, 0, wxALIGN_CENTER | wxTOP, 5);
 
+    // Calculate button using RoundedButton
+    vbox->Add(new RoundedButton(panel, 1001, "Calculate Robots Productivity"), 0, wxALIGN_CENTER | wxTOP, 20);
 
-    // Create a button that will trigger the Calculte event
-    wxButton* calculate = new wxButton(panel, 1001, "Calculate Robots Productivity", wxPoint(50, 90));
+    // Result label for productivity
+    robotProducitivity = new wxStaticText(panel, wxID_ANY, "", wxDefaultPosition, wxDefaultSize, wxALIGN_CENTER);
+    robotProducitivity->SetFont(wxFont(14, wxFONTFAMILY_DEFAULT, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_BOLD));
+    robotProducitivity->SetForegroundColour(wxColour("#FFFFFF"));
+    vbox->Add(robotProducitivity, 0, wxALIGN_CENTER | wxTOP, 20);
 
-    //Create a label for Productivity that will change as per the result
-    robotProducitivity = new wxStaticText(panel, wxID_ANY, "", wxPoint(290, 100));
-
-    // wxButton* backButton = new wxButton(panel, 1002, "Back", wxPoint(10, 300));
-
-    // Set the window size for the SubFrame
-    this->SetSize(400, 400);
+    // Set the layout to the panel
+    panel->SetSizer(vbox);
 }
 
 // Event handler: Adding a robot to the simulation

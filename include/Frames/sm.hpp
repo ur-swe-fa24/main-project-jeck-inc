@@ -1,4 +1,3 @@
-//***sm.hpp***//
 #ifndef SENIORM_H
 #define SENIORM_H
 

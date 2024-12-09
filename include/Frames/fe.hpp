@@ -1,4 +1,3 @@
-//***fe.hpp***//
 #ifndef FIELDE_H
 #define FIELDE_H
 

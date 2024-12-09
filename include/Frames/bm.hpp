@@ -1,4 +1,3 @@
-//***bm.hpp***//
 #ifndef BUILDINGM_H
 #define BUILDINGM_H
 
@@ -19,9 +18,9 @@ private:
     void AddingRobot(wxCommandEvent& event);
     void AssignTask(wxCommandEvent& event);
 
-    //for add robot
-    wxTextCtrl* sizeInput;
-    wxTextCtrl* functionInput;
+    // Dropdown menus for add robot
+    wxComboBox* sizeDropdown;
+    wxComboBox* functionDropdown;
 
     //for assign task
     wxTextCtrl* robotId;

@@ -1,5 +1,6 @@
 //***bs.cpp***//
 #include "Frames/bs.hpp"
+#include "RoundedButton.hpp"
 #include "Robot.hpp"
 #include "Simulation.hpp"
 #include "Database.hpp"
@@ -14,43 +15,77 @@ wxBEGIN_EVENT_TABLE(BuildingS, wxFrame)
 wxEND_EVENT_TABLE()
 
 // Constructor definition
-BuildingS::BuildingS(const wxString& title, Simulation& sim, Database& db)
-    : wxFrame(nullptr, wxID_ANY, title), sim(sim), db(db){
-
+BuildingS::BuildingS(const wxString& title, Simulation& sim, Database& db) : wxFrame(nullptr, wxID_ANY, title, wxDefaultPosition, wxSize(500, 650)), sim(sim), db(db) {
     // Create a panel for holding the GUI components
     wxPanel* panel = new wxPanel(this, wxID_ANY);
+    panel->SetBackgroundColour(wxColour("#0d1c3f"));  // Dark blue background
 
-    //Getting size input
-    wxStaticText* robotStatusIdLabel = new wxStaticText(panel, wxID_ANY, "Enter a viable robot id", wxPoint(10, 10));
-    robotStatusId = new wxTextCtrl(panel, wxID_ANY, "", wxPoint(10, 30), wxSize(200, -1));
-    
-    // Create a button that will trigger the AddingRobot event
-    wxButton* robotStatusButton = new wxButton(panel, 1001, "Robot Status", wxPoint(10, 65));
+    // Main vertical sizer for the layout
+    wxBoxSizer* mainSizer = new wxBoxSizer(wxVERTICAL);
 
-    //Getting size input
-    wxStaticText* robotRefillIdLabel = new wxStaticText(panel, wxID_ANY, "Enter a viable robot id", wxPoint(10, 130));
-    robotRefillId = new wxTextCtrl(panel, wxID_ANY, "", wxPoint(10,150), wxSize(200, -1));
-    
-    // Create a button that will trigger the AddingRobot event
-    wxButton* robotRefillButton = new wxButton(panel, 1002, "Refill Robot", wxPoint(10, 185));
+    // Title label
+    wxStaticText* titleLabel = new wxStaticText(panel, wxID_ANY, "Building Staff Controls", wxDefaultPosition, wxDefaultSize, wxALIGN_CENTER);
+    titleLabel->SetFont(wxFont(17, wxFONTFAMILY_DEFAULT, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_BOLD));
+    titleLabel->SetForegroundColour(wxColour("#ffffff"));
+    mainSizer->Add(titleLabel, 0, wxALIGN_CENTER | wxTOP | wxBOTTOM, 15);
 
-    //Getting tentative time for unclean rooms
-    wxStaticText* tCTLabel = new wxStaticText(panel, wxID_ANY, "Tentative Clearning Time", wxPoint(10, 250));
-    tentativeCompletionRoomId = new wxTextCtrl(panel, wxID_ANY, "Room Id", wxPoint(180,245), wxSize(100, -1));
-    wxButton* calculateTCTButton = new wxButton(panel, 1005, "Calculate Completion Time", wxPoint(10, 280));
-    completionTime = new wxStaticText(panel, wxID_ANY, "", wxPoint(250, 285));
+    // Robot Status Section
+    wxBoxSizer* robotStatusSizer = new wxBoxSizer(wxVERTICAL);
+    wxStaticText* robotStatusIdLabel = new wxStaticText(panel, wxID_ANY, "Enter a viable robot id:", wxDefaultPosition, wxDefaultSize, wxALIGN_LEFT);
+    robotStatusIdLabel->SetForegroundColour(wxColour("#ffffff"));
+    robotStatusSizer->Add(robotStatusIdLabel, 0, wxALIGN_LEFT | wxLEFT | wxBOTTOM, 5);
 
-    //Getting list of Unclean Room
-    // wxStaticText* listUncleanLabel = new wxStaticText(panel, wxID_ANY, "List of Uncleaned Rooms", wxPoint(10, 250));
-    wxStaticText* listUncleanThreshLabel = new wxStaticText(panel, wxID_ANY, "Enter Threshold", wxPoint(10, 350));
-    cleanThreshold = new wxTextCtrl(panel, wxID_ANY, "80", wxPoint(125,345), wxSize(50, -1));
-    wxButton* cleanRoomsButton = new wxButton(panel, 1004, "List of Unclean Rooms", wxPoint(10, 380));
+    robotStatusId = new wxTextCtrl(panel, wxID_ANY, "", wxDefaultPosition, wxSize(300, 30));
+    robotStatusSizer->Add(robotStatusId, 0, wxALIGN_CENTER | wxBOTTOM, 10);
 
-    //Getting list of ongoing task
-    wxButton* ongoingTasksButton = new wxButton(panel, 1003, "List of Ongoing Task", wxPoint(10, 450));
+    robotStatusSizer->Add(new RoundedButton(panel, 1001, "Robot Status"), 0, wxALIGN_CENTER | wxBOTTOM, 15);
+    mainSizer->Add(robotStatusSizer, 0, wxALIGN_CENTER);
 
-    // Set the window size for the SubFrame
-    this->SetSize(400, 550);
+    // Robot Refill Section
+    wxBoxSizer* robotRefillSizer = new wxBoxSizer(wxVERTICAL);
+    wxStaticText* robotRefillIdLabel = new wxStaticText(panel, wxID_ANY, "Enter a viable robot id:", wxDefaultPosition, wxDefaultSize, wxALIGN_LEFT);
+    robotRefillIdLabel->SetForegroundColour(wxColour("#ffffff"));
+    robotRefillSizer->Add(robotRefillIdLabel, 0, wxALIGN_LEFT | wxLEFT | wxBOTTOM, 5);
+
+    robotRefillId = new wxTextCtrl(panel, wxID_ANY, "", wxDefaultPosition, wxSize(300, 30));
+    robotRefillSizer->Add(robotRefillId, 0, wxALIGN_CENTER | wxBOTTOM, 10);
+
+    robotRefillSizer->Add(new RoundedButton(panel, 1002, "Refill Robot"), 0, wxALIGN_CENTER | wxBOTTOM, 15);
+    mainSizer->Add(robotRefillSizer, 0, wxALIGN_CENTER);
+
+    // Tentative Completion Time Section
+    wxBoxSizer* completionSizer = new wxBoxSizer(wxVERTICAL);
+    wxStaticText* tCTLabel = new wxStaticText(panel, wxID_ANY, "Tentative Cleaning Time:", wxDefaultPosition, wxDefaultSize, wxALIGN_LEFT);
+    tCTLabel->SetForegroundColour(wxColour("#ffffff"));
+    completionSizer->Add(tCTLabel, 0, wxALIGN_LEFT | wxLEFT | wxBOTTOM, 5);
+
+    tentativeCompletionRoomId = new wxTextCtrl(panel, wxID_ANY, "", wxDefaultPosition, wxSize(300, 30));
+    completionSizer->Add(tentativeCompletionRoomId, 0, wxALIGN_CENTER | wxBOTTOM, 10);
+
+    completionSizer->Add(new RoundedButton(panel, 1005, "Calculate Completion Time"), 0, wxALIGN_CENTER | wxBOTTOM, 15);
+    completionTime = new wxStaticText(panel, wxID_ANY, "", wxDefaultPosition, wxDefaultSize, wxALIGN_CENTER);
+    completionTime->SetForegroundColour(wxColour("#ffffff"));
+    completionSizer->Add(completionTime, 0, wxALIGN_CENTER | wxTOP, 5);
+
+    mainSizer->Add(completionSizer, 0, wxALIGN_CENTER);
+
+    // Unclean Rooms Section
+    wxBoxSizer* cleanRoomsSizer = new wxBoxSizer(wxVERTICAL);
+    wxStaticText* cleanThresholdLabel = new wxStaticText(panel, wxID_ANY, "Enter Threshold:", wxDefaultPosition, wxDefaultSize, wxALIGN_LEFT);
+    cleanThresholdLabel->SetForegroundColour(wxColour("#ffffff"));
+    cleanRoomsSizer->Add(cleanThresholdLabel, 0, wxALIGN_LEFT | wxLEFT | wxBOTTOM, 5);
+
+    cleanThreshold = new wxTextCtrl(panel, wxID_ANY, "", wxDefaultPosition, wxSize(300, 30));
+    cleanRoomsSizer->Add(cleanThreshold, 0, wxALIGN_CENTER | wxBOTTOM, 10);
+
+    cleanRoomsSizer->Add(new RoundedButton(panel, 1004, "List of Unclean Rooms"), 0, wxALIGN_CENTER | wxBOTTOM, 15);
+    mainSizer->Add(cleanRoomsSizer, 0, wxALIGN_CENTER);
+
+    // Ongoing Tasks Section
+    mainSizer->Add(new RoundedButton(panel, 1003, "List of Ongoing Tasks"), 0, wxALIGN_CENTER | wxTOP | wxBOTTOM, 15);
+
+    // Set the layout
+    panel->SetSizer(mainSizer);
 }
 
 // Event handler: Creates a Message Box to Display to the Status of a Robot
