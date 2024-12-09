@@ -159,7 +159,7 @@ void SeniorM::RobotProductivity(wxCommandEvent& event) {
                 robotSize = "Medium";
                 break;
             case 2:
-                robotSize = "Large";
+                robotSize = "Small";
                 break;
             default:
                 robotSize = "Unknown";
