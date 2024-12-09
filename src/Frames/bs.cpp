@@ -1,4 +1,3 @@
-//***bs.cpp***//
 #include "Frames/bs.hpp"
 #include "RoundedButton.hpp"
 #include "Robot.hpp"

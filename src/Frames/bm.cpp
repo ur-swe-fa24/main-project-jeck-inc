@@ -15,9 +15,9 @@ wxBEGIN_EVENT_TABLE(BuildingM, wxFrame)
     EVT_BUTTON(1003, BuildingM::BacklogCompletionTime)
 wxEND_EVENT_TABLE()
 
+// Constructor definition
 BuildingM::BuildingM(const wxString& title, Simulation& sim, Database& db)
-    : wxFrame(nullptr, wxID_ANY, title, wxDefaultPosition, wxSize(500, 600)), sim(sim), db(db) {
-
+: wxFrame(nullptr, wxID_ANY, title, wxDefaultPosition, wxSize(500, 650)), sim(sim), db(db) {
     // Create a panel for holding the GUI components
     wxPanel* panel = new wxPanel(this, wxID_ANY);
     panel->SetBackgroundColour(wxColour("#0d1c3f"));  // Match the theme
@@ -85,24 +85,26 @@ BuildingM::BuildingM(const wxString& title, Simulation& sim, Database& db)
     // Assign Robot button
     mainSizer->Add(new RoundedButton(panel, 1002, "Assign Robot"), 0, wxALIGN_CENTER | wxBOTTOM, 20);
 
+    // Robot Backlog Completion Time Section
+    wxBoxSizer* completionTimeSizer = new wxBoxSizer(wxVERTICAL);
+
+    wxStaticText* robotIdCompletionLabel = new wxStaticText(panel, wxID_ANY, "Robot ID:", wxDefaultPosition, wxDefaultSize, wxALIGN_LEFT);
+    robotIdCompletionLabel->SetForegroundColour(wxColour("#dedede"));
+    completionTimeSizer->Add(robotIdCompletionLabel, 0, wxALIGN_LEFT | wxBOTTOM, 5);
+
+    robotIdCompletionTime = new wxTextCtrl(panel, wxID_ANY, "", wxDefaultPosition, wxSize(300, 30));
+    completionTimeSizer->Add(robotIdCompletionTime, 0, wxALIGN_CENTER | wxBOTTOM, 10);
+
+    completionTimeSizer->Add(new RoundedButton(panel, 1003, "Calculate Completion Time"), 0, wxALIGN_CENTER | wxBOTTOM, 20);
+    completionTime = new wxStaticText(panel, wxID_ANY, "", wxDefaultPosition, wxDefaultSize, wxALIGN_LEFT);
+    completionTime->SetForegroundColour(wxColour("#dedede"));
+    completionTimeSizer->Add(completionTime, 0, wxALIGN_LEFT);
+
+    mainSizer->Add(completionTimeSizer, 0, wxALIGN_CENTER);
+
     // Set the layout
     panel->SetSizer(mainSizer);
-
-    //
-    wxStaticText* completionTimeLabel = new wxStaticText(panel, wxID_ANY, "Robot Backlog Completion Time", wxPoint(10,370));
-    wxStaticText* robotIdCompletionLabel = new wxStaticText(panel, wxID_ANY, "Robot Id", wxPoint(10,400));
-
-    robotIdCompletionTime = new wxTextCtrl(panel, wxID_ANY, "", wxPoint(90, 395));
-    wxButton* getCompletionTimeButton = new wxButton(panel, 1003, "Calculate Completion Time", wxPoint(10, 430));    
-    completionTime = new wxStaticText(panel, wxID_ANY, "", wxPoint(290, 435));
-
-    
-    
-
-    // Set the window size for the SubFrame
-    this->SetSize(400, 520);
 }
-
 
 void BuildingM::BacklogCompletionTime(wxCommandEvent& event){
     int robotId = wxAtoi(robotIdCompletionTime->GetValue());
