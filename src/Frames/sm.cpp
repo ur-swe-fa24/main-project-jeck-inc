@@ -113,7 +113,7 @@ void SeniorM::TaskCompleted(wxCommandEvent& event){
 
 
 void SeniorM::FaultyRobots(wxCommandEvent& event){
-    std::string threshold = taskCompleteTimeComboBox->GetValue().ToStdString();
+    std::string threshold = faultyRobotComboBox->GetValue().ToStdString();
     int error_robots;
     std::stringstream ss(threshold);
     ss >> error_robots; //removing seconds to create a int value
@@ -127,7 +127,7 @@ void SeniorM::FaultyRobots(wxCommandEvent& event){
         total_error_robots += results[0];
     }
 
-    taskCompleted->SetLabel(std::to_string(total_error_robots));
+    faultyRobots->SetLabel(std::to_string(total_error_robots));
 
 }
 
