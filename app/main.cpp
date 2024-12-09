@@ -1,4 +1,10 @@
-//***main.cpp***//
+/*
+This is our main.cpp. Also, our GUI-System Manager component. 
+The wxWidget is the main controller of the system. The user interacts with the GUI (which have links to  other GUIs, each designated for a role) and provide us the relevant information. 
+The input retrieved from the GUI is used by the System Mangaer aspect of the code to demand actions from Simulation or Database. 
+Along with the threads created by the GUI, the System Manager also creates a thread for the simulation, a thread for updating database and a thread for notifications.
+*/
+
 #include <thread>
 #include <string>
 #include <wx/wx.h>
@@ -157,6 +163,11 @@ Home::Home(const wxString& title) : wxFrame(nullptr, wxID_ANY, title, wxDefaultP
     notificationThread = std::thread(createNotification, std::ref(sim), std::ref(db));
     notificationThread.detach();
 
+
+
+    db.init_TaskCompletedAndErrorRates();
+    db.init_analytics();
+
     //Creating Elements (Buttons and Form Field) for GUI
     wxPanel* panel = new wxPanel(this, wxID_ANY);
     panel->SetBackgroundColour(wxColour("#0d1c3f"));  //Set dark blue background color
@@ -237,6 +248,11 @@ void Home::Quit(wxCommandEvent& event) {
 void updateDatabase(Simulation& sim, Database& db){
     std::cout << "Things happening" << std::endl;
     while (live){
+        unordered_map<std::string, int> results = sim.getDBStats();
+        vector<int> faultyRobots = sim.getFaultyRobots();
+
+        // db.updateSM(0, faultyRobots, results["totalNumRobots"], results["numTasksCompleted"]);
+        db.updateTCER(results["numTasksCompleted"], faultyRobots.size());
         std::this_thread::sleep_for(std::chrono::milliseconds(30000)); // Sleep for 30 seconds
     }
 }

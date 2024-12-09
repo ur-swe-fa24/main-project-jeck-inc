@@ -12,6 +12,7 @@ Robot::Size getSizeFromInput(int choice);
 wxBEGIN_EVENT_TABLE(BuildingM, wxFrame)
     EVT_BUTTON(1001, BuildingM::AddingRobot)  // Event binding: button click (ID 1001) triggers AddingRobot
     EVT_BUTTON(1002, BuildingM::AssignTask)
+    EVT_BUTTON(1003, BuildingM::BacklogCompletionTime)
 wxEND_EVENT_TABLE()
 
 BuildingM::BuildingM(const wxString& title, Simulation& sim, Database& db)
@@ -86,6 +87,37 @@ BuildingM::BuildingM(const wxString& title, Simulation& sim, Database& db)
 
     // Set the layout
     panel->SetSizer(mainSizer);
+
+    //
+    wxStaticText* completionTimeLabel = new wxStaticText(panel, wxID_ANY, "Robot Backlog Completion Time", wxPoint(10,370));
+    wxStaticText* robotIdCompletionLabel = new wxStaticText(panel, wxID_ANY, "Robot Id", wxPoint(10,400));
+
+    robotIdCompletionTime = new wxTextCtrl(panel, wxID_ANY, "", wxPoint(90, 395));
+    wxButton* getCompletionTimeButton = new wxButton(panel, 1003, "Calculate Completion Time", wxPoint(10, 430));    
+    completionTime = new wxStaticText(panel, wxID_ANY, "", wxPoint(290, 435));
+
+    
+    
+
+    // Set the window size for the SubFrame
+    this->SetSize(400, 520);
+}
+
+
+void BuildingM::BacklogCompletionTime(wxCommandEvent& event){
+    int robotId = wxAtoi(robotIdCompletionTime->GetValue());
+
+    int result = sim.robotCompletionTime(robotId);
+
+    if (result == -1){
+        wxMessageBox("Robot is not active at the moment", "Robot's Tentative Cleaning Time", wxOK | wxICON_INFORMATION);
+
+    }else if ( result == -2){
+        wxMessageBox("Robot Id doesn't exist", "Robot's Tentative Cleaning Time", wxOK | wxICON_INFORMATION);
+
+    }else{
+        completionTime->SetLabel(std::to_string(result) + " seconds");
+    }
 }
 
 // Event handler: Adding a robot to the simulation
@@ -112,6 +144,14 @@ void BuildingM::AddingRobot(wxCommandEvent& event) {
         func = Robot::Function::Scrub;
 
     // Create and add robot
+    //Getting Values from GUI
+    std::vector<int> f = {1,2,3};
+    int sizeChoice = wxAtoi(sizeInput->GetValue());
+    int functionChoice = wxAtoi(functionInput->GetValue());
+
+    // Creation of the robot
+    Robot::Function func = getFunctionFromInput(functionChoice);
+    Robot::Size size = getSizeFromInput(sizeChoice);
     Robot myRobot(func, size);
     sim.add_robot(myRobot);
     db.add_robot(myRobot);

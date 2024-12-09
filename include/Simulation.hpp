@@ -50,8 +50,11 @@ class Simulation
         std::mutex simulation_mutex; // Mutual Exclusion lock
         std::atomic<bool> running; // Control signal
         Building building; // Building layout
-        vector<int> faultyRobots; // vector for faulty robots
+        vector<int> faultyRobots; // vector for faulty robots for NOTIFCATIONS
+        vector<int> faultyRobotsDB; // vector for faulty robots for DB STATS
         unordered_set<std::string> tasksCompleted; // vector for robots who just completed task
+        int timeCount; // integer clock ticks starting at 0 for each simulation tick
+        int numTasksCompleted; // integer keeping track of how many tasks have been completed
 
     public:
         // Constructor
@@ -97,6 +100,9 @@ class Simulation
         // Method for getting faulty robots for UI notification
         std::vector<int> getFaultyRobots();
 
+        // vector of robot ids that have errored since this function was last called
+        std::vector<int> getFaultyRobotsDB();
+
         // Method for getting completed tasks for UI notification
         unordered_set<std::string> getTasksCompleted();
 
@@ -116,7 +122,20 @@ class Simulation
         // Method that takes in a room ID and returns the tentative completion time for that room
         int completionTime(std::string roomID);
 
-        
+        // Method that takes in a robot ID and returns the tentative completion time for that robot
+        int robotCompletionTime(int robotID);
+
+        //  Method to get a dictionary with a series of stats for the database
+        //  key                -      value
+        //  clockSimTime       -      int
+        //  numTasksCompleted  -      int
+        //  numberErrors       -      int
+        //  totalNumRobots     -      int
+        //  totalRoomsCleaned  -      int
+        unordered_map<std::string, int> getDBStats();
+
+
+
 };
 
 } // namespace simulation
