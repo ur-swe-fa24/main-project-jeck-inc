@@ -1,3 +1,10 @@
+/*
+Robot class simulates a robot entity. It is mostly used by Simulation and is instantiated in our GUI-System Manager class. 
+It has attributes like task, size, id, status, roomAssigned, battery and fluilevel
+Building Manager fixes and updates robot using the GUI. 
+Robot rate work and faulty probability are defined in Simulation. 
+*/
+
 #include "Robot.hpp"
 
 namespace robot {
@@ -11,6 +18,8 @@ namespace robot {
             roomAssigned = "-1";
             battery = 100;
             fluidLevel = 100;
+            upTime = 0;
+            totalLiveTime = 0;
     }
 
     // Getter for the robot ID
@@ -40,31 +49,38 @@ namespace robot {
     
     }
 
+    //Getter Function to get the working time of robot
     int Robot::getUpTime() const {
         return upTime;
     }
 
+    //Getter function to get the total spawned time of the robot
     int Robot::getTotalLiveTime() const {
         return totalLiveTime;
     }
 
+    //Getter function to set the battery of robot
     void Robot::setBattery(int new_battery){
         battery = new_battery;
     }
 
+    //Getter function to set the room assigned for the robot (if any else -1)
     void Robot::setRoomAssigned(std::string newRoom){
         roomAssigned = newRoom;
     }  
 
+    //Getter function to set the fluid level for the robot
     void Robot::setFluidLevel(int updatedFluidLevel)
     {
         fluidLevel = updatedFluidLevel;
     }
 
+    //Getter function to set the total live time of the robot
     void Robot::setTotalLiveTime(int new_time){
         totalLiveTime = new_time;
     }
 
+    //Getter functio to set the total work time of the robot
     void Robot::setUpTime(int new_up_time){
         upTime = new_up_time;
     }

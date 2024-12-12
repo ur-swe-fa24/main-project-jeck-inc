@@ -17,13 +17,19 @@ private:
     // Event handler for adding a robot
     void RobotStatus(wxCommandEvent& event);
     void RobotRefill(wxCommandEvent& event);
+    void TaskHistory(wxCommandEvent& event);
+    void CleanRooms(wxCommandEvent& event);
+    void TentativeCompletionTime(wxCommandEvent& event);
 
     //for robotstatus
     wxTextCtrl* robotStatusId;
     wxTextCtrl* robotRefillId;
+    wxTextCtrl* cleanThreshold;
+    wxTextCtrl* tentativeCompletionRoomId;
 
+    wxStaticText* completionTime; 
 
-    // Reference to the Simulation object
+    // Reference to the Simulation and Database object
     simulation::Simulation& sim;
     database::Database& db;
 

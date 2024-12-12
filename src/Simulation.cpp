@@ -1,3 +1,12 @@
+/*
+
+This is the Simulation Class. One instance of the class runs over the period of the simulation. Simulation is reposnsible for ticking the digital discrete time.
+Every tick will carry out one unit of work: cleaning room, decreasing fluid, battery, creating faultiness with certain probability and so on. 
+Simulation only communicates with our GUI-System Manager class. It also interacts with Robot class but that is one way communication.  Any information sent to database goes through the System manager. 
+Simulation runs on its own thread which is killed using poision input when the simulation ends. 
+*/
+
+
 #include "Simulation.hpp"
 
 namespace simulation 
@@ -102,9 +111,10 @@ namespace simulation
         if (robot.getStatus() != "Faulty") {
             return "Robot is not faulty";
         }
-        // Actually fixing the robot if needed
-        robot.setStatus("Idle");
-        robot.setRoomAssigned("-1");
+        
+        // Actually fixing the robot
+        robot.setStatus("Active"); // Set robot back to active so it can finish its task
+
         return "Robot is fixed";
     }
 
@@ -139,12 +149,6 @@ namespace simulation
             return "Robot ID not found: " + std::to_string(robotID);
         }
 
-        // CURRENTLY CANNOT ASSIGN A TASK TO A ROBOT THAT ALREADY HAS ONE
-        if (robot_dict[robotID].getStatus() == "Active")
-        {
-            return "Robot already in room: " + robot_dict[robotID].getRoomAssigned();
-        }
-
         // Check if the roomID exists in the building
         if (building.rooms.find(roomID) == building.rooms.end()) {
             return "Room ID not found: " + roomID;
@@ -173,10 +177,23 @@ namespace simulation
             default:
                 return "Unknown robot function.";
         }
-        robot_dict[robotID].setStatus("Active"); // Set status of robot to Active
-        robot_dict[robotID].setRoomAssigned(roomID); // Assign the robot -> the room (robot can only have 1 room)
-        building.rooms[roomID].robots_cleaning.insert(robotID); // Assign the room -> the robot (room can have many robots)
-        return "Room assigned";
+        if (robot_dict[robotID].getStatus() == "Active")
+        {
+            std::queue<std::string>& backLog = robot_dict[robotID].getTaskBacklog(); // Get backlog queue
+            backLog.push(roomID); // Add to backlog
+            return "Room assigned, added to backlog of tasks as robot is currently in another room";
+        }
+        
+        if (robot_dict[robotID].getStatus() == "Idle")
+        {
+            robot_dict[robotID].setStatus("Active"); // Set status of robot to Active
+            robot_dict[robotID].setRoomAssigned(roomID); // Assign the robot -> the room (robot can only have 1 room)
+            building.rooms[roomID].robots_cleaning.insert(robotID); // Assign the room -> the robot (room can have many robots)
+            return "Room assigned, robot getting started now";
+        }
+        
+        return "Robot is faulty and cannot be assigned a room";
+        
     }
 
     // Method to get info about a robot
@@ -196,11 +213,253 @@ namespace simulation
         "\n\tCurrent Fluid Level: " + std::to_string(robot.getFluidLevel());
     }
 
+    // Method for getting faulty robots for UI notification
+    std::vector<int> Simulation::getFaultyRobots()
+    {
+        vector<int> returnfaultyRobots = faultyRobots;
+        faultyRobots.clear();
+        return returnfaultyRobots;
+    }
+
+    // Method for getting completed tasks for UI notification
+    std::unordered_set<std::string> Simulation::getTasksCompleted()
+    {
+        unordered_set<std::string> returnTasksCompleted = tasksCompleted;
+        tasksCompleted.clear();
+        return returnTasksCompleted;
+    }
+
+    //Method to get the performance of the robots
+    std::vector<std::vector<int>> Simulation::getRobotPerformances(){
+        std::vector<std::vector<int>> info;
+
+        // Iterate through every robot
+        for (auto& pair : robot_dict)
+        {
+            int robotID = pair.first; // Get the robot ID
+            robot::Robot& robot = pair.second; // Get the robot reference
+
+            std::vector<int> myList;
+
+            int size;
+            int type;
+
+            switch (robot.getSize()){
+                case Robot::Size::Large:
+                    size = 0;
+                    break;
+                case Robot::Size::Medium:
+                    size = 1;
+                    break;
+                case Robot::Size::Small:
+                    size = 2;
+                    break;
+                default:
+                    size = -1;
+            }
+
+            switch(robot.getTask()){
+                case Robot::Function::Scrub:
+                    type = 0;
+                    break;
+                case Robot::Function::Shampoo:
+                    type = 1;
+                    break;
+                case Robot::Function::Vacuum:
+                    type = 2;
+                    break;
+                default:
+                    type = -1;
+            }
+
+            info.push_back({size, type, robot.getTotalLiveTime(), robot.getUpTime()});
+        }
+
+        return info;
+    }
+
+
+
+    // Method for getting a list of room cleanliness
+    unordered_map<std::string, int> Simulation::getAllRoomCleanliness()
+    {
+        unordered_map<std::string, int> roomCleanlinessMap;
+        for (auto& pair : building.rooms)
+        {
+            roomCleanlinessMap[pair.first] = pair.second.percentClean;
+        }
+        return roomCleanlinessMap;
+    }
+
+    // Method for getting a list of ongoing tasks
+    // Key: int robotID
+    // Value: string roomID
+    unordered_map<int, std::string> Simulation::getOngoingTasks()
+    {
+        unordered_map<int, std::string> ongoingTasks;
+        for (auto& pair : robot_dict)
+        {
+            ongoingTasks[pair.first] = pair.second.getRoomAssigned();
+        }
+        return ongoingTasks;
+    }
+
+
+    // Method that takes in a room ID and returns the tentative completion time for that room
+    int Simulation::completionTime(std::string roomID)
+    {
+        
+        std::lock_guard<std::mutex> lock(simulation_mutex);
+
+        // Check if the roomID exists in the building
+        if (building.rooms.find(roomID) == building.rooms.end()) 
+        {
+            return -2; // room doesn't exist
+        }
+
+        // Check if there are any robots cleaning the room
+        if (building.rooms[roomID].robots_cleaning.empty()) 
+        {
+            return -1; // No robots cleaning the room
+        }
+
+        int cleaningPower = 0; // variable for how much of the room is getting cleaned per second
+        
+        // Iterate through each robot in the room
+        for (int robotID : building.rooms[roomID].robots_cleaning)
+        {
+            // switch statement gets how much of the room the robot cleans in one second based on size of the robot
+            int robotSizePower = 0; 
+            switch (robot_dict[robotID].getSize()) 
+            {
+                case Robot::Size::Large:
+                    robotSizePower = 4;
+                    break;
+                case Robot::Size::Medium:
+                    robotSizePower = 3;
+                    break;
+                case Robot::Size::Small:
+                    robotSizePower = 2;
+                    break;
+                default:
+                    break;
+            }
+            // percentage of the room the robot cleans per second is dependent on the size of the room
+            if (building.rooms[roomID].size == "large") 
+            {
+                robotSizePower = 3 * robotSizePower;
+            } 
+            else if (building.rooms[roomID].size == "medium") 
+            {
+                robotSizePower = 4 * robotSizePower;
+            } 
+            else if (building.rooms[roomID].size == "small") 
+            {
+                robotSizePower = 6 * robotSizePower;
+            }
+            cleaningPower += robotSizePower;
+        }
+        int timeUntilCompletion = (100 - building.rooms[roomID].percentClean) / (cleaningPower - 3);
+        if (timeUntilCompletion < 0)
+        {
+            return 0;
+        }
+        return timeUntilCompletion;
+    }
+
+    // Method that takes in a robot ID and returns the tentative completion time for that robot
+    int Simulation::robotCompletionTime(int robotID)
+    {
+        // check if robotID exists
+        if (robot_dict.find(robotID) == robot_dict.end()) 
+        { 
+            return -2; // robot ID does not exist
+        }
+
+        // check if robotID is active
+        if (robot_dict[robotID].getStatus() != "Active")
+        {
+            return -1; // robot is not active
+        }
+        
+        // time to complete current room
+        std::string currentRoom = robot_dict[robotID].getRoomAssigned();
+        int completeTime = completionTime(currentRoom);
+        
+        // max time to complete backlog
+        std::queue<std::string> backLog = robot_dict[robotID].getTaskBacklog(); // Get backlog queue
+        int numBacklogItems = backLog.size();
+        
+        // switch statement gets how much of the room the robot cleans in one second based on size of the robot
+        int robotSizePower = 0; 
+        switch (robot_dict[robotID].getSize()) 
+        {
+            case Robot::Size::Large:
+                robotSizePower = 4;
+                break;
+            case Robot::Size::Medium:
+                robotSizePower = 3;
+                break;
+            case Robot::Size::Small:
+                robotSizePower = 2;
+                break;
+            default:
+                break;
+        }
+        
+        // percentage of the room the robot cleans per second is dependent on the size of the room
+        if (building.rooms[robot_dict[robotID].getRoomAssigned()].size == "large") 
+        { 
+            robotSizePower = 3 * robotSizePower;
+        } 
+        else if (building.rooms[robot_dict[robotID].getRoomAssigned()].size == "medium") 
+        {
+            robotSizePower = 4 * robotSizePower;
+        } 
+        else if (building.rooms[robot_dict[robotID].getRoomAssigned()].size == "small") 
+        {
+            robotSizePower = 6 * robotSizePower;
+        }
+    
+        completeTime += numBacklogItems * (100 / robotSizePower);
+
+        return completeTime; // this is the max it could take without a problem to the robot
+    }
+
+    //  Method to get a dictionary with a series of stats for the database
+    //  key                -      value
+    //  clockSimTime       -      int
+    //  numTasksCompleted  -      int
+    //  totalNumRobots     -      int
+    //  totalRoomsCleaned  -      int
+    unordered_map<std::string, int> Simulation::getDBStats()
+    {
+        unordered_map<std::string, int> statsMap;
+        statsMap["clockSimTime"] = timeCount;
+        statsMap["totalNumRobots"] = robots.size();
+        statsMap["numTasksCompleted"] = numTasksCompleted;
+        
+        // reset statistic
+        numTasksCompleted = 0;
+        
+        return statsMap;
+    }
+
+    // vector of robot ids that have errored since this function was last called
+    std::vector<int> Simulation::getFaultyRobotsDB()
+    {
+        vector<int> returnFaultyRobots = faultyRobotsDB;
+        faultyRobotsDB.clear();
+        return returnFaultyRobots;
+    }
 
     // method to simulate the entire operation
     void Simulation::simulate() 
     {   
-        int timeCount = 0;
+        // initialize stats to 0
+        timeCount = 0;
+        numTasksCompleted = 0;
+
         auto file_logger = spdlog::basic_logger_mt("file_logger", "logs.txt");
         file_logger->info("\t----- BEGIN SIMULATION -----\n");
         while (running)
@@ -235,21 +494,27 @@ namespace simulation
                             robotTypeStr = "Unknown";
                     }
 
+                    robot.setTotalLiveTime(robot.getTotalLiveTime()+1);
                     
                     // Check if robot is currently Active
                     if (robot.getStatus() == "Active")
                     {
-                        file_logger->info("\tRobot {} is in room {} and performing task {}", robotID, roomID, robotTypeStr);
-                        
                         // Randomly "break" the robot and make it Faulty
                         int randomNum = rand() % 101;
+
+                        robot.setUpTime(robot.getUpTime()+1);
                         if (randomNum < 5) 
                         {
                             file_logger->info("\tRobot {} has become faulty", robotID);
                             robot.setStatus("Faulty");
+                            faultyRobots.push_back(robotID);
+                            faultyRobotsDB.push_back(robotID);
                         }
                         else
                         {
+                            file_logger->info("\tRobot {} is in room {} and performing task {}", robotID, roomID, robotTypeStr);
+                            
+
                             std::string robotRoom = robot.getRoomAssigned();
                         
                             // Check if the room is already 100% clean
@@ -260,9 +525,31 @@ namespace simulation
 
                                 // Robot is\ done cleaning the room
                                 building.rooms[roomID].robots_cleaning.erase(robotID); // Remove robot from the room
-                                robot_dict[robotID].setRoomAssigned("-1"); // Unassign the room from the robot
-                                robot_dict[robotID].setStatus("Idle"); // Set status of robot to Idle
-                                file_logger->info("\tRobot {} has finished cleaning room {} and is now idle", robotID, roomID);
+                                
+                                std::queue<std::string>& backLog = robot_dict[robotID].getTaskBacklog(); // Get backlog queue
+                                
+                                tasksCompleted.insert(roomID); // Add to tasksCompleted for notifcation that room is clean;
+                                
+                                // Check if there is a backlog of tasks for this robot
+                                if (backLog.empty())
+                                {
+                                    robot_dict[robotID].setRoomAssigned("-1"); // Unassign the room from the robot
+                                    robot_dict[robotID].setStatus("Idle"); // Set status of robot to Idle
+                                    file_logger->info("\tRobot {} has finished cleaning room {} and is now idle", robotID, roomID);
+                                }
+                                else
+                                {
+                                    // Get next room in the backlog queue and take it out of the queue
+                                    std::string nextRoom = backLog.front();
+                                    backLog.pop();
+
+                                    // Assign robot the next room
+                                    robot_dict[robotID].setRoomAssigned(nextRoom);
+                                    building.rooms[nextRoom].robots_cleaning.insert(robotID);
+                                    file_logger->info("\tRobot {} has finished cleaning room {} and is now going to clean room {}", robotID, roomID, nextRoom);
+                                }
+
+                                numTasksCompleted++; // increment 
                             }    
                             else
                             {
@@ -320,6 +607,13 @@ namespace simulation
                                     building.rooms[roomID].robots_cleaning.erase(robotID); // Remove robot from the room
                                     robot_dict[robotID].setRoomAssigned("-1"); // Unassign the room from the robot
                                     robot_dict[robotID].setStatus("Idle"); // Set status of robot to Idle
+                                    
+                                    // Clear out the backlog
+                                    std::queue<std::string>& backLog = robot_dict[robotID].getTaskBacklog(); // Get backlog queue
+                                    while (!backLog.empty())
+                                    {
+                                        backLog.pop();
+                                    }
                                 }
                                 // Robot is out of battery, it uses its reserve battery to go to charging station
                                 else if (new_battery <= 0)
@@ -328,6 +622,13 @@ namespace simulation
                                     building.rooms[roomID].robots_cleaning.erase(robotID); // Remove robot from the room
                                     robot_dict[robotID].setRoomAssigned("-1"); // Unassign the room from the robot
                                     robot_dict[robotID].setStatus("Idle"); // Set status of robot to Idle
+                                    
+                                    // Clear out the backlog
+                                    std::queue<std::string>& backLog = robot_dict[robotID].getTaskBacklog(); // Get backlog queue
+                                    while (!backLog.empty())
+                                    {
+                                        backLog.pop();
+                                    }
                                 }
                                 else
                                 {
@@ -360,6 +661,13 @@ namespace simulation
                     {
                         pair.second.percentClean = 0; // Ensure cleanliness doesn't go below 0%
                     }
+                    int percentCleanRoom = building.rooms[pair.first].percentClean;
+                    if (percentCleanRoom > 100)
+                    {
+                        percentCleanRoom = 100;
+                    }
+                    file_logger->info("\tRoom ID {} is now {} percent clean.", pair.first, percentCleanRoom);
+
                 }
             }
             file_logger->info("\t--- TIMESTAMP {} END---\n", timeCount);

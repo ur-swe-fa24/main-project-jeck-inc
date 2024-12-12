@@ -2,6 +2,8 @@
 #define SENIORM_H
 
 #include <wx/wx.h>
+#include <chrono>
+#include <sstream>
 #include "Simulation.hpp"  
 #include "Database.hpp"
 
@@ -14,10 +16,31 @@ public:
     SeniorM(const wxString& title, simulation::Simulation& sim, database::Database& db);
     
 private:
-    // Event handler for adding a robot
-    void AddingRobot(wxCommandEvent& event);
+    // Event handlers for buttons
+    void RobotProductivity(wxCommandEvent& event); //Get Robot Productivity Button
+    void GoBack(wxCommandEvent& event); //Back Button
+    void TaskCompleted(wxCommandEvent& event);
+    void FaultyRobots(wxCommandEvent& event);
 
-    // Reference to the Simulation object
+    // int allRobotPerformance()
+    wxComboBox* sizeComboBox;
+    wxComboBox* typeComboBox;
+    wxComboBox* taskCompleteTimeComboBox;
+    wxComboBox* faultyRobotComboBox;
+
+
+    wxArrayString sizeChoices;
+    wxArrayString typeChoices;    
+    wxArrayString timeChoices;
+
+    //Static Text for Response
+    wxStaticText* robotProducitivity; 
+    wxStaticText* taskCompleted; 
+    wxStaticText* faultyRobots; 
+
+
+
+    // Reference to the Simulation and Database object
     simulation::Simulation& sim;
     database::Database& db;
 
