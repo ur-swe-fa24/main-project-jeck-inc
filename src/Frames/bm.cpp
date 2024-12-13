@@ -88,14 +88,14 @@ BuildingM::BuildingM(const wxString& title, Simulation& sim, Database& db)
     // Robot Backlog Completion Time Section
     wxBoxSizer* completionTimeSizer = new wxBoxSizer(wxVERTICAL);
 
-    wxStaticText* robotIdCompletionLabel = new wxStaticText(panel, wxID_ANY, "Robot ID:", wxDefaultPosition, wxDefaultSize, wxALIGN_LEFT);
+    wxStaticText* robotIdCompletionLabel = new wxStaticText(panel, wxID_ANY, "Enter a Robot ID:", wxDefaultPosition, wxDefaultSize, wxALIGN_LEFT);
     robotIdCompletionLabel->SetForegroundColour(wxColour("#dedede"));
     completionTimeSizer->Add(robotIdCompletionLabel, 0, wxALIGN_LEFT | wxBOTTOM, 5);
 
     robotIdCompletionTime = new wxTextCtrl(panel, wxID_ANY, "", wxDefaultPosition, wxSize(300, 30));
     completionTimeSizer->Add(robotIdCompletionTime, 0, wxALIGN_CENTER | wxBOTTOM, 10);
 
-    completionTimeSizer->Add(new RoundedButton(panel, 1003, "Calculate Completion Time"), 0, wxALIGN_CENTER | wxBOTTOM, 20);
+    completionTimeSizer->Add(new RoundedButton(panel, 1003, "Calculate Robot Completion Time"), 0, wxALIGN_CENTER | wxBOTTOM, 20);
     completionTime = new wxStaticText(panel, wxID_ANY, "", wxDefaultPosition, wxDefaultSize, wxALIGN_LEFT);
     completionTime->SetForegroundColour(wxColour("#dedede"));
     completionTimeSizer->Add(completionTime, 0, wxALIGN_LEFT);
