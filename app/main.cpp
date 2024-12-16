@@ -124,7 +124,7 @@ Home::Home(const wxString& title) : wxFrame(nullptr, wxID_ANY, title, wxDefaultP
     logoImage.Rescale(350, 60, wxIMAGE_QUALITY_HIGH);  // Rescale the image to desired size in high quality
     wxBitmap scaledLogo(logoImage);  // Convert back to wxBitmap
     wxStaticBitmap* logo = new wxStaticBitmap(panel, wxID_ANY, scaledLogo);  // Add the scaled logo to the layout
-    vbox->Add(logo, 0, wxALIGN_CENTER | wxTOP, 58);  // Add the logo with spacing
+    vbox->Add(logo, 0, wxALIGN_CENTER | wxTOP, 80);  // Add the logo with spacing
 
     // Warning Label
     wxStaticText* warning = new wxStaticText(panel, wxID_ANY, "*Not affiliated with Cobotiq", wxDefaultPosition, wxDefaultSize, wxALIGN_CENTER);
@@ -136,7 +136,7 @@ Home::Home(const wxString& title) : wxFrame(nullptr, wxID_ANY, title, wxDefaultP
     wxStaticText* label = new wxStaticText(panel, wxID_ANY, "Choose User Role:", wxDefaultPosition, wxDefaultSize, wxALIGN_CENTER);
     label->SetFont(wxFont(17, wxFONTFAMILY_DEFAULT, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_BOLD));
     label->SetForegroundColour(wxColour("#dedede"));
-    vbox->Add(label, 0, wxALIGN_CENTER | wxTOP, 32);  // Spacing below the logo
+    vbox->Add(label, 0, wxALIGN_CENTER | wxTOP, 47);  // Spacing below the logo
 
     // Add instances of RoundedButton
     vbox->Add(new RoundedButton(panel, 1001, "Senior Manager"), 0, wxALIGN_CENTER | wxTOP, 15);
@@ -149,7 +149,7 @@ Home::Home(const wxString& title) : wxFrame(nullptr, wxID_ANY, title, wxDefaultP
     wxStaticText* devLabel = new wxStaticText(panel, wxID_ANY, "Developed by JECK Inc.", wxDefaultPosition, wxDefaultSize, wxALIGN_CENTER);
     devLabel->SetFont(wxFont(10, wxFONTFAMILY_DEFAULT, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_BOLD));
     devLabel->SetForegroundColour(wxColour("#dedede"));
-    vbox->Add(devLabel, 0, wxALIGN_CENTER | wxTOP, 35);  // Spacing below the buttons
+    vbox->Add(devLabel, 0, wxALIGN_CENTER | wxTOP, 75);  // Spacing below the buttons
 
     // Set the layout to the panel
     panel->SetSizer(vbox);

@@ -24,13 +24,13 @@ SeniorM::SeniorM(const wxString& title, Simulation& sim, Database& db)
     // Title label
     wxStaticText* titleLabel = new wxStaticText(panel, wxID_ANY, "Senior Manager Dashboard", wxDefaultPosition, wxDefaultSize, wxALIGN_CENTER);
     titleLabel->SetFont(wxFont(18, wxFONTFAMILY_DEFAULT, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_BOLD));
-    titleLabel->SetForegroundColour(wxColour("#FFFFFF"));  // White text
+    titleLabel->SetForegroundColour(wxColour("#dedede"));  // White text
     vbox->Add(titleLabel, 0, wxALIGN_CENTER | wxTOP, 20);
 
     // Size dropdown label and combo box
     wxStaticText* sizeLabel = new wxStaticText(panel, wxID_ANY, "Size", wxDefaultPosition, wxDefaultSize, wxALIGN_CENTER);
     sizeLabel->SetFont(wxFont(14, wxFONTFAMILY_DEFAULT, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_NORMAL));
-    sizeLabel->SetForegroundColour(wxColour("#FFFFFF"));
+    sizeLabel->SetForegroundColour(wxColour("#dedede"));
     vbox->Add(sizeLabel, 0, wxALIGN_CENTER | wxTOP, 15);
 
     sizeChoices.Add("Large");
@@ -43,7 +43,7 @@ SeniorM::SeniorM(const wxString& title, Simulation& sim, Database& db)
     // Type dropdown label and combo box
     wxStaticText* typeLabel = new wxStaticText(panel, wxID_ANY, "Type", wxDefaultPosition, wxDefaultSize, wxALIGN_CENTER);
     typeLabel->SetFont(wxFont(14, wxFONTFAMILY_DEFAULT, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_NORMAL));
-    typeLabel->SetForegroundColour(wxColour("#FFFFFF"));
+    typeLabel->SetForegroundColour(wxColour("#dedede"));
     vbox->Add(typeLabel, 0, wxALIGN_CENTER | wxTOP, 15);
 
     typeChoices.Add("Scrub");
@@ -59,7 +59,7 @@ SeniorM::SeniorM(const wxString& title, Simulation& sim, Database& db)
     // Result label for productivity
     robotProducitivity = new wxStaticText(panel, wxID_ANY, "", wxDefaultPosition, wxDefaultSize, wxALIGN_CENTER);
     robotProducitivity->SetFont(wxFont(14, wxFONTFAMILY_DEFAULT, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_BOLD));
-    robotProducitivity->SetForegroundColour(wxColour("#FFFFFF"));
+    robotProducitivity->SetForegroundColour(wxColour("#dedede"));
     vbox->Add(robotProducitivity, 0, wxALIGN_CENTER | wxTOP, 20);
 
     wxBoxSizer* taskCompletedSizer = new wxBoxSizer(wxVERTICAL);
@@ -67,7 +67,7 @@ SeniorM::SeniorM(const wxString& title, Simulation& sim, Database& db)
     // Task Completed Section
     wxStaticText* taskCompletedLabel = new wxStaticText(panel, wxID_ANY, "Number of Tasks Completed in:", wxDefaultPosition, wxDefaultSize, wxALIGN_LEFT);
     taskCompletedLabel->SetFont(wxFont(12, wxFONTFAMILY_DEFAULT, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_NORMAL));
-    taskCompletedLabel->SetForegroundColour(wxColour("#ffffff"));
+    taskCompletedLabel->SetForegroundColour(wxColour("#dedede"));
     taskCompletedSizer->Add(taskCompletedLabel, 0, wxALIGN_LEFT | wxBOTTOM, 5);
 
     timeChoices.Add("30 seconds");
@@ -81,7 +81,7 @@ SeniorM::SeniorM(const wxString& title, Simulation& sim, Database& db)
     taskCompletedSizer->Add(new RoundedButton(panel, 1002, "Calculate Task Completed"), 0, wxALIGN_CENTER | wxBOTTOM, 10);
 
     taskCompleted = new wxStaticText(panel, wxID_ANY, "", wxDefaultPosition, wxDefaultSize);
-    taskCompleted->SetForegroundColour(wxColour("#ffffff"));
+    taskCompleted->SetForegroundColour(wxColour("#dedede"));
     taskCompletedSizer->Add(taskCompleted, 0, wxALIGN_LEFT);
 
     // Faulty Robots Section
@@ -89,7 +89,7 @@ SeniorM::SeniorM(const wxString& title, Simulation& sim, Database& db)
 
     wxStaticText* faultyRobotsLabel = new wxStaticText(panel, wxID_ANY, "Number of Faulty Robots:", wxDefaultPosition, wxDefaultSize, wxALIGN_LEFT);
     faultyRobotsLabel->SetFont(wxFont(12, wxFONTFAMILY_DEFAULT, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_NORMAL));
-    faultyRobotsLabel->SetForegroundColour(wxColour("#ffffff"));
+    faultyRobotsLabel->SetForegroundColour(wxColour("#dedede"));
     faultyRobotsSizer->Add(faultyRobotsLabel, 0, wxALIGN_LEFT | wxBOTTOM, 5);
 
     faultyRobotComboBox = new wxComboBox(panel, wxID_ANY, "Select an option", wxDefaultPosition, wxSize(300, 30), timeChoices, wxCB_READONLY);
@@ -98,7 +98,7 @@ SeniorM::SeniorM(const wxString& title, Simulation& sim, Database& db)
     faultyRobotsSizer->Add(new RoundedButton(panel, 1003, "Count Faulty Robots"), 0, wxALIGN_CENTER | wxBOTTOM, 10);
 
     faultyRobots = new wxStaticText(panel, wxID_ANY, "", wxDefaultPosition, wxDefaultSize);
-    faultyRobots->SetForegroundColour(wxColour("#ffffff"));
+    faultyRobots->SetForegroundColour(wxColour("#dedede"));
     faultyRobotsSizer->Add(faultyRobots, 0, wxALIGN_LEFT);
 
     // Add sections to the main vbox
